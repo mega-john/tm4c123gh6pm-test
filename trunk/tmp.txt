@@ -1,0 +1,233 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
+
+#include "inc/hw_gpio.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_sysctl.h"
+#include "inc/hw_types.h"
+#include "inc/hw_hibernate.h"
+
+#include "driverlib/gpio.h"
+#include "driverlib/sysctl.h"
+
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
+#include "driverlib/timer.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/ssi.h"
+#include "driverlib/fpu.h"
+#include "grlib/grlib.h"
+
+
+#include "./buttons.h"
+#include "hardware/ili9341/ili9341.h"
+#include "hardware/ili9325/ili9325.h"
+#include "hardware/SPI/SPI.h"
+
+
+#define LED_RED 		GPIO_PIN_1
+#define LED_BLUE 	GPIO_PIN_2
+#define LED_GREEN 	GPIO_PIN_3
+#define ALL_LEDS		(LED_RED | LED_BLUE | LED_GREEN)
+
+#define SW1 			GPIO_PIN_4
+#define SW2 			GPIO_PIN_0
+#define RED_LED 		GPIO_PIN_1
+#define BLUE_LED 	GPIO_PIN_2
+#define GREEN_LED 	GPIO_PIN_3
+
+    tContext g_sContext;
+
+void UnlockPinF0()
+{
+	// Unlock PF0 so we can change it to a GPIO input
+	// Once we have enabled (unlocked) the commit register then re-lock it
+	// to prevent further changes.  PF0 is muxed with NMI thus a special case.
+	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+	HWREG(GPIO_PORTF_BASE + GPIO_O_CR) = 0xff;
+	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = 0;
+}
+
+const uint8_t g_pui8Logo[] =
+{
+    IMAGE_FMT_4BPP_COMP,
+    30, 0,
+    30, 0,
+
+    15,
+    0x00, 0x00, 0x00,
+    0x03, 0x02, 0x12,
+    0x06, 0x05, 0x2b,
+    0x0a, 0x08, 0x43,
+    0x0d, 0x0a, 0x57,
+    0x10, 0x0d, 0x69,
+    0x12, 0x0e, 0x76,
+    0x14, 0x10, 0x87,
+    0x17, 0x12, 0x96,
+    0x19, 0x14, 0xa6,
+    0x1b, 0x15, 0xb1,
+    0x1d, 0x17, 0xbe,
+    0x1e, 0x18, 0xc8,
+    0x21, 0x19, 0xd7,
+    0x23, 0x1b, 0xe4,
+    0x24, 0x1c, 0xed,
+
+    0x84, 0x02, 0x79, 0x88, 0x8a, 0x50, 0x07, 0x00, 0x00, 0x08, 0xdf, 0xff,
+    0xff, 0x80, 0x07, 0x00, 0x00, 0xbf, 0x90, 0x8a, 0x35, 0x30, 0x8f, 0xff,
+    0xff, 0x70, 0x01, 0x31, 0xef, 0xa0, 0x8f, 0x89, 0x03, 0xff, 0x60, 0x17,
+    0x90, 0x12, 0x33, 0x10, 0x17, 0xff, 0xff, 0xca, 0x13, 0x04, 0x98, 0x16,
+    0xa9, 0x9a, 0x60, 0x16, 0xff, 0x18, 0x04, 0xfd, 0x1d, 0xff, 0xff, 0x90,
+    0x16, 0xfc, 0x0b, 0x04, 0xf7, 0x2f, 0xff, 0xff, 0x80, 0x15, 0xfd, 0x84,
+    0x08, 0x1e, 0xf5, 0x28, 0xbf, 0x8f, 0xf7, 0x00, 0x4f, 0x00, 0xf4, 0x00,
+    0x6f, 0xff, 0x90, 0x00, 0x67, 0x66, 0x0a, 0x66, 0x66, 0xdf, 0xff, 0xa1,
+    0xf2, 0x51, 0xe2, 0x00, 0x00, 0x9f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf6,
+    0x00, 0x30, 0x9f, 0xb0, 0x34, 0xef, 0xff, 0xfc, 0x20, 0x42, 0x0b, 0x8b,
+    0xff, 0xd0, 0xbf, 0x71, 0x42, 0x80, 0x22, 0x01, 0xbf, 0x0b, 0x82, 0xef,
+    0x42, 0x42, 0x70, 0x22, 0x00, 0x1b, 0x0b, 0x42, 0xff, 0x35, 0x8c, 0x02,
+    0x89, 0x13, 0x25, 0xff, 0x1a, 0x14, 0x00, 0xaf, 0x09, 0x04, 0xfe, 0x24,
+    0x86, 0x04, 0x8f, 0x09, 0x60, 0x00, 0x00, 0x00, 0x3f, 0xff, 0xc5, 0x8f,
+    0xfb, 0x00, 0x00, 0x00, 0x00, 0x2f, 0xff, 0xfd, 0x73, 0x10, 0x00, 0x00,
+    0x04, 0x07, 0xfc, 0x10, 0x09, 0xfc, 0x89, 0x5f, 0xfe, 0x40, 0x51, 0x59,
+    0x00, 0x00, 0x21, 0x00, 0x01, 0xef, 0x06, 0x72, 0x22, 0x21, 0x9f, 0x92,
+    0x93, 0x6a, 0x7f, 0x08, 0xff, 0xee, 0xee, 0xfa, 0x97, 0x00, 0x2f, 0xff,
+    0x12, 0xff, 0xff, 0xd1, 0x8f, 0x00, 0x08, 0x89, 0x50, 0x94, 0x17, 0x00,
+    0x02, 0x11, 0x20, 0x17, 0x00, 0x00, 0x61, 0x4f, 0x8f, 0x03, 0x05, 0xff,
+    0xff, 0x50, 0x17, 0x8c, 0x01, 0x3a, 0xdd, 0x60, 0x8f, 0x01, 0x04, 0x88,
+    0x70, 0x40, 0x17, 0x47, 0x77
+};
+
+tCodePointMap g_psCodePointMap_language[] =
+{
+		{CODEPAGE_UTF_8, CODEPAGE_UNICODE, GrMapUTF8_Unicode},
+//	    {CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode},
+//	    {CODEPAGE_UTF_8, CODEPAGE_UNICODE, GrMapWIN1251_Unicode}
+};
+
+#define NUM_CODEPOINT_MAPS (sizeof(g_psCodePointMap_language) / sizeof(tCodePointMap))
+
+tGrLibDefaults g_sGrLibDefaultlanguage =
+{
+    GrDefaultStringRenderer,
+    g_psCodePointMap_language,
+    CODEPAGE_UTF_8,
+    NUM_CODEPOINT_MAPS,
+    0
+};
+
+extern tFont *g_psFontWVerdana24pt;
+extern tFont *g_psFontWArial24pt;
+
+/*
+ * hello.c
+ */
+int main(void)
+{
+    uint8_t red_state, green_state, blue_state;
+    uint32_t count;
+
+    SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+    UnlockPinF0();
+
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED | LED_BLUE| LED_GREEN);
+    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
+    GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_0| GPIO_PIN_4, GPIO_STRENGTH_2MA,  GPIO_PIN_TYPE_STD_WPU);
+
+    green_state = red_state = 0;
+    blue_state = BLUE_LED;
+
+    GPIOPinWrite(GPIO_PORTF_BASE, RED_LED | BLUE_LED | GREEN_LED, red_state | blue_state | green_state);
+
+    SysCtlDelay(10000);
+
+    FPULazyStackingEnable();
+
+    InitDisplay();
+
+    uint32_t x=0;
+//    uint32_t ui32Idx;
+    tRectangle sRect;
+
+    GrContextInit(&g_sContext, &g_sILI9341);
+
+//    tGrLibDefaults pDefaults;
+//    pDefaults.ui16Codepage = CODEPAGE_ISO8859_5;
+    GrLibInit(&g_sGrLibDefaultlanguage);
+
+    sRect.i16XMin = 0;
+    sRect.i16YMin = 0;
+    sRect.i16XMax = GrContextDpyWidthGet(&g_sContext) - 1;
+    sRect.i16YMax = 319;
+    GrContextForegroundSet(&g_sContext, ClrDarkBlue);
+    GrRectFill(&g_sContext, &sRect);
+
+    GrContextForegroundSet(&g_sContext, ClrWhite);
+    GrRectDraw(&g_sContext, &sRect);
+
+    GrStringCodepageSet(&g_sContext, CODEPAGE_UTF_8);
+//    GrContextFontSet(&g_sContext, &g_sFontCmtt20);
+//    GrStringDraw(&g_sContext, "aaaaa   grlib_demo", -1, 10, 20, 0);
+   GrContextFontSet(&g_sContext, g_psFontWArial24pt);
+    GrStringDraw(&g_sContext, "grlib_demo привед!", -1, 10, 50, 0);
+    //GrContextFontSet(&g_sContext, &g_sFontCmtt40);
+
+    //
+    // Draw an image.
+    //
+    GrTransparentImageDraw(&g_sContext, g_pui8Logo, 64, 34, ClrBlack);
+
+#if 0
+    GrImageDraw(&g_sContext, g_pui8Logo, 64, 34);
+#endif
+
+    //
+    // Flush any cached drawing operations.
+    //
+    GrFlush(&g_sContext);
+
+    bool inv = false;
+    while(1)
+    {
+
+        for(x=0;x<320;x++)
+        {
+        	//for(y=0; y<101; y++)
+        	{
+//        		LineDrawH(0, 0, 240, x, inv ? 0xf800 : 0);
+        		//PixelDraw(0, x+50, y+50, 0xf800);
+        	}
+        }
+        inv = !inv;
+
+        //SysCtlDelay(30000000);
+        if(++count >= 90000)
+        {
+            count = 0;
+            //red_state ^= RED_LED ;
+	    //GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, red_state | blue_state | green_state);
+        }
+
+        uint8_t ui8ButtonState;
+        uint8_t ui8ButtonChanged;
+
+        ui8ButtonState = ButtonsPoll(&ui8ButtonChanged, 0);
+
+        if(BUTTON_PRESSED(DOWN_BUTTON, ui8ButtonState, ui8ButtonChanged))
+    	{
+        	green_state ^= GREEN_LED;
+    	}
+    	else if(BUTTON_PRESSED(UP_BUTTON, ui8ButtonState, ui8ButtonChanged))
+    	{
+    		blue_state ^= BLUE_LED;
+    	}
+
+	    GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, red_state | blue_state | green_state);
+
+    }
+}
