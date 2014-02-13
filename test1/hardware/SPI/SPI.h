@@ -23,5 +23,6 @@ void SPI_setClockDivider(uint8_t);
 void SPI_setModule(uint8_t);
 void SPI_transfer8(uint8_t);
 void SPI_transfer16(uint16_t data);
+void SPI_transfer24(uint32_t data);
 void SPI_transfer32(uint32_t data);
 uint8_t SPI_read8(void);

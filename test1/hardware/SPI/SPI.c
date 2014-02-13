@@ -143,23 +143,35 @@ void SPI_setClockDivider(uint8_t divider)
 
 void SPI_transfer8(uint8_t data)
 {
-//	uint32_t rxData;
 	SSIDataPut(SSIBASE, data);
 	while(SSIBusy(SSIBASE));
-//	SSIDataGet(SSIBASE, &rxData);
-//	return (uint8_t) rxData;
 }
 
 void SPI_transfer16(uint16_t data)
 {
-	SSIDataPut(SSIBASE, data);
-	while(SSIBusy(SSIBASE));
+	SPI_transfer8(data >> 8);
+	SPI_transfer8(data);
+//	SSIDataPut(SSIBASE, data);
+//	while(SSIBusy(SSIBASE));
+}
+
+void SPI_transfer24(uint32_t data)
+{
+	SPI_transfer8(data >> 16);
+	SPI_transfer8(data >> 8);
+	SPI_transfer8(data);
+//	SSIDataPut(SSIBASE, data);
+//	while(SSIBusy(SSIBASE));
 }
 
 void SPI_transfer32(uint32_t data)
 {
-	SSIDataPut(SSIBASE, data);
-	while(SSIBusy(SSIBASE));
+	SPI_transfer8(data >> 24);
+	SPI_transfer8(data >> 16);
+	SPI_transfer8(data >> 8);
+	SPI_transfer8(data);
+//	SSIDataPut(SSIBASE, data);
+//	while(SSIBusy(SSIBASE));
 }
 
 uint8_t SPI_read8()

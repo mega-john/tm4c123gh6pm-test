@@ -30,20 +30,25 @@
 
 tCodePointMap g_psCodePointMap_language[] =
 {
-		{ CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode },
+//		{ CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode },
+		{ CODEPAGE_ISO8859_5, CODEPAGE_UNICODE, GrMapISO8859_5_Unicode},
 };
 
 #define NUM_CODEPOINT_MAPS (sizeof(g_psCodePointMap_language) / sizeof(tCodePointMap))
 
 tGrLibDefaults g_sGrLibDefaultlanguage =
 {
-		GrDefaultStringRenderer, g_psCodePointMap_language, CODEPAGE_WIN1251, NUM_CODEPOINT_MAPS, 0
+		GrDefaultStringRenderer,
+		g_psCodePointMap_language,
+		CODEPAGE_ISO8859_5,
+		NUM_CODEPOINT_MAPS,
+		0
 };
 
 int main(void)
 {
-	SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 	FPULazyStackingEnable();
+	SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 
 	InitDisplay();
 
