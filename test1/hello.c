@@ -69,7 +69,7 @@ int main(void)
 	GrRectDraw(&g_sContext, &sRect);
 
 //    GrStringCodepageSet(&g_sContext, CODEPAGE_UTF_8);
-	GrContextFontSet(&g_sContext, g_psFontWArial24pt);
+	GrContextFontSet(&g_sContext, g_sFontExIso8859_524);
 	GrStringDraw(&g_sContext, "hello привет!", -1, 50, 50, 0);
 
 	while (1)

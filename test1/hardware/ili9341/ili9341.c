@@ -342,7 +342,7 @@ void PixelDrawMultiple(void *pvDisplayData,
 			}
 
 			ulColor = *(uint32_t *) (pucPalette + (ulPixel * 3)) & 0x00ffffff;// retrieve 24 bit color
-			uint32_t tmpColor = COLOR24TO16BIT(ulColor);
+			tmpColor = COLOR24TO16BIT(ulColor);
 			TFT_sendData24(tmpColor);
 //			TFT_sendData8(tmpColor >> 16);// translate and write to display
 //			TFT_sendData8(tmpColor >> 8);// translate and write to display
@@ -359,7 +359,7 @@ void PixelDrawMultiple(void *pvDisplayData,
 		{
 			ulPixel = *pucData++;		// read pixel
 			ulColor = *(uint32_t *) (pucPalette + (ulPixel * 3)) & 0x00ffffff;// retrieve 24 bit color
-			uint32_t tmpColor = COLOR24TO16BIT(ulColor);
+			tmpColor = COLOR24TO16BIT(ulColor);
 			TFT_sendData24(tmpColor);
 //			TFT_sendData8(tmpColor >> 16);// translate and write to display
 //			TFT_sendData8(tmpColor >> 8);// translate and write to display
