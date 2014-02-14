@@ -1,4 +1,4 @@
-п»ї#include <stdio.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -70,7 +70,7 @@ int main(void)
 
 //    GrStringCodepageSet(&g_sContext, CODEPAGE_UTF_8);
 	GrContextFontSet(&g_sContext, g_sFontExIso8859_524);
-	GrStringDraw(&g_sContext, "hello РїСЂРёРІРµС‚!", -1, 50, 50, 0);
+	GrStringDraw(&g_sContext, "hello привет!", -1, 50, 50, 0);
 
 	while (1)
 	{
