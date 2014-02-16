@@ -25,22 +25,6 @@
 #ifndef __BUTTONS_H__
 #define __BUTTONS_H__
 
-//*****************************************************************************
-//
-// Defines for the hardware resources used by the pushbuttons.
-//
-// The switches are on the following ports/pins:
-//
-// PM0 - Up
-// PM1 - Down
-// PM2 - Left
-// PM3 - Right
-// PM4 - Select/Wake
-//
-// The switches tie the GPIO to ground, so the GPIOs need to be configured
-// with pull-ups, and a value of 0 means the switch is pressed.
-//
-//*****************************************************************************
 #define BUTTONS_GPIO_PERIPH     	SYSCTL_PERIPH_GPIOF
 #define BUTTONS_GPIO_BASE       	GPIO_PORTF_BASE
 

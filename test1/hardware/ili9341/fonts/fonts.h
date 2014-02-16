@@ -1,3 +1,2 @@
-extern tFont *g_psFontWVerdana24pt;
-extern tFont *g_psFontWArial24pt;
-extern tFont *g_sFontExIso8859_524;
+extern tFont *g_psFontWArial_charmap24pt;
+extern tFontEx g_sFontExArial24;

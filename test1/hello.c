@@ -25,22 +25,18 @@
 #include "hardware/buttons.h"
 #include "hardware/ili9341/fonts/fonts.h"
 #include "hardware/ili9341/ili9341.h"
-//#include "hardware/ili9325/ili9325.h"
-//#include "hardware/SPI/SPI.h"
 
 tCodePointMap g_psCodePointMap_language[] =
 {
-//		{ CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode },
-		{ CODEPAGE_ISO8859_5, CODEPAGE_UNICODE, GrMapISO8859_5_Unicode},
+		{ CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode },
 };
-
 #define NUM_CODEPOINT_MAPS (sizeof(g_psCodePointMap_language) / sizeof(tCodePointMap))
 
 tGrLibDefaults g_sGrLibDefaultlanguage =
 {
 		GrDefaultStringRenderer,
 		g_psCodePointMap_language,
-		CODEPAGE_ISO8859_5,
+		CODEPAGE_WIN1251,
 		NUM_CODEPOINT_MAPS,
 		0
 };
@@ -67,11 +63,15 @@ int main(void)
 
 	GrContextForegroundSet(&g_sContext, ClrWhite);
 	GrRectDraw(&g_sContext, &sRect);
+	const char* text = "hello привет\0";
 
-//    GrStringCodepageSet(&g_sContext, CODEPAGE_UTF_8);
-	GrContextFontSet(&g_sContext, g_sFontExIso8859_524);
-	GrStringDraw(&g_sContext, "hello привет!", -1, 50, 50, 0);
+//	GrStringCodepageSet(&g_sContext, CODEPAGE_UNICODE);
 
+	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
+	GrStringDraw(&g_sContext, text, -1, 10, 10, 0);
+
+	GrContextFontSet(&g_sContext, g_psFontWArial_charmap24pt);
+	GrStringDraw(&g_sContext, text, -1, 10, 40, 0);
 	while (1)
 	{
 	}
