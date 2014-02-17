@@ -32,17 +32,22 @@
 // Macro to translate 24 bit RGB to 5-6-5 16 bit RGB
 #define COLOR24TO16BIT(rgb)		((((rgb) & 0x00f80000) >> 8) | (((rgb) & 0x0000fc00) >> 5) | (((rgb) & 0x000000f8) >> 3))
 
+/**Macro definitions for char display direction**/
+#define ORIENTATION_LEFT2RIGHT 0
+#define ORIENTATION_DOWN2UP    1
+#define ORIENTATION_RIGHT2LEFT 2
+#define ORIENTATION_UP2DOWN    3
+
 //*****************************************************************************
 //
 // Prototypes for the globals exported by this driver.
 //
 //*****************************************************************************
 extern void InitDisplay(void);
-extern void PixelDraw(void *pvDisplayData, int32_t x, int32_t y,
-		uint32_t color);
-extern void LineDrawH(void *pvDisplayData, int32_t x1, int32_t x2, int32_t y,
-		uint32_t color);
-extern void LineDrawV(void *pvDisplayData, int32_t x, int32_t y1, int32_t y2,
-		uint32_t color);
-extern uint32_t ColorTranslate(void *pvDisplayData, uint32_t ui32Value);
+extern void PixelDraw(void *pvDisplayData, int32_t x, int32_t y, uint32_t color);
+extern void LineDrawH(void *pvDisplayData, int32_t x1, int32_t x2, int32_t y, uint32_t color);
+extern void LineDrawV(void *pvDisplayData, int32_t x, int32_t y1, int32_t y2, uint32_t color);
+//extern uint32_t ColorTranslate(void *pvDisplayData, uint32_t ui32Value);
 extern const tDisplay g_sILI9341;
+
+extern void TFT_setOrientation(uint8_t orientation);
