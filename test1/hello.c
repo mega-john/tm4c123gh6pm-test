@@ -26,8 +26,7 @@
 #include "hardware/buttons.h"
 #include "hardware/ili9341/fonts/fonts.h"
 #include "hardware/ili9341/ili9341.h"
-
-//#pragma DATA_SECTION(g_pui8Logo, "picture")
+#include "menu/menu.h"
 
 const uint8_t g_pui8Logo[] =
 {
