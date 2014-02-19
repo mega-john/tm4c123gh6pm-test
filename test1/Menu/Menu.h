@@ -3,8 +3,10 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "grlib/grlib.h"
+
 extern void ProcessMenu();
-extern void MenuInitialize();
+extern void MenuInitialize(tContext* context);
 
 /** Type define for a menu item. Menu items should be initialized via the helper
  *  macro \ref MENU_ITEM(), not created from this type directly in user-code.

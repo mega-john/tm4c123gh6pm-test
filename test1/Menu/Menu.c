@@ -25,7 +25,13 @@ static void (*MenuWriteFunc)(const char* Text) = NULL;
  *  Pointer to the currently selected menu item.
  */
 static Menu_Item_t* CurrentMenuItem = &NULL_MENU;
+//static Menu_Item_t* tempMenu = NULL;
 
+//static Menu_Item_t* MenuStack[10];
+
+volatile uint8_t MenuStackTop;
+
+tContext* gContext;
 
 Menu_Item_t* Menu_GetCurrentMenu(void)
 {
@@ -72,15 +78,15 @@ void Menu_EnterCurrentItem(void)
 }
 
 /** Example menu item specific enter callback function, run when the associated menu item is entered. */
-static void Level1Item1_Enter(void)
+static void L1I1_Enter(void)
 {
-	puts("ENTER");
+	GrStringDraw(gContext, "ENTER", -1, 10, 10, 0);
 }
 
 /** Example menu item specific select callback function, run when the associated menu item is selected. */
-static void Level1Item1_Select(void)
+static void L1I1_Select(void)
 {
-	puts("SELECT");
+	GrStringDraw(gContext, "SELECT", -1, 10, 10, 0);
 }
 
 /** Generic function to write the text of a menu.
@@ -91,22 +97,28 @@ static void Generic_Write(const char* Text)
 {
 	if (Text)
 	{
-//		puts_P(Text);
+		GrStringDraw(gContext, Text, -1, 10, 10, 0);
 	}
 }
 
-MENU_ITEM(Menu_1, Menu_2, Menu_3, NULL_MENU, Menu_1_1,  NULL, NULL, "1");
-MENU_ITEM(Menu_2, Menu_3, Menu_1, NULL_MENU, NULL_MENU, NULL, NULL, "2");
-MENU_ITEM(Menu_3, Menu_1, Menu_2, NULL_MENU, NULL_MENU, NULL, NULL, "3");
 
-MENU_ITEM(Menu_1_1, Menu_1_2, Menu_1_2, NULL_MENU, NULL_MENU, NULL, NULL, "1.1");
-MENU_ITEM(Menu_1_2, Menu_1_1, Menu_1_1, NULL_MENU, NULL_MENU, NULL, NULL, "1.2");
+//		  Name, 		Next, 		Previous, 	Parent, 		Child, 			SelectFunc, 		EnterFunc, 			Text
+MENU_ITEM(Menu_1, 		Menu_2, 	Menu_3, 	NULL_MENU, 		Menu_1_1,  		NULL, 				NULL, 				"1");
+MENU_ITEM(Menu_2, 		Menu_3, 	Menu_1, 	NULL_MENU, 		NULL_MENU, 		NULL, 				NULL, 				"2");
+MENU_ITEM(Menu_3, 		Menu_1, 	Menu_2, 	NULL_MENU, 		NULL_MENU, 		NULL, 				NULL, 				"3");
 
-void MenuInitialize()
+MENU_ITEM(Menu_1_1, 	Menu_1_2, 	Menu_1_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"1.1");
+MENU_ITEM(Menu_1_2, 	Menu_1_1, 	Menu_1_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"1.2");
+
+
+
+
+void MenuInitialize(tContext* context)
 {
 	/* Set up the default menu text write callback, and navigate to an absolute menu item entry. */
 	Menu_SetGenericWriteCallback(Generic_Write);
 	Menu_Navigate(&Menu_1);
+	gContext = context;
 }
 
 void ProcessMenu()

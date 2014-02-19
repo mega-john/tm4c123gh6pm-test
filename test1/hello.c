@@ -91,6 +91,8 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
 		0
 };
 
+tContext g_sContext;
+
 int main(void)
 {
 	FPULazyStackingEnable();
@@ -98,7 +100,7 @@ int main(void)
 
 	InitDisplay();
 
-	tContext g_sContext;
+
 	GrContextInit(&g_sContext, &g_sILI9341);
 
 	GrLibInit(&g_sGrLibDefaultlanguage);
@@ -119,15 +121,18 @@ int main(void)
 
 	TFT_setOrientation(ORIENTATION_UP2DOWN);
 
-	uint8_t y = 0;
-	for (y = 0; y < 7; ++y)
-	{
-		GrStringDraw(&g_sContext, text[y], -1, 10, y * GrStringHeightGet(&g_sContext) + 5, 0);
-	}
+//	uint8_t y = 0;
+//	for (y = 0; y < 7; ++y)
+//	{
+//		GrStringDraw(&g_sContext, text[y], -1, 10, y * GrStringHeightGet(&g_sContext) + 5, 0);
+//	}
 
 	GrTransparentImageDraw(&g_sContext, g_pui8Logo, 128, 68, ClrBlack);
 
+	MenuInitialize(&g_sContext);
+
 	while (1)
 	{
+		ProcessMenu();
 	}
 }
