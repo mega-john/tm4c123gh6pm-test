@@ -79,8 +79,7 @@ static uint8_t g_ui8ButtonStates = ALL_BUTTONS;
 //! indicates that it is released.
 //
 //*****************************************************************************
-uint8_t
-ButtonsPoll(uint8_t *pui8Delta, uint8_t *pui8RawState)
+uint8_t ButtonsPoll(uint8_t *pui8Delta, uint8_t *pui8RawState)
 {
     uint32_t ui32Delta;
     uint32_t ui32Data;
@@ -156,8 +155,7 @@ ButtonsPoll(uint8_t *pui8Delta, uint8_t *pui8RawState)
 //! \return None.
 //
 //*****************************************************************************
-void
-ButtonsInit(void)
+void ButtonsInit(void)
 {
     //
     // Enable the GPIO port to which the pushbuttons are connected.

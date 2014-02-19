@@ -80,48 +80,74 @@ void Menu_EnterCurrentItem(void)
 /** Example menu item specific enter callback function, run when the associated menu item is entered. */
 static void L1I1_Enter(void)
 {
-	GrStringDraw(gContext, "ENTER", -1, 10, 10, 0);
+//	GrStringDraw(gContext, "ENTER", -1, 10, 10, 0);
 }
 
 /** Example menu item specific select callback function, run when the associated menu item is selected. */
 static void L1I1_Select(void)
 {
-	GrStringDraw(gContext, "SELECT", -1, 10, 10, 0);
+//	GrStringDraw(gContext, "SELECT", -1, 100, 10, 0);
 }
 
 /** Generic function to write the text of a menu.
  *
  *  \param[in] Text   Text of the selected menu to write, in \ref MENU_ITEM_STORAGE memory space
  */
-static void Generic_Write(const char* Text)
-{
-	if (Text)
-	{
-		GrStringDraw(gContext, Text, -1, 10, 10, 0);
-	}
-}
+//static void Generic_Write(const char* Text)
+//{
+//	if (Text)
+//	{
+//		GrStringDraw(gContext, Text, -1, 100, 10, 0);
+//	}
+//}
 
 
 //		  Name, 		Next, 		Previous, 	Parent, 		Child, 			SelectFunc, 		EnterFunc, 			Text
-MENU_ITEM(Menu_1, 		Menu_2, 	Menu_3, 	NULL_MENU, 		Menu_1_1,  		NULL, 				NULL, 				"1");
-MENU_ITEM(Menu_2, 		Menu_3, 	Menu_1, 	NULL_MENU, 		NULL_MENU, 		NULL, 				NULL, 				"2");
-MENU_ITEM(Menu_3, 		Menu_1, 	Menu_2, 	NULL_MENU, 		NULL_MENU, 		NULL, 				NULL, 				"3");
+MENU_ITEM(Menu_1, 		Menu_2, 	Menu_3, 	NULL_MENU, 		Menu_1_1,  		L1I1_Select, 				L1I1_Enter, 				"время");
+MENU_ITEM(Menu_2, 		Menu_3, 	Menu_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 				L1I1_Enter, 				"скорость");
+MENU_ITEM(Menu_3, 		Menu_1, 	Menu_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 				L1I1_Enter, 				"уровень");
 
-MENU_ITEM(Menu_1_1, 	Menu_1_2, 	Menu_1_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"1.1");
-MENU_ITEM(Menu_1_2, 	Menu_1_1, 	Menu_1_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"1.2");
+MENU_ITEM(Menu_1_1, 	Menu_1_2, 	Menu_1_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"настроить");
+MENU_ITEM(Menu_1_2, 	Menu_1_1, 	Menu_1_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"сбросить");
 
 
+void DrawMenu(Menu_Item_t* mi, uint8_t level)
+{
+	if(mi)
+	{
+		GrStringDraw(gContext, mi->Text, -1, 10, level, 0);
+		if(CurrentMenuItem == mi)
+		{
+			GrStringDraw(gContext, ">", -1, 0, level, 0);
+		}
+		else
+		{
+			GrStringDraw(gContext, "  ", -1, 0, level, 0);
+		}
+	}
+	if(mi->Next && mi->Next !=  &Menu_1)
+	{
+		DrawMenu(mi->Next, level + 30);
+	}
 
+}
 
 void MenuInitialize(tContext* context)
 {
-	/* Set up the default menu text write callback, and navigate to an absolute menu item entry. */
-	Menu_SetGenericWriteCallback(Generic_Write);
-	Menu_Navigate(&Menu_1);
 	gContext = context;
+
+	/* Set up the default menu text write callback, and navigate to an absolute menu item entry. */
+//	Menu_SetGenericWriteCallback(Generic_Write);
+	Menu_Navigate(&Menu_1);
+	DrawMenu(&Menu_1, 0);
 }
+
+
 
 void ProcessMenu()
 {
+	while(true)
+	{
 
+	}
 }

@@ -31,11 +31,11 @@
 #define NUM_BUTTONS             		2
 #define UP_BUTTON               			GPIO_PIN_0
 #define DOWN_BUTTON             		GPIO_PIN_4
-//#define LEFT_BUTTON             GPIO_PIN_2
-//#define RIGHT_BUTTON            GPIO_PIN_3
-//#define SELECT_BUTTON           GPIO_PIN_4
+//#define LEFT_BUTTON             		GPIO_PIN_2
+//#define RIGHT_BUTTON            		GPIO_PIN_3
+//#define SELECT_BUTTON           		GPIO_PIN_4
 
-//#define ALL_BUTTONS             (LEFT_BUTTON | RIGHT_BUTTON | UP_BUTTON |  DOWN_BUTTON | SELECT_BUTTON)
+//#define ALL_BUTTONS             		(LEFT_BUTTON | RIGHT_BUTTON | UP_BUTTON |  DOWN_BUTTON | SELECT_BUTTON)
 #define ALL_BUTTONS             			(UP_BUTTON |  DOWN_BUTTON)
 
 //*****************************************************************************

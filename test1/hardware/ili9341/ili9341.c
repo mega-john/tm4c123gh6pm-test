@@ -75,12 +75,6 @@
 #define TFT_DC_LOW						GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, 0)
 #define TFT_DC_HIGH						GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, DISPLAY_D_C_PIN)
 
-
-//TFT resolution 240*320
-//#define MIN_X							0
-//#define MIN_Y							0
-#define DISPLAY_WIDTH					240
-#define DISPLAY_HEIGHT					320
 #define DELAY_VALUE						300000
 #define constrain(amt, low, high) 		((amt) <= (low) ? (low) : ((amt) >= (high) ? (high) : (amt)))
 
