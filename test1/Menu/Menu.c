@@ -102,7 +102,7 @@ static void L1I1_Select(void)
 //}
 
 
-//		  Name, 		Next, 		Previous, 	Parent, 		Child, 			SelectFunc, 		EnterFunc, 			Text
+//		  			Name, 		Next, 		Previous, 	Parent, 				Child, 				SelectFunc, 				EnterFunc, 				Text
 MENU_ITEM(Menu_1, 		Menu_2, 	Menu_3, 	NULL_MENU, 		Menu_1_1,  		L1I1_Select, 				L1I1_Enter, 				"время");
 MENU_ITEM(Menu_2, 		Menu_3, 	Menu_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 				L1I1_Enter, 				"скорость");
 MENU_ITEM(Menu_3, 		Menu_1, 	Menu_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 				L1I1_Enter, 				"уровень");
@@ -113,21 +113,33 @@ MENU_ITEM(Menu_1_2, 	Menu_1_1, 	Menu_1_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select
 
 void DrawMenu(Menu_Item_t* mi, uint8_t level)
 {
+	tRectangle r;
+	r.i16XMin=10;
+	r.i16XMax=230;
+	r.i16YMin=level+7;
+	r.i16YMax=level+37;
+
 	if(mi)
 	{
-		GrStringDraw(gContext, mi->Text, -1, 10, level, 0);
 		if(CurrentMenuItem == mi)
 		{
-			GrStringDraw(gContext, ">", -1, 0, level, 0);
+			GrContextForegroundSet(gContext, ClrWhite);
+			GrRectDraw(gContext, &r);
+			GrCircleFill(gContext, 220, level + 22, 5);
 		}
 		else
 		{
-			GrStringDraw(gContext, "  ", -1, 0, level, 0);
+			GrContextForegroundSet(gContext, ClrDarkBlue);
+			GrRectDraw(gContext, &r);
+			GrCircleFill(gContext, 220, level + 22, 5);
 		}
+		GrContextForegroundSet(gContext, ClrWhite);
+		GrStringDraw(gContext, mi->Text, -1, 20, level, 0);
+
 	}
 	if(mi->Next && mi->Next !=  &Menu_1)
 	{
-		DrawMenu(mi->Next, level + 30);
+		DrawMenu(mi->Next, level + 35);
 	}
 
 }
@@ -139,15 +151,16 @@ void MenuInitialize(tContext* context)
 	/* Set up the default menu text write callback, and navigate to an absolute menu item entry. */
 //	Menu_SetGenericWriteCallback(Generic_Write);
 	Menu_Navigate(&Menu_1);
-	DrawMenu(&Menu_1, 0);
+//	DrawMenu(&Menu_1, 0);
 }
 
 
 
 void ProcessMenu()
 {
-	while(true)
-	{
-
-	}
+	DrawMenu(&Menu_1, 0);
+//	while(true)
+//	{
+//
+//	}
 }

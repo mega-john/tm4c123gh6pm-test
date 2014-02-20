@@ -38,8 +38,8 @@
 #define ORIENTATION_RIGHT2LEFT 2
 #define ORIENTATION_UP2DOWN    3
 
-#define DISPLAY_WIDTH					240
-#define DISPLAY_HEIGHT					320
+#define DISPLAY_WIDTH					239
+#define DISPLAY_HEIGHT					319
 
 //*****************************************************************************
 //

@@ -103,7 +103,6 @@ tContext g_sContext;
 
 void UnlockPinF0()
 {
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
 	HWREG(GPIO_PORTF_BASE + GPIO_O_CR) = 0xff;
 	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = 0;
@@ -114,7 +113,9 @@ int main(void)
 	FPULazyStackingEnable();
 	SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 
-    UnlockPinF0();
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+	UnlockPinF0();
 
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED | LED_BLUE| LED_GREEN);
     GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
@@ -129,8 +130,8 @@ int main(void)
 	tRectangle sRect;
 	sRect.i16XMin = 0;
 	sRect.i16YMin = 0;
-	sRect.i16XMax = DISPLAY_WIDTH - 1;
-	sRect.i16YMax = DISPLAY_HEIGHT - 1;
+	sRect.i16XMax = DISPLAY_WIDTH;
+	sRect.i16YMax = DISPLAY_HEIGHT;
 	GrContextForegroundSet(&g_sContext, ClrDarkBlue);
 	GrRectFill(&g_sContext, &sRect);
 
@@ -167,7 +168,7 @@ int main(void)
     	}
     	else if(BUTTON_PRESSED(UP_BUTTON, ui8ButtonState, ui8ButtonChanged))
     	{
-    		Menu_Navigate(MENU_NEXT);
+    		Menu_Navigate(MENU_CHILD);
     	}
 
 	}

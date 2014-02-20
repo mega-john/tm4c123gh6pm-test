@@ -214,8 +214,8 @@ void PixelDrawMultiple(void *pvDisplayData,
 						const uint8_t *pucData,
 						const uint8_t *pucPalette)
 {
-	TFT_setCol(x, DISPLAY_WIDTH - 1);
-	TFT_setPage(y, DISPLAY_HEIGHT - 1);
+	TFT_setCol(x, DISPLAY_WIDTH);
+	TFT_setPage(y, DISPLAY_HEIGHT);
 	TFT_sendCMD(0x2c);
 
 	uint32_t ulPixel = 0;
