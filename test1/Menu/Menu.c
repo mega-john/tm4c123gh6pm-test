@@ -5,6 +5,7 @@
  *      Author: estarcev
  */
 
+#include <stdlib.h>
 #include "Menu.h"
 
 /** This is used when an invalid menu handle is required in
@@ -102,26 +103,56 @@ static void L1I1_Select(void)
 //}
 
 
-//		  			Name, 		Next, 		Previous, 	Parent, 				Child, 				SelectFunc, 				EnterFunc, 				Text
-MENU_ITEM(Menu_1, 		Menu_2, 	Menu_3, 	NULL_MENU, 		Menu_1_1,  		L1I1_Select, 				L1I1_Enter, 				"время");
-MENU_ITEM(Menu_2, 		Menu_3, 	Menu_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 				L1I1_Enter, 				"скорость");
-MENU_ITEM(Menu_3, 		Menu_1, 	Menu_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 				L1I1_Enter, 				"уровень");
+MENU_ITEM(Menu_1, true, false,		Menu_2, 	Menu_3, 	NULL_MENU, 		Menu_1_1,  		L1I1_Select, 		L1I1_Enter, 	"время");
+MENU_ITEM(Menu_2, false,false,		Menu_3, 	Menu_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"скорость");
+MENU_ITEM(Menu_3, false,true,		Menu_1, 	Menu_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"уровень");
 
-MENU_ITEM(Menu_1_1, 	Menu_1_2, 	Menu_1_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"настроить");
-MENU_ITEM(Menu_1_2, 	Menu_1_1, 	Menu_1_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 		"сбросить");
+MENU_ITEM(Menu_1_1,true, false, 	Menu_1_2, 	Menu_1_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"настроить");
+MENU_ITEM(Menu_1_2,false, true, 	Menu_1_1, 	Menu_1_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"сбросить");
 
+Menu_Item_t* GetFirstElement(Menu_Item_t* mi)
+{
+	Menu_Item_t* firstElement = mi;
+	do
+	{
+		if (firstElement->isFirst)
+		{
+			break;
+		}
+		else
+		{
+			firstElement = firstElement->Next;
+		}
+	} while (true);
+
+	return firstElement;
+}
 
 void DrawMenu(Menu_Item_t* mi, uint8_t level)
 {
 	tRectangle r;
-	r.i16XMin=10;
-	r.i16XMax=230;
-	r.i16YMin=level+7;
-	r.i16YMax=level+37;
+	r.i16XMin = 10;
+	r.i16XMax = 230;
+	r.i16YMin = level + 7;
+	r.i16YMax = level + 37;
 
-	if(mi)
+	Menu_Item_t* firstElement = mi;
+	do
 	{
-		if(CurrentMenuItem == mi)
+//		firstElement = Menu_GetCurrentMenu();
+		if (firstElement->isFirst)
+		{
+			break;
+		}
+		else
+		{
+			firstElement = firstElement->Next;
+		}
+	} while (true);
+
+	if (mi)
+	{
+		if (CurrentMenuItem == mi)
 		{
 			GrContextForegroundSet(gContext, ClrWhite);
 			GrRectDraw(gContext, &r);
@@ -137,7 +168,7 @@ void DrawMenu(Menu_Item_t* mi, uint8_t level)
 		GrStringDraw(gContext, mi->Text, -1, 20, level, 0);
 
 	}
-	if(mi->Next && mi->Next !=  &Menu_1)
+	if (mi->Next && mi->Next != &Menu_1)
 	{
 		DrawMenu(mi->Next, level + 35);
 	}

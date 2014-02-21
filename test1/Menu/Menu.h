@@ -13,6 +13,8 @@ extern void MenuInitialize(tContext* context);
  */
 typedef const struct Menu_Item
 {
+	const bool isFirst;//first element flag
+	const bool isLast;//last element flag
 	const struct Menu_Item *Next; /**< Pointer to the next menu item of this menu item */
 	const struct Menu_Item *Previous; /**< Pointer to the previous menu item of this menu item */
 	const struct Menu_Item *Parent; /**< Pointer to the parent menu item of this menu item */
@@ -25,6 +27,8 @@ typedef const struct Menu_Item
 /** Creates a new menu item entry with the specified links and callbacks.
  *
  *  \param[in] Name      Name of the menu entry, must be unique.
+ *  \param[in] IsFirst	 Is first elemnt of menu
+ *  \param[in] IsLast	 Is last elemnt of menu
  *  \param[in] Next      Name of the next linked menu item, or \ref NULL_MENU if no menu link.
  *  \param[in] Previous  Name of the previous linked menu item, or \ref NULL_MENU if no menu link.
  *  \param[in] Parent    Name of the parent linked menu item, or \ref NULL_MENU if no menu link.
@@ -32,12 +36,12 @@ typedef const struct Menu_Item
  *  \param[in] SelectFunc  Function callback to execute when the menu item is selected, or \c NULL for no callback.
  *  \param[in] EnterFunc   Function callback to execute when the menu item is entered, or \c NULL for no callback.
  */
-#define MENU_ITEM(Name, Next, Previous, Parent, Child, SelectFunc, EnterFunc, Text) \
-	extern Menu_Item_t Next;     \
-	extern Menu_Item_t Previous; \
-	extern Menu_Item_t Parent;   \
-	extern Menu_Item_t Child;  \
-	Menu_Item_t Name = {&Next, &Previous, &Parent, &Child, SelectFunc, EnterFunc, Text}
+#define MENU_ITEM(Name, IsFirst, IsLast, Next, Previous, Parent, Child, SelectFunc, EnterFunc, Text) \
+	extern Menu_Item_t Next;     	\
+	extern Menu_Item_t Previous; 	\
+	extern Menu_Item_t Parent;   	\
+	extern Menu_Item_t Child;  		\
+	Menu_Item_t Name = {IsFirst, IsLast, &Next, &Previous, &Parent, &Child, SelectFunc, EnterFunc, Text}
 
 /** Relative navigational menu entry for \ref Menu_Navigate(), to move to the menu parent. */
 #define MENU_PARENT         (Menu_GetCurrentMenu()->Parent)
