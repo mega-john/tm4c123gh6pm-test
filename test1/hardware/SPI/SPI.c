@@ -116,7 +116,7 @@ static const unsigned long g_ulSSIPins[4] =
 	 * 4MHz bit rate, and 8 bit data
 	*/
 	SSIClockSourceSet(SSIBASE, SSI_CLOCK_SYSTEM);
-	SSIConfigSetExpClk(SSIBASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 10000000, 8);
+	SSIConfigSetExpClk(SSIBASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 30000000, 8);
 	SSIEnable(SSIBASE);
 
 	//clear out any initial data that might be present in the RX FIFO

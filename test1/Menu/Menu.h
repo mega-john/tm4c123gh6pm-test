@@ -4,9 +4,11 @@
 #include <string.h>
 
 #include "grlib/grlib.h"
+#include "../hardware/ili9341/ili9341.h"
 
 extern void ProcessMenu();
 extern void MenuInitialize(tContext* context);
+extern void ClearScreen();
 
 /** Type define for a menu item. Menu items should be initialized via the helper
  *  macro \ref MENU_ITEM(), not created from this type directly in user-code.

@@ -169,6 +169,7 @@ int main(void)
     	else if(BUTTON_PRESSED(UP_BUTTON, ui8ButtonState, ui8ButtonChanged))
     	{
     		Menu_Navigate(MENU_CHILD);
+    		ClearScreen();
     	}
 
 	}

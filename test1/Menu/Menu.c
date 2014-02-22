@@ -12,7 +12,10 @@
  *  a \ref MENU_ITEM() definition, i.e. to indicate that a
  *  menu has no linked parent, child, next or previous entry.
  */
-Menu_Item_t NULL_MENU = {0};
+Menu_Item_t NULL_MENU =
+{ 0 };
+
+static volatile bool updateMenu = false;
 
 /** \internal
  *  Pointer to the generic menu text display function
@@ -20,7 +23,7 @@ Menu_Item_t NULL_MENU = {0};
  *  if no menu-specific display function has been set
  *  in the select menu item.
  */
-static void (*MenuWriteFunc)(const char* Text) = NULL;
+//static void (*MenuWriteFunc)(const char* Text) = NULL;
 
 /** \internal
  *  Pointer to the currently selected menu item.
@@ -33,6 +36,24 @@ static Menu_Item_t* CurrentMenuItem = &NULL_MENU;
 volatile uint8_t MenuStackTop;
 
 tContext* gContext;
+
+void ClearScreen()
+{
+//	tRectangle r;
+//	r.i16XMin = 1;
+//	r.i16XMax = DISPLAY_WIDTH;
+//	r.i16YMin = 1;
+//	r.i16YMax = DISPLAY_HEIGHT;
+//	GrContextForegroundSet(gContext, ClrDarkBlue);
+//	GrRectFill(gContext, &r);
+
+	GrContextForegroundSet(gContext, ClrDarkBlue);
+	uint16_t i = 0;
+	for(; i < DISPLAY_HEIGHT; i++)
+	{
+		GrLineDrawH(gContext, 0, DISPLAY_WIDTH, i);
+	}
+}
 
 Menu_Item_t* Menu_GetCurrentMenu(void)
 {
@@ -48,35 +69,36 @@ void Menu_Navigate(Menu_Item_t* const NewMenu)
 
 	CurrentMenuItem = NewMenu;
 
-	if (MenuWriteFunc)
-	{
-		MenuWriteFunc(CurrentMenuItem->Text);
-	}
+//	if (MenuWriteFunc)
+//	{
+//		MenuWriteFunc(CurrentMenuItem->Text);
+//	}
 
-	if(CurrentMenuItem->SelectCallback)
+	if (CurrentMenuItem->SelectCallback)
 	{
 		CurrentMenuItem->SelectCallback();
 	}
+	updateMenu = true;
 }
 
-void Menu_SetGenericWriteCallback(void (*WriteFunc)(const char* Text))
-{
-	MenuWriteFunc = WriteFunc;
-	Menu_Navigate(CurrentMenuItem);
-}
+//void Menu_SetGenericWriteCallback(void (*WriteFunc)(const char* Text))
+//{
+//	MenuWriteFunc = WriteFunc;
+//	Menu_Navigate(CurrentMenuItem);
+//}
 
-void Menu_EnterCurrentItem(void)
-{
-	if ((CurrentMenuItem == &NULL_MENU) || (CurrentMenuItem == NULL))
-	{
-		return;
-	}
-
-	if(CurrentMenuItem->EnterCallback)
-	{
-		CurrentMenuItem->EnterCallback();
-	}
-}
+//void Menu_EnterCurrentItem(void)
+//{
+//	if ((CurrentMenuItem == &NULL_MENU) || (CurrentMenuItem == NULL))
+//	{
+//		return;
+//	}
+//
+//	if (CurrentMenuItem->EnterCallback)
+//	{
+//		CurrentMenuItem->EnterCallback();
+//	}
+//}
 
 /** Example menu item specific enter callback function, run when the associated menu item is entered. */
 static void L1I1_Enter(void)
@@ -90,29 +112,32 @@ static void L1I1_Select(void)
 //	GrStringDraw(gContext, "SELECT", -1, 100, 10, 0);
 }
 
-/** Generic function to write the text of a menu.
- *
- *  \param[in] Text   Text of the selected menu to write, in \ref MENU_ITEM_STORAGE memory space
- */
-//static void Generic_Write(const char* Text)
-//{
-//	if (Text)
-//	{
-//		GrStringDraw(gContext, Text, -1, 100, 10, 0);
-//	}
-//}
+
+//					Name, IsFirst, IsLast, Next, Previous, Parent, Child, SelectFunc, EnterFunc, Text
+MENU_ITEM(Menu_1, true, false, Menu_2, Menu_3, NULL_MENU, Menu_1_1, L1I1_Select, L1I1_Enter, "время");
+	MENU_ITEM(Menu_1_1, true, false, Menu_1_2, Menu_1_2, Menu_1, NULL_MENU, L1I1_Select, L1I1_Enter, "настроить");
+	MENU_ITEM(Menu_1_2, false, true, Menu_1_1, Menu_1_1, Menu_1, NULL_MENU, L1I1_Select, L1I1_Enter, "сбросить");
+
+MENU_ITEM(Menu_2, false, false, Menu_3, Menu_1, NULL_MENU, Menu_2_1, L1I1_Select, L1I1_Enter, "скорость");
+	MENU_ITEM(Menu_2_1, true, false, Menu_2_2, Menu_2_2, Menu_2, NULL_MENU, L1I1_Select, L1I1_Enter, "настроить");
+	MENU_ITEM(Menu_2_2, false, true, Menu_2_1, Menu_2_1, Menu_2, NULL_MENU, L1I1_Select, L1I1_Enter, "сбросить");
+
+MENU_ITEM(Menu_3, false, false, Menu_4, Menu_2, NULL_MENU, Menu_3_1, 	L1I1_Select, L1I1_Enter, "бензобак");
+	MENU_ITEM(Menu_3_1, true, false, Menu_3_2, Menu_3_2, Menu_3, NULL_MENU, L1I1_Select, L1I1_Enter, "настроить");
+	MENU_ITEM(Menu_3_2, false, true, Menu_3_1, Menu_3_1, Menu_3, NULL_MENU, L1I1_Select, L1I1_Enter, "сбросить");
+
+MENU_ITEM(Menu_4, false, true, Menu_1, Menu_3, NULL_MENU, Menu_4_1, 	L1I1_Select, L1I1_Enter, "температура");
+	MENU_ITEM(Menu_4_1, true, 	false, 	Menu_4_2, Menu_4_3, Menu_4, NULL_MENU, L1I1_Select, L1I1_Enter, "настроить");
+	MENU_ITEM(Menu_4_2, false, false,		Menu_4_3, Menu_4_1, Menu_4, NULL_MENU, L1I1_Select, L1I1_Enter, "сбросить");
+	MENU_ITEM(Menu_4_3, false, true, 		Menu_4_1, Menu_4_2, Menu_4, Menu_4_3_1, L1I1_Select, L1I1_Enter, "показать д.");
+		MENU_ITEM(Menu_4_3_1, true, false, Menu_4_3_2, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "салон");
+		MENU_ITEM(Menu_4_3_2, false, true, Menu_4_3_2, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "улица");
 
 
-MENU_ITEM(Menu_1, true, false,		Menu_2, 	Menu_3, 	NULL_MENU, 		Menu_1_1,  		L1I1_Select, 		L1I1_Enter, 	"время");
-MENU_ITEM(Menu_2, false,false,		Menu_3, 	Menu_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"скорость");
-MENU_ITEM(Menu_3, false,true,		Menu_1, 	Menu_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"уровень");
 
-MENU_ITEM(Menu_1_1,true, false, 	Menu_1_2, 	Menu_1_2, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"настроить");
-MENU_ITEM(Menu_1_2,false, true, 	Menu_1_1, 	Menu_1_1, 	NULL_MENU, 		NULL_MENU, 		L1I1_Select, 		L1I1_Enter, 	"сбросить");
-
-Menu_Item_t* GetFirstElement(Menu_Item_t* mi)
+Menu_Item_t* GetFirstMenuElement()
 {
-	Menu_Item_t* firstElement = mi;
+	Menu_Item_t* firstElement = Menu_GetCurrentMenu();
 	do
 	{
 		if (firstElement->isFirst)
@@ -128,51 +153,59 @@ Menu_Item_t* GetFirstElement(Menu_Item_t* mi)
 	return firstElement;
 }
 
-void DrawMenu(Menu_Item_t* mi, uint8_t level)
+void DrawSelection(uint16_t offset, bool isSelect)
 {
 	tRectangle r;
-	r.i16XMin = 10;
-	r.i16XMax = 230;
-	r.i16YMin = level + 7;
-	r.i16YMax = level + 37;
+	r.i16XMin = 5;
+	r.i16XMax = 235;
+	r.i16YMin = offset + 3;
+	r.i16YMax = r.i16YMin + GrStringHeightGet(gContext);
 
-	Menu_Item_t* firstElement = mi;
+	GrContextForegroundSet(gContext, isSelect ? ClrYellow: ClrDarkBlue);
+	GrRectDraw(gContext, &r);
+	GrCircleFill(gContext, 220, offset + 22, 5);
+}
+
+void DrawMenu()
+{
+	uint16_t offsetStep = (GrStringHeightGet(gContext) + 5);
+	uint16_t offset = offsetStep;
+	Menu_Item_t* firstElement = GetFirstMenuElement();
+
+	GrContextForegroundSet(gContext, ClrWhite);
+
+	if (firstElement->Parent == &NULL_MENU)
+	{
+		GrStringDrawCentered(gContext, "Наcтройки", -1, 120, 20, 0);
+		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, offset);
+		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, ++offset);
+	}
+	else
+	{
+		GrStringDrawCentered(gContext, firstElement->Parent->Text, -1, 120, 20, 0);
+		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, offset);
+		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, ++offset);
+	}
+
 	do
 	{
-//		firstElement = Menu_GetCurrentMenu();
-		if (firstElement->isFirst)
+		if (firstElement == Menu_GetCurrentMenu())
+		{
+			DrawSelection(offset, true);
+		}
+		else
+		{
+			DrawSelection(offset, false);
+		}
+		GrContextForegroundSet(gContext, ClrWhite);
+		GrStringDraw(gContext, firstElement->Text, -1, 10, offset, 0);
+		if (firstElement->isLast)
 		{
 			break;
 		}
-		else
-		{
-			firstElement = firstElement->Next;
-		}
+		firstElement = firstElement->Next;
+		offset += offsetStep;
 	} while (true);
-
-	if (mi)
-	{
-		if (CurrentMenuItem == mi)
-		{
-			GrContextForegroundSet(gContext, ClrWhite);
-			GrRectDraw(gContext, &r);
-			GrCircleFill(gContext, 220, level + 22, 5);
-		}
-		else
-		{
-			GrContextForegroundSet(gContext, ClrDarkBlue);
-			GrRectDraw(gContext, &r);
-			GrCircleFill(gContext, 220, level + 22, 5);
-		}
-		GrContextForegroundSet(gContext, ClrWhite);
-		GrStringDraw(gContext, mi->Text, -1, 20, level, 0);
-
-	}
-	if (mi->Next && mi->Next != &Menu_1)
-	{
-		DrawMenu(mi->Next, level + 35);
-	}
-
 }
 
 void MenuInitialize(tContext* context)
@@ -185,11 +218,13 @@ void MenuInitialize(tContext* context)
 //	DrawMenu(&Menu_1, 0);
 }
 
-
-
 void ProcessMenu()
 {
-	DrawMenu(&Menu_1, 0);
+	if(updateMenu)
+	{
+		DrawMenu();
+		updateMenu = false;
+	}
 //	while(true)
 //	{
 //
