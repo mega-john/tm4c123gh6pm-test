@@ -8,45 +8,16 @@
 #include <stdlib.h>
 #include "Menu.h"
 
-/** This is used when an invalid menu handle is required in
- *  a \ref MENU_ITEM() definition, i.e. to indicate that a
- *  menu has no linked parent, child, next or previous entry.
- */
-Menu_Item_t NULL_MENU =
-{ 0 };
+Menu_Item_t NULL_MENU = { 0 };
 
 static volatile bool updateMenu = false;
-
-/** \internal
- *  Pointer to the generic menu text display function
- *  callback, to display the configured text of a menu item
- *  if no menu-specific display function has been set
- *  in the select menu item.
- */
-//static void (*MenuWriteFunc)(const char* Text) = NULL;
-
-/** \internal
- *  Pointer to the currently selected menu item.
- */
-static Menu_Item_t* CurrentMenuItem = &NULL_MENU;
-//static Menu_Item_t* tempMenu = NULL;
-
-//static Menu_Item_t* MenuStack[10];
-
-volatile uint8_t MenuStackTop;
+static volatile Menu_Item_t* CurrentMenuItem = &NULL_MENU;
+static volatile uint8_t MenuStackTop;
 
 tContext* gContext;
 
 void ClearScreen()
 {
-//	tRectangle r;
-//	r.i16XMin = 1;
-//	r.i16XMax = DISPLAY_WIDTH;
-//	r.i16YMin = 1;
-//	r.i16YMax = DISPLAY_HEIGHT;
-//	GrContextForegroundSet(gContext, ClrDarkBlue);
-//	GrRectFill(gContext, &r);
-
 	GrContextForegroundSet(gContext, ClrDarkBlue);
 	uint16_t i = 0;
 	for(; i < DISPLAY_HEIGHT; i++)
@@ -69,11 +40,6 @@ void Menu_Navigate(Menu_Item_t* const NewMenu)
 
 	CurrentMenuItem = NewMenu;
 
-//	if (MenuWriteFunc)
-//	{
-//		MenuWriteFunc(CurrentMenuItem->Text);
-//	}
-
 	if (CurrentMenuItem->SelectCallback)
 	{
 		CurrentMenuItem->SelectCallback();
@@ -81,37 +47,15 @@ void Menu_Navigate(Menu_Item_t* const NewMenu)
 	updateMenu = true;
 }
 
-//void Menu_SetGenericWriteCallback(void (*WriteFunc)(const char* Text))
-//{
-//	MenuWriteFunc = WriteFunc;
-//	Menu_Navigate(CurrentMenuItem);
-//}
-
-//void Menu_EnterCurrentItem(void)
-//{
-//	if ((CurrentMenuItem == &NULL_MENU) || (CurrentMenuItem == NULL))
-//	{
-//		return;
-//	}
-//
-//	if (CurrentMenuItem->EnterCallback)
-//	{
-//		CurrentMenuItem->EnterCallback();
-//	}
-//}
-
-/** Example menu item specific enter callback function, run when the associated menu item is entered. */
-static void L1I1_Enter(void)
+void L1I1_Enter(void)
 {
 //	GrStringDraw(gContext, "ENTER", -1, 10, 10, 0);
 }
 
-/** Example menu item specific select callback function, run when the associated menu item is selected. */
-static void L1I1_Select(void)
+void L1I1_Select(void)
 {
 //	GrStringDraw(gContext, "SELECT", -1, 100, 10, 0);
 }
-
 
 //					Name, IsFirst, IsLast, Next, Previous, Parent, Child, SelectFunc, EnterFunc, Text
 MENU_ITEM(Menu_1, true, false, Menu_2, Menu_3, NULL_MENU, Menu_1_1, L1I1_Select, L1I1_Enter, "время");
@@ -132,8 +76,6 @@ MENU_ITEM(Menu_4, false, true, Menu_1, Menu_3, NULL_MENU, Menu_4_1, 	L1I1_Select
 	MENU_ITEM(Menu_4_3, false, true, 		Menu_4_1, Menu_4_2, Menu_4, Menu_4_3_1, L1I1_Select, L1I1_Enter, "показать д.");
 		MENU_ITEM(Menu_4_3_1, true, false, Menu_4_3_2, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "салон");
 		MENU_ITEM(Menu_4_3_2, false, true, Menu_4_3_2, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "улица");
-
-
 
 Menu_Item_t* GetFirstMenuElement()
 {
@@ -211,22 +153,14 @@ void DrawMenu()
 void MenuInitialize(tContext* context)
 {
 	gContext = context;
-
-	/* Set up the default menu text write callback, and navigate to an absolute menu item entry. */
-//	Menu_SetGenericWriteCallback(Generic_Write);
 	Menu_Navigate(&Menu_1);
-//	DrawMenu(&Menu_1, 0);
 }
 
 void ProcessMenu()
 {
-	if(updateMenu)
+	if (updateMenu)
 	{
 		DrawMenu();
 		updateMenu = false;
 	}
-//	while(true)
-//	{
-//
-//	}
 }
