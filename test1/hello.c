@@ -139,7 +139,8 @@ int main(void)
 	GrRectDraw(&g_sContext, &sRect);
 //	const char* text[] = {{"ÀÁÂÃÄÅ¨ÆÇÈ"},{"ÉÊËÌÍÎÏÐÑÒ"},{"ÓÔÕÖ×ØÙÚÛÜ"},{"ÝÞ‗אבגדהו¸"},{"זחטיךכלםמן"},{"נסעףפץצקרש"},{"תûü‎‏ÿ"}};
 
-	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial36);
+//	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial36);
+	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
 
 	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
 

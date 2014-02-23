@@ -11,8 +11,8 @@
 Menu_Item_t NULL_MENU = { 0 };
 
 static volatile bool updateMenu = false;
-static volatile Menu_Item_t* CurrentMenuItem = &NULL_MENU;
-static volatile uint8_t MenuStackTop;
+Menu_Item_t* CurrentMenuItem = &NULL_MENU;
+//static volatile uint8_t MenuStackTop;
 
 tContext* gContext;
 
@@ -74,8 +74,8 @@ MENU_ITEM(Menu_4, false, true, Menu_1, Menu_3, NULL_MENU, Menu_4_1, 	L1I1_Select
 	MENU_ITEM(Menu_4_1, true, 	false, 	Menu_4_2, Menu_4_3, Menu_4, NULL_MENU, L1I1_Select, L1I1_Enter, "настроить");
 	MENU_ITEM(Menu_4_2, false, false,		Menu_4_3, Menu_4_1, Menu_4, NULL_MENU, L1I1_Select, L1I1_Enter, "сбросить");
 	MENU_ITEM(Menu_4_3, false, true, 		Menu_4_1, Menu_4_2, Menu_4, Menu_4_3_1, L1I1_Select, L1I1_Enter, "показать д.");
-		MENU_ITEM(Menu_4_3_1, true, false, Menu_4_3_2, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "салон");
-		MENU_ITEM(Menu_4_3_2, false, true, Menu_4_3_2, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "улица");
+		MENU_ITEM(Menu_4_3_1, true, false, Menu_4_3_2, Menu_4_3_1, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "салон");
+		MENU_ITEM(Menu_4_3_2, false, true, Menu_4_3_1, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "улица");
 
 Menu_Item_t* GetFirstMenuElement()
 {
@@ -105,7 +105,7 @@ void DrawSelection(uint16_t offset, bool isSelect)
 
 	GrContextForegroundSet(gContext, isSelect ? ClrYellow: ClrDarkBlue);
 	GrRectDraw(gContext, &r);
-	GrCircleFill(gContext, 220, offset + 22, 5);
+	GrCircleFill(gContext, 220, offset + GrStringHeightGet(gContext) / 2 + 3, 5);
 }
 
 void DrawMenu()
@@ -118,13 +118,13 @@ void DrawMenu()
 
 	if (firstElement->Parent == &NULL_MENU)
 	{
-		GrStringDrawCentered(gContext, "Наcтройки", -1, 120, 20, 0);
+		GrStringDrawCentered(gContext, "Наcтройки", -1, DISPLAY_WIDTH / 2, GrStringHeightGet(gContext) / 2, 1);
 		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, offset);
 		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, ++offset);
 	}
 	else
 	{
-		GrStringDrawCentered(gContext, firstElement->Parent->Text, -1, 120, 20, 0);
+		GrStringDrawCentered(gContext, firstElement->Parent->Text, -1, DISPLAY_WIDTH / 2, GrStringHeightGet(gContext) / 2, 1);
 		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, offset);
 		GrLineDrawH(gContext, 1, DISPLAY_WIDTH, ++offset);
 	}
