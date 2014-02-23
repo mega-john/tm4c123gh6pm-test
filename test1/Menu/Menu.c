@@ -66,7 +66,7 @@ MENU_ITEM(Menu_2, false, false, Menu_3, Menu_1, NULL_MENU, Menu_2_1, L1I1_Select
 	MENU_ITEM(Menu_2_1, true, false, Menu_2_2, Menu_2_2, Menu_2, NULL_MENU, L1I1_Select, L1I1_Enter, "настроить");
 	MENU_ITEM(Menu_2_2, false, true, Menu_2_1, Menu_2_1, Menu_2, NULL_MENU, L1I1_Select, L1I1_Enter, "сбросить");
 
-MENU_ITEM(Menu_3, false, false, Menu_4, Menu_2, NULL_MENU, Menu_3_1, 	L1I1_Select, L1I1_Enter, "бензобак");
+MENU_ITEM(Menu_3, false, false, Menu_4, Menu_2, NULL_MENU, Menu_3_1, 	L1I1_Select, L1I1_Enter, "Бензобак");
 	MENU_ITEM(Menu_3_1, true, false, Menu_3_2, Menu_3_2, Menu_3, NULL_MENU, L1I1_Select, L1I1_Enter, "настроить");
 	MENU_ITEM(Menu_3_2, false, true, Menu_3_1, Menu_3_1, Menu_3, NULL_MENU, L1I1_Select, L1I1_Enter, "сбросить");
 
@@ -100,8 +100,8 @@ void DrawSelection(uint16_t offset, bool isSelect)
 	tRectangle r;
 	r.i16XMin = 5;
 	r.i16XMax = 235;
-	r.i16YMin = offset + 3;
-	r.i16YMax = r.i16YMin + GrStringHeightGet(gContext);
+	r.i16YMin = offset;
+	r.i16YMax = r.i16YMin + GrStringHeightGet(gContext) + 1;
 
 	GrContextForegroundSet(gContext, isSelect ? ClrYellow: ClrDarkBlue);
 	GrRectDraw(gContext, &r);
@@ -111,7 +111,7 @@ void DrawSelection(uint16_t offset, bool isSelect)
 void DrawMenu()
 {
 	uint16_t offsetStep = (GrStringHeightGet(gContext) + 5);
-	uint16_t offset = offsetStep;
+	uint16_t offset = offsetStep + 5;
 	Menu_Item_t* firstElement = GetFirstMenuElement();
 
 	GrContextForegroundSet(gContext, ClrWhite);

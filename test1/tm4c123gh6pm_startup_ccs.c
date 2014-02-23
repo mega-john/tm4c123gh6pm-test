@@ -55,6 +55,18 @@ extern uint32_t __STACK_TOP;
 //
 //*****************************************************************************
 // To be added by user
+extern void Timer0IntHandlerA();
+extern void Timer0IntHandlerB();
+extern void Timer1IntHandlerA();
+extern void Timer1IntHandlerB();
+extern void Timer2IntHandlerA();
+extern void Timer2IntHandlerB();
+extern void Timer3IntHandlerA();
+extern void Timer3IntHandlerB();
+extern void Timer4IntHandlerA();
+extern void Timer4IntHandlerB();
+extern void Timer5IntHandlerA();
+extern void Timer5IntHandlerB();
 
 //*****************************************************************************
 //
@@ -102,12 +114,12 @@ void (* const g_pfnVectors[])(void) =
 		IntDefaultHandler,// ADC Sequence 2
 		IntDefaultHandler,// ADC Sequence 3
 		IntDefaultHandler,// Watchdog timer
-		IntDefaultHandler,// Timer 0 subtimer A
-		IntDefaultHandler,// Timer 0 subtimer B
-		IntDefaultHandler,// Timer 1 subtimer A
-		IntDefaultHandler,// Timer 1 subtimer B
-		IntDefaultHandler,// Timer 2 subtimer A
-		IntDefaultHandler,// Timer 2 subtimer B
+		Timer0IntHandlerA,// Timer 0 subtimer A
+		Timer0IntHandlerB,// Timer 0 subtimer B
+		Timer1IntHandlerA,// Timer 1 subtimer A
+		Timer1IntHandlerB,// Timer 1 subtimer B
+		Timer2IntHandlerA,// Timer 2 subtimer A
+		Timer2IntHandlerB,// Timer 2 subtimer B
 		IntDefaultHandler,// Analog Comparator 0
 		IntDefaultHandler,// Analog Comparator 1
 		IntDefaultHandler,// Analog Comparator 2
@@ -118,8 +130,8 @@ void (* const g_pfnVectors[])(void) =
 		IntDefaultHandler,// GPIO Port H
 		IntDefaultHandler,// UART2 Rx and Tx
 		IntDefaultHandler,// SSI1 Rx and Tx
-		IntDefaultHandler,// Timer 3 subtimer A
-		IntDefaultHandler,// Timer 3 subtimer B
+		Timer3IntHandlerA,// Timer 3 subtimer A
+		Timer3IntHandlerB,// Timer 3 subtimer B
 		IntDefaultHandler,// I2C1 Master and Slave
 		IntDefaultHandler,// Quadrature Encoder 1
 		IntDefaultHandler,// CAN0
@@ -153,8 +165,8 @@ void (* const g_pfnVectors[])(void) =
 		0,// Reserved
 		IntDefaultHandler,// I2C2 Master and Slave
 		IntDefaultHandler,// I2C3 Master and Slave
-		IntDefaultHandler,// Timer 4 subtimer A
-		IntDefaultHandler,// Timer 4 subtimer B
+		Timer4IntHandlerA,// Timer 4 subtimer A
+		Timer4IntHandlerB,// Timer 4 subtimer B
 		0,// Reserved
 		0,// Reserved
 		0,// Reserved
@@ -175,8 +187,8 @@ void (* const g_pfnVectors[])(void) =
 		0,// Reserved
 		0,// Reserved
 		0,// Reserved
-		IntDefaultHandler,// Timer 5 subtimer A
-		IntDefaultHandler,// Timer 5 subtimer B
+		Timer5IntHandlerA,// Timer 5 subtimer A
+		Timer5IntHandlerB,// Timer 5 subtimer B
 		IntDefaultHandler,// Wide Timer 0 subtimer A
 		IntDefaultHandler,// Wide Timer 0 subtimer B
 		IntDefaultHandler,// Wide Timer 1 subtimer A

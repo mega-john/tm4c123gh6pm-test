@@ -33,6 +33,12 @@
 #include "driverlib/fpu.h"
 #include "grlib/grlib.h"
 
+#include "hardware/buttons.h"
+#include "hardware/ili9341/fonts/fonts.h"
+#include "hardware/ili9341/ili9341.h"
+#include "menu/menu.h"
+#include "hardware/interrupts/timer.h"
+
 static tContext g_sContext;
 
 static RectFillFg(const tRectangle *psRect, uint32_t foreGround)
