@@ -41,6 +41,8 @@
 
 static tContext g_sContext;
 
+static volatile uint32_t
+
 static RectFillFg(const tRectangle *psRect, uint32_t foreGround)
 {
 	GrContextForegroundSet(&g_sContext, foreGround);

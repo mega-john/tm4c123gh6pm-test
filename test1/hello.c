@@ -63,7 +63,7 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
 		0
 };
 
-tContext g_sContext;
+//tContext g_sContext;
 
 #define SW1 			GPIO_PIN_4
 #define SW2 			GPIO_PIN_0
@@ -139,11 +139,11 @@ int main(void)
 
         if(BUTTON_PRESSED(DOWN_BUTTON, ui8ButtonState, ui8ButtonChanged))
     	{
-    		Menu_Navigate(MENU_NEXT);
+    		MenuNavigate(MENU_NEXT);
     	}
     	else if(BUTTON_PRESSED(UP_BUTTON, ui8ButtonState, ui8ButtonChanged))
     	{
-    		Menu_Navigate(MENU_CHILD);
+    		MenuNavigate(MENU_CHILD);
     		ClearScreen();
     	}
 
