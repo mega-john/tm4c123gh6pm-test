@@ -6,18 +6,29 @@
  */
 #include "timer.h"
 
+
+#define SW1 			GPIO_PIN_4
+#define SW2 			GPIO_PIN_0
+#define LED_RED 		GPIO_PIN_1
+#define LED_BLUE 	GPIO_PIN_2
+#define LED_GREEN 	GPIO_PIN_3
+#define ALL_LEDS		(LED_RED | LED_BLUE | LED_GREEN)
+
+//extern uint8_t red_state;//, green_state, blue_state;
+uint32_t intCount = 0;
+
 void SetUpTimers()
 {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
-	TimerConfigure(TIMER0_BASE, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_B_PERIODIC);
-	TimerPrescaleSet(TIMER0_BASE, TIMER_A, 8000);
 
-    TimerLoadSet(TIMER0_BASE, TIMER_A, SysCtlClockGet() / 1000);
+	IntMasterEnable();
 
-    //
-    // Enable processor interrupts.
-    //
-    IntMasterEnable();
+	TimerConfigure(TIMER0_BASE, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC);
+//	TimerPrescaleSet(TIMER0_BASE, TIMER_A, 2);
+
+	uint64_t tValue = SysCtlClockGet()/2000;
+    TimerLoadSet (TIMER0_BASE, TIMER_A, tValue);
+//    TimerLoadSet64 (TIMER0_BASE, tValue);
 
     //
     // Configure the Timer0B interrupt for timer timeout.
@@ -36,9 +47,24 @@ void SetUpTimers()
 
 }
 
+
 void Timer0IntHandlerA()
 {
 	TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+//	if (++intCount >= 1000)
+	{
+		if (red_state == 0)
+		{
+			red_state = GPIO_PIN_1;
+		}
+		else
+		{
+			red_state = 0;
+		}
+		intCount = 0;
+	}
+//	GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, red_state | blue_state | green_state);
+//    GrStringDraw(&g_sContext, red_state ? "a  " : "  b", -1, 10, 290, 0);
 }
 void Timer0IntHandlerB()
 {

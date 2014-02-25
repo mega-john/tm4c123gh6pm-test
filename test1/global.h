@@ -23,6 +23,7 @@
 #include "inc/hw_gpio.h"
 #include "inc/hw_i2c.h"
 #include "inc/hw_ssi.h"
+#include "inc/hw_ints.h"
 
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
@@ -45,7 +46,7 @@
 #include "menu/menu.h"
 #include "hardware/interrupts/timer.h"
 
-static tContext g_sContext;
+extern tContext g_sContext;
 
 static tSoftI2C g_sI2C;
 
@@ -58,6 +59,9 @@ static volatile float TotalDistance;
 static volatile float PeakConsumption;
 static volatile float TotalConsumption;
 static volatile float OverallConsumption;
+
+#define BACKGROUND	ClrBlack
+#define FOREGROUND	ClrWhite
 
 typedef const struct time
 {

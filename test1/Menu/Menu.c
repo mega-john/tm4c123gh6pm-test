@@ -13,7 +13,7 @@ static volatile bool updateMenu = false;
 
 void ClearScreen()
 {
-	GrContextForegroundSet(&g_sContext, ClrDarkBlue);
+	GrContextForegroundSet(&g_sContext, BACKGROUND);
 	uint16_t i = 0;
 	for(; i < DISPLAY_HEIGHT; i++)
 	{
@@ -120,7 +120,7 @@ void DrawSelection(uint16_t offset, bool isSelect)
 	r.i16YMin = offset;
 	r.i16YMax = r.i16YMin + GrStringHeightGet(&g_sContext) + 1;
 
-	GrContextForegroundSet(&g_sContext, isSelect ? ClrYellow: ClrDarkBlue);
+	GrContextForegroundSet(&g_sContext, isSelect ? FOREGROUND: BACKGROUND);
 	GrRectDraw(&g_sContext, &r);
 	GrCircleFill(&g_sContext, 220, offset + GrStringHeightGet(&g_sContext) / 2 + 3, 5);
 }

@@ -9,6 +9,8 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
+extern uint8_t red_state;
+
 extern void SetUpTimers();
 
 extern void Timer0IntHandlerA();

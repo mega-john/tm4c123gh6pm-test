@@ -63,7 +63,8 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
 		0
 };
 
-//tContext g_sContext;
+tContext g_sContext;
+uint8_t red_state, green_state, blue_state;
 
 #define SW1 			GPIO_PIN_4
 #define SW2 			GPIO_PIN_0
@@ -89,7 +90,7 @@ int main(void)
 
 	UnlockPinF0();
 
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED | LED_BLUE| LED_GREEN);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, ALL_LEDS);
     GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
     GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_0| GPIO_PIN_4, GPIO_STRENGTH_2MA,  GPIO_PIN_TYPE_STD_WPU);
 
@@ -104,30 +105,27 @@ int main(void)
 	sRect.i16YMin = 0;
 	sRect.i16XMax = DISPLAY_WIDTH;
 	sRect.i16YMax = DISPLAY_HEIGHT;
-	GrContextForegroundSet(&g_sContext, ClrDarkBlue);
+	GrContextForegroundSet(&g_sContext, BACKGROUND);
 	GrRectFill(&g_sContext, &sRect);
 
-	GrContextForegroundSet(&g_sContext, ClrWhite);
+	GrContextForegroundSet(&g_sContext, FOREGROUND);
 	GrRectDraw(&g_sContext, &sRect);
-//	const char* text[] = {{"ÀÁÂÃÄÅ¨ÆÇÈ"},{"ÉÊËÌÍÎÏÐÑÒ"},{"ÓÔÕÖ×ØÙÚÛÜ"},{"ÝÞ‗אבגדהו¸"},{"זחטיךכלםמן"},{"נסעףפץצקרש"},{"תûü‎‏ÿ"}};
 
 //	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial36);
 //	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
 //	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExComic36);
-	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExComic24);
+	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
 
 	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
-
-//	uint8_t y = 0;
-//	for (y = 0; y < 7; ++y)
-//	{
-//		GrStringDraw(&g_sContext, text[y], -1, 10, y * GrStringHeightGet(&g_sContext) + 5, 0);
-//	}
 
 //	GrTransparentImageDraw(&g_sContext, g_pui8Logo, 128, 68, ClrBlack);
 
 	MenuInitialize(&g_sContext);
 	ButtonsInit();
+	SetUpTimers();
+
+//    GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, ALL_LEDS);
+
 	while (1)
 	{
 		ProcessMenu();
@@ -146,6 +144,6 @@ int main(void)
     		MenuNavigate(MENU_CHILD);
     		ClearScreen();
     	}
-
+        GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, red_state | blue_state | green_state);
 	}
 }
