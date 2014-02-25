@@ -4,9 +4,12 @@
  *  Created on: 23.02.2014
  *      Author: john
  */
+#include "../../global.h"
 
 #ifndef TIMER_H_
 #define TIMER_H_
+
+extern void SetUpTimers();
 
 extern void Timer0IntHandlerA();
 extern void Timer0IntHandlerB();
