@@ -10,9 +10,14 @@
 #define SW1 			GPIO_PIN_4
 #define SW2 			GPIO_PIN_0
 #define LED_RED 		GPIO_PIN_1
-#define LED_BLUE 	GPIO_PIN_2
-#define LED_GREEN 	GPIO_PIN_3
+#define LED_BLUE 		GPIO_PIN_2
+#define LED_GREEN 		GPIO_PIN_3
 #define ALL_LEDS		(LED_RED | LED_BLUE | LED_GREEN)
+#define LED_RED_ON		LED_RED
+#define LED_RED_OFF		0
+
+#define TIMER_100ms			62500
+#define TIMER_PRESCALLER	127
 
 //extern uint8_t red_state;//, green_state, blue_state;
 uint32_t intCount = 0;
@@ -21,13 +26,17 @@ void SetUpTimers()
 {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
 
+	TimerDisable(TIMER0_BASE, TIMER_BOTH);
+
 	IntMasterEnable();
 
-	TimerConfigure(TIMER0_BASE, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC);
-//	TimerPrescaleSet(TIMER0_BASE, TIMER_A, 2);
+	TimerConfigure(TIMER0_BASE, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC);
+	//80mHz/128 = 625000Hz, тоесть 62500 тиков ~ 100ms
+	TimerPrescaleSet(TIMER0_BASE, TIMER_A, 127);
+	TimerPrescaleSet(TIMER0_BASE, TIMER_B, 127);
 
 	uint64_t tValue = SysCtlClockGet()/2000;
-    TimerLoadSet (TIMER0_BASE, TIMER_A, tValue);
+    TimerLoadSet (TIMER0_BASE, TIMER_A, TIMER_100ms);
 //    TimerLoadSet64 (TIMER0_BASE, tValue);
 
     //
@@ -43,10 +52,9 @@ void SetUpTimers()
     //
     // Enable Timer0B.
     //
-    TimerEnable(TIMER0_BASE, TIMER_A);
+    TimerEnable(TIMER0_BASE, TIMER_BOTH);
 
 }
-
 
 void Timer0IntHandlerA()
 {
@@ -55,11 +63,11 @@ void Timer0IntHandlerA()
 	{
 		if (red_state == 0)
 		{
-			red_state = GPIO_PIN_1;
+			red_state = LED_RED_ON;
 		}
 		else
 		{
-			red_state = 0;
+			red_state = LED_RED_OFF;
 		}
 		intCount = 0;
 	}

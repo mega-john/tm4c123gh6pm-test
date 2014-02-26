@@ -73,12 +73,19 @@ uint8_t red_state, green_state, blue_state;
 #define LED_GREEN 	GPIO_PIN_3
 #define ALL_LEDS		(LED_RED | LED_BLUE | LED_GREEN)
 
+void UnlockPin(uint32_t gpioPortBase, uint8_t pin)
+{
+	HWREG(gpioPortBase + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+	HWREG(gpioPortBase + GPIO_O_CR) = pin;//0xff;
+	HWREG(gpioPortBase + GPIO_O_LOCK) = 0;
+}
 
 void UnlockPinF0()
 {
-	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
-	HWREG(GPIO_PORTF_BASE + GPIO_O_CR) = 0xff;
-	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = 0;
+	UnlockPin(GPIO_PORTF_BASE, GPIO_PIN_0);
+//	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+//	HWREG(GPIO_PORTF_BASE + GPIO_O_CR) = GPIO_PIN_0;//0xff;
+//	HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = 0;
 }
 
 int main(void)
@@ -89,6 +96,7 @@ int main(void)
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
 	UnlockPinF0();
+	HWREGBITW()
 
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, ALL_LEDS);
     GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
