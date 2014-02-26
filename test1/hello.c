@@ -48,7 +48,7 @@
 //    0x70, 0x40, 0x17, 0x47, 0x77
 //};
 
-const uint8_t g_pui8Image[] =
+const uint8_t g_pui8ImageFuel[] =
 {
     IMAGE_FMT_8BPP_UNCOMP,
     64, 0,
@@ -874,7 +874,8 @@ int main(void)
 
 	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
 
-	GrTransparentImageDraw(&g_sContext, g_pui8Image, 10, 10, ClrBlack);
+	GrTransparentImageDraw(&g_sContext, g_pui8ImageFuel, 10, 200, ClrWhite);
+	GrTransparentImageDraw(&g_sContext, g_pui8Image, 100, 200, ClrWhite);
 
 	MenuInitialize(&g_sContext);
 	ButtonsInit();

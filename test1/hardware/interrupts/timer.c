@@ -59,7 +59,7 @@ void SetUpTimers()
 void Timer0IntHandlerA()
 {
 	TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
-//	if (++intCount >= 1000)
+	if (++intCount >= 10)
 	{
 		if (red_state == 0)
 		{
