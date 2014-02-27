@@ -43,6 +43,7 @@
 #include "hardware/buttons.h"
 #include "hardware/ili9341/fonts/fonts.h"
 #include "hardware/ili9341/ili9341.h"
+#include "hardware/ili9341/pictures/pictures.h"
 #include "menu/menu.h"
 #include "hardware/interrupts/timer.h"
 
