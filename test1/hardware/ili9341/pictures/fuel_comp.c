@@ -1,4 +1,8 @@
-const uint8_t g_pui8Image[] =
+#include <stdint.h>
+#include <stdbool.h>
+#include "grlib/grlib.h"
+
+const uint8_t g_pui8ImageFuelComp[] =
 {
     IMAGE_FMT_1BPP_COMP,
     64, 0,

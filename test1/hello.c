@@ -78,9 +78,11 @@ int main(void)
 	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
 
 	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
-
-	GrTransparentImageDraw(&g_sContext, g_pui8ImageFuel, 10, 200, ClrWhite);
-
+	GrContextForegroundSet(&g_sContext, BACKGROUND);
+GrContextBackgroundSet(&g_sContext, ClrYellow);
+	GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200, ClrYellow);
+	GrContextForegroundSet(&g_sContext, FOREGROUND);
+	GrContextBackgroundSet(&g_sContext, BACKGROUND);
 	MenuInitialize(&g_sContext);
 	ButtonsInit();
 	SetUpTimers();
