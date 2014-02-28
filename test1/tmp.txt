@@ -231,3 +231,39 @@ int main(void)
 
     }
 }
+
+private Point PointFromPoint(Point p1, Point p2, double angle)
+{
+    var result = new Point();
+    var alpha = ((angle) * Math.PI) / 180.0;
+    var cos = Math.Cos(alpha);
+    var sin = Math.Sin(alpha);
+    var rx = p1.X - p2.X;
+    var ry = p1.Y - p2.Y; 
+    result.X = p1.X + rx * cos - ry * sin;
+    result.Y = p1.Y + rx * sin + ry * cos;
+    return result;
+}
+
+private void DrawLineByAngle(Point pointStart, Point pointEnd, double angle, DrawingContext dc, double width = 5)
+{
+    var redPen = new Pen(Brushes.Red, 1);
+    var greenPen = new Pen(Brushes.Green, 1);
+    var rx = pointStart.X - pointEnd.X;
+    var ry = pointStart.Y - pointEnd.Y;
+    var alpha = (angle * Math.PI) / 180.0;
+    var cos = Math.Cos(alpha);
+    var sin = Math.Sin(alpha);
+    var x1 = pointEnd.X + rx * cos - ry * sin;
+    var y1 = pointEnd.Y + rx * sin + ry * cos;
+
+    var ps = PointFromPoint(new Point(x1, y1), new Point(x1, y1 - width), angle);
+    var pe = PointFromPoint(pointEnd, new Point(pointEnd.X, pointEnd.Y - width), angle);
+
+
+    dc.DrawLine(redPen, pointEnd, new Point(x1, y1));
+    dc.DrawLine(greenPen, pe, ps);
+    dc.DrawLine(greenPen, ps, new Point(x1, y1));
+    dc.DrawLine(greenPen, pe, pointEnd);
+    dc.DrawEllipse(Brushes.Green, greenPen, pointEnd, 2, 2);
+}

@@ -73,18 +73,6 @@ MAKE_MENU(Menu_4, false, true, Menu_1, Menu_3, NULL_MENU, Menu_4_1, 	L1I1_Select
 		MAKE_MENU(Menu_4_3_2, false, true, Menu_4_3_1, Menu_4_3_2, Menu_4_3, NULL_MENU, L1I1_Select, L1I1_Enter, "улица");
 
 
-void MainMenu_1_select();
-void MainMenu_1_enter();
-void MainMenu_2_select();
-void MainMenu_2_enter();
-void MainMenu_3_select();
-void MainMenu_3_enter();
-void MainMenu_4_select();
-void MainMenu_4_enter();
-void MainMenu_5_select();
-void MainMenu_5_enter();
-
-
 MAKE_MENU(MainMenu_1, true, false, MainMenu_2, MainMenu_5, NULL_MENU, NULL_MENU, 	MainMenu_1_select, MainMenu_1_enter, "Расход");
 MAKE_MENU(MainMenu_2, false, false, MainMenu_3, MainMenu_1, NULL_MENU, NULL_MENU, 	MainMenu_2_select, MainMenu_2_enter, "Запас хода");
 MAKE_MENU(MainMenu_3, false, false, MainMenu_4, MainMenu_3, NULL_MENU, NULL_MENU, 	MainMenu_3_select, MainMenu_3_enter, "Пробег");
@@ -92,7 +80,12 @@ MAKE_MENU(MainMenu_4, false, false, MainMenu_5, MainMenu_3, NULL_MENU, NULL_MENU
 MAKE_MENU(MainMenu_5, true, true, MainMenu_1, MainMenu_4, NULL_MENU, NULL_MENU, 	MainMenu_5_select, MainMenu_5_enter, "Время движения");
 
 
-
+void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, int32_t color)
+{
+	GrLineDraw(&g_sContext, x1, y1, x2, y2);
+	GrLineDraw(&g_sContext, x1, y1, x3, y3);
+	GrLineDraw(&g_sContext, x2, y2, x3, y3);
+}
 
 Menu_Item_t* GetFirstMenuElement()
 {

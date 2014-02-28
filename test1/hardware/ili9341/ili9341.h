@@ -54,3 +54,5 @@ extern void LineDrawV(void *pvDisplayData, int32_t x, int32_t y1, int32_t y2, ui
 extern const tDisplay g_sILI9341;
 
 extern void TFT_setOrientation(uint8_t orientation);
+
+extern void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, int32_t color);

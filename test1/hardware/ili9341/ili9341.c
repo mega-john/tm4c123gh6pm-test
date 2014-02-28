@@ -400,8 +400,8 @@ const tDisplay g_sILI9341 =
 {
 		sizeof(tDisplay),
 		0,
-		DISPLAY_WIDTH,
-		DISPLAY_HEIGHT,
+		240,
+		320,
 		PixelDraw,
 		PixelDrawMultiple,
 		LineDrawH,

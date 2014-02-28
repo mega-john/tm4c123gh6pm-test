@@ -60,4 +60,16 @@ extern Menu_Item_t* CurrentMenuItem;
 
 void MenuNavigate(Menu_Item_t* const NewMenu);
 
-//void MenuEnterCurrentItem(void);
+///////////////////////////////////////////////////////////////////////////
+//function prototypes
+///////////////////////////////////////////////////////////////////////////
+extern void MainMenu_1_select();
+extern void MainMenu_1_enter();
+extern void MainMenu_2_select();
+extern void MainMenu_2_enter();
+extern void MainMenu_3_select();
+extern void MainMenu_3_enter();
+extern void MainMenu_4_select();
+extern void MainMenu_4_enter();
+extern void MainMenu_5_select();
+extern void MainMenu_5_enter();
