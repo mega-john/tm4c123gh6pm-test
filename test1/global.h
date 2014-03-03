@@ -51,15 +51,15 @@ extern tContext g_sContext;
 
 static tSoftI2C g_sI2C;
 
-static volatile uint32_t InFuelImpulses;
-static volatile uint32_t OutFuelImpulses;
-static volatile uint32_t InDistanceImpulses;
+extern volatile uint32_t InFuelImpulses;
+extern volatile uint32_t OutFuelImpulses;
+extern volatile uint32_t InDistanceImpulses;
 
-static volatile float CurrentDistance;
-static volatile float TotalDistance;
-static volatile float PeakConsumption;
-static volatile float TotalConsumption;
-static volatile float OverallConsumption;
+extern volatile float CurrentDistance;
+extern volatile float TotalDistance;
+extern volatile float PeakConsumption;
+extern volatile float TotalConsumption;
+extern volatile float OverallConsumption;
 
 #define BACKGROUND	ClrBlack
 #define FOREGROUND	ClrWhite

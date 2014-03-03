@@ -89,6 +89,7 @@ GrContextBackgroundSet(&g_sContext, ClrYellow);
 
 //    GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, ALL_LEDS);
 
+
 	while (1)
 	{
 		ProcessMenu();
