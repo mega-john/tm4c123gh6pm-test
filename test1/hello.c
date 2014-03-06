@@ -79,8 +79,9 @@ int main(void)
 
 	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
 	GrContextForegroundSet(&g_sContext, BACKGROUND);
-GrContextBackgroundSet(&g_sContext, ClrYellow);
-	GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200, ClrYellow);
+	GrContextBackgroundSet(&g_sContext, ClrYellow);
+	GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200,
+			ClrYellow);
 	GrContextForegroundSet(&g_sContext, FOREGROUND);
 	GrContextBackgroundSet(&g_sContext, BACKGROUND);
 	MenuInitialize(&g_sContext);
@@ -108,6 +109,6 @@ GrContextBackgroundSet(&g_sContext, ClrYellow);
     		MenuNavigate(MENU_CHILD);
     		ClearScreen();
     	}
-        GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, red_state | blue_state | green_state);
+//        GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, red_state | blue_state | green_state);
 	}
 }
