@@ -54,6 +54,7 @@ int main(void)
 	ButtonsInit();
 	SetUpTimers();
 
+	OW_Reset();
 //	HWREGBITW()
 
 //    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, ALL_LEDS);

@@ -46,6 +46,7 @@
 #include "hardware/ili9341/pictures/pictures.h"
 #include "menu/menu.h"
 #include "hardware/interrupts/timer.h"
+#include "hardware/onewire/onewire.h"
 
 extern tContext g_sContext;
 
