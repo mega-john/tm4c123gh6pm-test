@@ -31,6 +31,7 @@ void MenuNavigate(Menu_Item_t* const NewMenu)
 {
 	if ((NewMenu == &NULL_MENU) || (NewMenu == NULL))
 	{
+		updateMenu = true;
 		return;
 	}
 
@@ -54,50 +55,32 @@ void L1I1_Select(void)
 }
 
 //					Name, IsFirst, IsLast, Next, Previous, Parent, Child, SelectFunc, EnterFunc, Text
-MAKE_MENU(Menu_1, true, false, Menu_2, Menu_3, NULL_MENU, Menu_1_1, L1I1_Select,
-		L1I1_Enter, "ВРЕМЯ");
-MAKE_MENU(Menu_1_1, true, false, Menu_1_2, Menu_1_2, Menu_1, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "настроить");
-MAKE_MENU(Menu_1_2, false, true, Menu_1_1, Menu_1_1, Menu_1, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "сбросить");
+MAKE_MENU(Menu_1, true, false, Menu_2, Menu_4, NULL_MENU, Menu_1_1, L1I1_Select, L1I1_Enter, "ВРЕМЯ");
+MAKE_MENU(Menu_1_1, true, false, Menu_1_2, Menu_1_2, Menu_1, NULL_MENU,L1I1_Select, L1I1_Enter, "настроить");
+MAKE_MENU(Menu_1_2, false, true, Menu_1_1, Menu_1_1, Menu_1, NULL_MENU,L1I1_Select, L1I1_Enter, "сбросить");
 
-MAKE_MENU(Menu_2, false, false, Menu_3, Menu_1, NULL_MENU, Menu_2_1,
-		L1I1_Select, L1I1_Enter, "СКОРОСТЬ");
-MAKE_MENU(Menu_2_1, true, false, Menu_2_2, Menu_2_2, Menu_2, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "настроить");
-MAKE_MENU(Menu_2_2, false, true, Menu_2_1, Menu_2_1, Menu_2, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "сбросить");
+MAKE_MENU(Menu_2, false, false, Menu_3, Menu_1, NULL_MENU, Menu_2_1,	L1I1_Select, L1I1_Enter, "СКОРОСТЬ");
+MAKE_MENU(Menu_2_1, true, false, Menu_2_2, Menu_2_2, Menu_2, NULL_MENU,L1I1_Select, L1I1_Enter, "настроить");
+MAKE_MENU(Menu_2_2, false, true, Menu_2_1, Menu_2_1, Menu_2, NULL_MENU,L1I1_Select, L1I1_Enter, "сбросить");
 
-MAKE_MENU(Menu_3, false, false, Menu_4, Menu_2, NULL_MENU, Menu_3_1,
-		L1I1_Select, L1I1_Enter, "БЕНЗОБАК");
-MAKE_MENU(Menu_3_1, true, false, Menu_3_2, Menu_3_2, Menu_3, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "настроить");
-MAKE_MENU(Menu_3_2, false, true, Menu_3_1, Menu_3_1, Menu_3, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "сбросить");
+MAKE_MENU(Menu_3, false, false, Menu_4, Menu_2, NULL_MENU, Menu_3_1,L1I1_Select, L1I1_Enter, "БЕНЗОБАК");
+MAKE_MENU(Menu_3_1, true, false, Menu_3_2, Menu_3_2, Menu_3, NULL_MENU,L1I1_Select, L1I1_Enter, "настроить");
+MAKE_MENU(Menu_3_2, false, true, Menu_3_1, Menu_3_1, Menu_3, NULL_MENU,L1I1_Select, L1I1_Enter, "сбросить");
 
-MAKE_MENU(Menu_4, false, true, Menu_1, Menu_3, NULL_MENU, Menu_4_1, L1I1_Select,
-		L1I1_Enter, "ТЕМПЕРАТУРА");
-MAKE_MENU(Menu_4_1, true, false, Menu_4_2, Menu_4_3, Menu_4, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "настроить");
-MAKE_MENU(Menu_4_2, false, false, Menu_4_3, Menu_4_1, Menu_4, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "сбросить");
-MAKE_MENU(Menu_4_3, false, true, Menu_4_1, Menu_4_2, Menu_4, Menu_4_3_1,
-		L1I1_Select, L1I1_Enter, "показать д.");
-MAKE_MENU(Menu_4_3_1, true, false, Menu_4_3_2, Menu_4_3_1, Menu_4_3, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "салон");
-MAKE_MENU(Menu_4_3_2, false, true, Menu_4_3_1, Menu_4_3_2, Menu_4_3, NULL_MENU,
-		L1I1_Select, L1I1_Enter, "улица");
+MAKE_MENU(Menu_4, false, true, Menu_1, Menu_3, NULL_MENU, Menu_4_1, L1I1_Select,L1I1_Enter, "ТЕМПЕРАТУРА");
+MAKE_MENU(Menu_4_1, true, false, Menu_4_2, Menu_4_3, Menu_4, NULL_MENU,	L1I1_Select, L1I1_Enter, "настроить");
+MAKE_MENU(Menu_4_2, false, false, Menu_4_3, Menu_4_1, Menu_4, NULL_MENU,		L1I1_Select, L1I1_Enter, "сбросить");
+MAKE_MENU(Menu_4_3, false, true, Menu_4_1, Menu_4_2, Menu_4, Menu_4_3_1,		L1I1_Select, L1I1_Enter, "показать д.");
+MAKE_MENU(Menu_4_3_1, true, false, Menu_4_3_2, Menu_4_3_1, Menu_4_3, NULL_MENU,		L1I1_Select, L1I1_Enter, "салон");
+MAKE_MENU(Menu_4_3_2, false, true, Menu_4_3_1, Menu_4_3_2, Menu_4_3, NULL_MENU,		L1I1_Select, L1I1_Enter, "улица");
 
-MAKE_MENU(MainMenu_1, true, false, MainMenu_2, MainMenu_5, NULL_MENU, NULL_MENU,
-		MainMenu_1_select, MainMenu_1_enter, "Расход");
-MAKE_MENU(MainMenu_2, false, false, MainMenu_3, MainMenu_1, NULL_MENU,
-		NULL_MENU, MainMenu_2_select, MainMenu_2_enter, "Запас хода");
-MAKE_MENU(MainMenu_3, false, false, MainMenu_4, MainMenu_3, NULL_MENU,
-		NULL_MENU, MainMenu_3_select, MainMenu_3_enter, "Пробег");
-MAKE_MENU(MainMenu_4, false, false, MainMenu_5, MainMenu_3, NULL_MENU,
-		NULL_MENU, MainMenu_4_select, MainMenu_4_enter, "Скорость");
-MAKE_MENU(MainMenu_5, true, true, MainMenu_1, MainMenu_4, NULL_MENU, NULL_MENU,
-		MainMenu_5_select, MainMenu_5_enter, "Время движения");
+
+
+MAKE_MENU(MainMenu_1, true, false, MainMenu_2, MainMenu_5, NULL_MENU, NULL_MENU,		MainMenu_1_select, MainMenu_1_enter, "Расход");
+MAKE_MENU(MainMenu_2, false, false, MainMenu_3, MainMenu_1, NULL_MENU,		NULL_MENU, MainMenu_2_select, MainMenu_2_enter, "Запас хода");
+MAKE_MENU(MainMenu_3, false, false, MainMenu_4, MainMenu_3, NULL_MENU,		NULL_MENU, MainMenu_3_select, MainMenu_3_enter, "Пробег");
+MAKE_MENU(MainMenu_4, false, false, MainMenu_5, MainMenu_3, NULL_MENU,		NULL_MENU, MainMenu_4_select, MainMenu_4_enter, "Скорость");
+MAKE_MENU(MainMenu_5, true, true, MainMenu_1, MainMenu_4, NULL_MENU, NULL_MENU,		MainMenu_5_select, MainMenu_5_enter, "Время движения");
 
 void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3,
 		int32_t y3, int32_t color)

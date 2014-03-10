@@ -18,13 +18,13 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
 tContext g_sContext;
 uint8_t red_state, green_state, blue_state;
 
-#define SW1 					GPIO_PIN_4
-#define SW2 					GPIO_PIN_0
-#define ALL_SWITCHES		(SW1 | SW2)
-#define LED_RED 				GPIO_PIN_1
-#define LED_BLUE 			GPIO_PIN_2
-#define LED_GREEN 			GPIO_PIN_3
-#define ALL_LEDS				(LED_RED | LED_BLUE | LED_GREEN)
+//#define SW1 					GPIO_PIN_4
+//#define SW2 					GPIO_PIN_0
+//#define ALL_SWITCHES		(SW1 | SW2)
+//#define LED_RED 				GPIO_PIN_1
+//#define LED_BLUE 			GPIO_PIN_2
+//#define LED_GREEN 			GPIO_PIN_3
+//#define ALL_LEDS				(LED_RED | LED_BLUE | LED_GREEN)
 
 void UnlockPin(uint32_t gpioPortBase, uint8_t pin)
 {
@@ -48,12 +48,17 @@ int main(void)
 
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
+
 	UnlockPinF0();
+
+	ButtonsInit();
+	SetUpTimers();
+
 //	HWREGBITW()
 
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, ALL_LEDS);
-    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, ALL_SWITCHES);
-    GPIOPadConfigSet(GPIO_PORTF_BASE, ALL_SWITCHES, GPIO_STRENGTH_2MA,  GPIO_PIN_TYPE_STD_WPU);
+//    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, ALL_LEDS);
+//    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, ALL_SWITCHES);
+//    GPIOPadConfigSet(GPIO_PORTF_BASE, ALL_SWITCHES, GPIO_STRENGTH_2MA,  GPIO_PIN_TYPE_STD_WPU);
 
 	InitDisplay();
 
@@ -85,8 +90,6 @@ int main(void)
 	GrContextForegroundSet(&g_sContext, FOREGROUND);
 	GrContextBackgroundSet(&g_sContext, BACKGROUND);
 	MenuInitialize(&g_sContext);
-	ButtonsInit();
-	SetUpTimers();
 
 //    GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, ALL_LEDS);
 
@@ -105,6 +108,21 @@ int main(void)
     		MenuNavigate(MENU_NEXT);
     	}
     	else if(BUTTON_PRESSED(UP_BUTTON, ui8ButtonState, ui8ButtonChanged))
+    	{
+    		MenuNavigate(MENU_PREVIOUS);
+//    		ClearScreen();
+    	}
+    	else if(BUTTON_PRESSED(LEFT_BUTTON, ui8ButtonState, ui8ButtonChanged))
+    	{
+    		MenuNavigate(MENU_PARENT);
+    		ClearScreen();
+    	}
+    	else if(BUTTON_PRESSED(RIGHT_BUTTON, ui8ButtonState, ui8ButtonChanged))
+    	{
+    		MenuNavigate(MENU_CHILD);
+    		ClearScreen();
+    	}
+    	else if(BUTTON_PRESSED(SELECT_BUTTON, ui8ButtonState, ui8ButtonChanged))
     	{
     		MenuNavigate(MENU_CHILD);
     		ClearScreen();
