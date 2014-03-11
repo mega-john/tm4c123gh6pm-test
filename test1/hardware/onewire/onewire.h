@@ -8,7 +8,10 @@
 #ifndef ONEWIRE_H_
 #define ONEWIRE_H_
 
-
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
 
 // ћаксимальное количество устройств на шине
 #define MAXDEVICES 4

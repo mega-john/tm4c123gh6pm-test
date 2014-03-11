@@ -6,6 +6,7 @@
  */
 
 #include "../../global.h"
+#include "onewire.h"
 
 extern void RunTasks(uint8_t tasks);
 
@@ -62,14 +63,13 @@ void identify_ow_devices()
 			{ // если найден термодатчик DS18B20
 				//printf("\r"); print_address(owDevicesIDs[i]); // печатаем знак переноса строки, затем - адрес
 				//printf(" - Thermometer DS18B20"); // печатаем тип устройства
-//				DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
+				DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
 				//timerDelayMs(800); // ждем минимум 750 мс, пока конвентируется температура
-//				_delay_ms(800); // ждем минимум 750 мс, пока конвентируется температура
 				SysCtlDelay(800);
 				uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
-//				DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
+				DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
 				uint8_t themperature[3]; // в этот массив будет записана температура
-//				DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
+				DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
 //				ks0108GotoXY(0, 10 * i);
 //				ks0108FillRect(ks0108StringWidth("value: "), 10 * i, 10, 12, WHITE);
 //				sprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
@@ -116,7 +116,6 @@ uint8_t OW_CheckIn(void)
 #else
 	return CheckBit(OW_PIN, OW_BIT_IN);
 #endif
-	return 0;
 }
 
 uint8_t OW_Reset(void)

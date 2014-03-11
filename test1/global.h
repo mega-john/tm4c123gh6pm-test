@@ -45,6 +45,8 @@
 #include "menu/menu.h"
 #include "hardware/interrupts/timer.h"
 #include "hardware/onewire/onewire.h"
+#include "hardware/onewire/ds18x20.h"
+
 
 extern tContext g_sContext;
 
@@ -63,7 +65,7 @@ extern volatile float OverallConsumption;
 #define BACKGROUND	ClrBlack
 #define FOREGROUND	ClrWhite
 
-#define CheckBit(byte, bit) (byte & (1 << bit))
+#define CheckBit(byte, bit) (byte & (1 << (bit)))
 
 typedef const struct time
 {
