@@ -7,36 +7,104 @@
 
 #include "../../global.h"
 
-
 extern void RunTasks(uint8_t tasks);
+
+#define OWPORTDIR P2DIR
+#define OWPORTOUT P2OUT
+#define OWPORTIN P2IN
+#define OWPORTREN P2REN
+#define OWPORTPIN BIT1
+
+uint8_t owDevicesIDs[MAXDEVICES][8];
+
+uint8_t search_ow_devices(void) // поиск всех устройств на шине
+{
+	uint8_t i;
+	uint8_t id[OW_ROMCODE_SIZE];
+	uint8_t diff, sensors_count;
+
+	sensors_count = 0;
+
+	for(diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES;)
+	{
+		OW_FindROM(&diff, &id[0]);
+
+		if(diff == OW_PRESENCE_ERR)
+		{
+			break;
+		}
+
+		if(diff == OW_DATA_ERR)
+		{
+			break;
+		}
+
+		for (i = 0; i < OW_ROMCODE_SIZE; i++)
+		{
+			owDevicesIDs[sensors_count][i] = id[i];
+		}
+
+		sensors_count++;
+	}
+	return sensors_count;
+}
+
+void identify_ow_devices()
+{
+	uint8_t i = 0;
+	uint8_t nDevices = search_ow_devices();
+	for (; i < nDevices; i++) // теперь сотируем устройства и запрашиваем данные
+	{
+	// узнать устройство можно по его груповому коду, который расположен в первом байте адресса
+		switch (owDevicesIDs[i][0])
+		{
+			case OW_DS18B20_FAMILY_CODE:
+			{ // если найден термодатчик DS18B20
+				//printf("\r"); print_address(owDevicesIDs[i]); // печатаем знак переноса строки, затем - адрес
+				//printf(" - Thermometer DS18B20"); // печатаем тип устройства
+//				DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
+				//timerDelayMs(800); // ждем минимум 750 мс, пока конвентируетс€ температура
+//				_delay_ms(800); // ждем минимум 750 мс, пока конвентируетс€ температура
+				SysCtlDelay(800);
+				uint8_t data[2]; // переменна€ дл€ хранени€ старшего и младшего байта данных
+//				DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
+				uint8_t themperature[3]; // в этот массив будет записана температура
+//				DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопон€тный вид
+//				ks0108GotoXY(0, 10 * i);
+//				ks0108FillRect(ks0108StringWidth("value: "), 10 * i, 10, 12, WHITE);
+//				sprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
+//				ks0108Puts((char*)&tmp);
+			} break;
+		}
+	};
+}
 
 void OthersTasks(void)
 {
 //	RunTasks(0xFF);
 }
 
-#ifndef UART_AS_OneWire
 void OW_Set(uint8_t mode)
 {
 #ifndef OW_TWO_PINS
 	if (mode)
 	{
-		cb(OW_PORT, OW_BIT);
-		sb(OW_DDR, OW_BIT);
+//		cb(OW_PORT, OW_BIT);
+//		sb(OW_DDR, OW_BIT);
 	}
 	else
 	{
-		cb(OW_PORT, OW_BIT);
-		cb(OW_DDR, OW_BIT);
+//		cb(OW_PORT, OW_BIT);
+//		cb(OW_DDR, OW_BIT);
 	}
 #else
 	if (mode)
 	{
-		cb(OW_PORT, OW_BIT_OUT);
+//		cb(OW_PORT, OW_BIT_OUT);
 	}
 	else
 	{
-		sb(OW_PORT, OW_BIT_OUT);
+//		sb(OW_PORT, OW_BIT_OUT);
 	}
 #endif
 }
@@ -48,172 +116,62 @@ uint8_t OW_CheckIn(void)
 #else
 	return CheckBit(OW_PIN, OW_BIT_IN);
 #endif
+	return 0;
 }
-
-#endif
 
 uint8_t OW_Reset(void)
 {
-//#ifdef UART_AS_OneWire
-//	UCSRB = (1 << RXEN) | (1 << TXEN);
-//	//9600
-//	UBRRL = USART_BAUDRATE_9600;
-//	UBRRH = (USART_BAUDRATE_9600 >> 8);
-//	UCSRA &= ~(1 << U2X);
-//
-//	while(CheckBit(UCSRA, RXC))
-//	{
-//		UDR; //«ачистка буферов
-//	}
-//	cli();
-//	UDR = 0xF0;
-//	UCSRA = (1 << TXC);
-//	sei();
-//	//while(!CheckBit(UCSRA, TXC)) OthersTasks();
-//	while(!CheckBit(UCSRA, RXC))
-//	{
-//		OthersTasks();
-//	}
-//	if (UDR != 0xF0)
-//	{
-//		return 1;
-//	}
-// return 0;
-//#else
-	uint8_t status;
 	OW_Set(1);
-	_delay_us(480);
+	SysCtlDelay(480);
 	OW_Set(0);
-	_delay_us(60);
+	SysCtlDelay(60);
 	//Store line value and wait until the completion of 480uS period
-	status = OW_CheckIn();
-	_delay_us(420);
+	uint8_t status = OW_CheckIn();
+	SysCtlDelay(420);
 	//Return the value read from the presence pulse (0=OK, 1=WRONG)
  return !status;
-//#endif
 //	return 1 if found
 //	return 0 if not found
 }
 
 void OW_WriteBit(uint8_t bit)
 {
-//#ifdef UART_AS_OneWire
-//	//115200
-//	UBRRL = USART_BAUDRATE_115200;
-//	UBRRH = (USART_BAUDRATE_115200 >> 8);
-//	UCSRA |= (1 << U2X);
-//
-//	unsigned char	d = 0x00;
-//	while(CheckBit(UCSRA, RXC))
-//	{
-//		UDR; //«ачистка буферов
-//	}
-//	if (bit)
-//	{
-//		d = 0xFF;
-//	}
-//	cli();
-//	UDR = d;
-//	UCSRA = (1 << TXC);
-//	sei();
-//	while(!CheckBit(UCSRA,TXC));
-//	while(CheckBit(UCSRA, RXC))
-//	{
-//		UDR; //«ачистка буферов
-//	}
-//#else
 	//Pull line low for 1uS
 	OW_Set(1);
-	_delay_us(1);
-	//If we want to write 1, release the line (if not will keep low)
-	if(bit) OW_Set(0);
+	SysCtlDelay(1);
+//If we want to write 1, release the line (if not will keep low)
+	if (bit)
+	{
+		OW_Set(0);
+	}
 	//Wait for 60uS and release the line
-	_delay_us(60);
+	SysCtlDelay(60);
 	OW_Set(0);
-//#endif
 }
 
 uint8_t OW_ReadBit(void)
 {
-//#ifdef UART_AS_OneWire
-//	//115200
-//	UBRRL = USART_BAUDRATE_115200;
-//	UBRRH = (USART_BAUDRATE_115200 >> 8);
-//	UCSRA |= (1<<U2X);
-//
-//	unsigned char	c;
-//	while(CheckBit(UCSRA, RXC))
-//	{
-//		UDR; //«ачистка буферов
-//	}
-//	cli();
-//	UDR = 0xFF;
-//	UCSRA = (1 << TXC);
-//	sei();
-//	while(!CheckBit(UCSRA, TXC));
-//	while(!CheckBit(UCSRA, RXC));
-//	c = UDR;
-//	if (c > 0xFE)
-//	{
-//		return 1;
-//	}
-//	return 0;
-//#else
-	uint8_t bit=0;
+	uint8_t bit = 0;
 	//Pull line low for 1uS
 	OW_Set(1);
 //	_delay_us(1);
-	SysCtlDelay(3);
+	SysCtlDelay(1);
 	//Release line and wait for 14uS
 	OW_Set(0);
-	_delay_us(14);
+//	_delay_us(14);
+	SysCtlDelay(14);
 	//Read line value
-	if(OW_CheckIn())
+	if (OW_CheckIn())
 	{
 		bit = 1;
 	}
 	//Wait for 45uS to end and return read value
-	_delay_us(45);
+//	_delay_us(45);
+	SysCtlDelay(45);
 	return bit;
 //#endif
 }
 
-//#ifdef UART_AS_OneWire
-//unsigned char OW_WriteByte(uint8_t byte)
-//{
-//	uint8_t i = 8;
-//	//115200
-//	UBRRL = USART_BAUDRATE_115200;
-//	UBRRH = (USART_BAUDRATE_115200 >> 8);
-//	UCSRA |= (1 << U2X);
-//
-//	do
-//	{
-//		uint8_t d = 0x00;
-//		if (byte & 1)
-//		{
-//			d = 0xFF;
-//		}
-//		cli();
-//		UDR = d;
-//		UCSRA = (1 << TXC);
-//		sei();
-//		OthersTasks();
-//		while(!CheckBit(UCSRA,RXC))
-//		{
-//			OthersTasks();
-//		}
-//		byte >>= 1;
-//		if (UDR > 0xFE)
-//		{
-//			byte |= 128;
-//		}
-//	}
-//	while(--i);
-//
-//	return byte & 255;
-//}
-//#else
 void OW_WriteByte(uint8_t byte)
 {
 	uint8_t i = 0;
@@ -231,20 +189,19 @@ uint8_t OW_ReadByte(void)
 	{
 		if (OW_ReadBit())
 		{
-			sb(n, i);
+//			sb(n, i);
 		}
 	}
 
 	return n;
 }
-//#endif
 
 uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
 {
 	uint8_t i, j, next_diff;
 	uint8_t b;
 
-	if(!OW_Reset())
+	if (!OW_Reset())
 	{
 		return OW_PRESENCE_ERR;       // error, no device found
 	}
@@ -259,51 +216,50 @@ uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
 		do
 		{
 			b = OW_ReadBit();			// read bit
-			if(OW_ReadBit())
+			if (OW_ReadBit())
 			{ // read complement bit
-				if( b )                 // 11
+				if (b)                 // 11
 				{
 					return OW_DATA_ERR;  // data error
 				}
 			}
 			else
 			{
-				if( !b )
+				if (!b)
 				{ // 00 = 2 devices
-					if( diff > i || ((*id & 1) && diff != i) )
+					if (diff > i || ((*id & 1) && diff != i))
 					{
-							b = 1;               // now 1
-							next_diff = i;       // next pass 0
+						b = 1;               // now 1
+						next_diff = i;       // next pass 0
 					}
 				}
 			}
-         OW_WriteBit( b );               // write bit
-         *id >>= 1;
-         if( b )
-		 {
-			 *id |= 0x80;			// store bit
-		 }
-         i--;
-		}
-		while( --j );
+			OW_WriteBit(b);               // write bit
+			*id >>= 1;
+			if (b)
+			{
+				*id |= 0x80;			// store bit
+			}
+			i--;
+		} while (--j);
 		id++;                            // next byte
-    }
-	while( i );
+	} while (i);
 	return next_diff;                  // to continue search
 }
 
 void OW_FindROM(uint8_t *diff, uint8_t id[])
 {
-	while(1)
-    {
-		*diff = OW_SearchROM( *diff, &id[0] );
-    	if ( *diff == OW_PRESENCE_ERR || *diff == OW_DATA_ERR || *diff == OW_LAST_DEVICE )
+	while (1)
+	{
+		*diff = OW_SearchROM(*diff, &id[0]);
+		if (*diff == OW_PRESENCE_ERR || *diff == OW_DATA_ERR
+				|| *diff == OW_LAST_DEVICE)
 		{
 			return;
 		}
-    	//if ( id[0] == DS18B20_ID || id[0] == DS18S20_ID )
+		//if ( id[0] == DS18B20_ID || id[0] == DS18S20_ID )
 		return;
-    }
+	}
 }
 
 uint8_t OW_ReadROM(uint8_t *buffer)
@@ -323,13 +279,13 @@ uint8_t OW_ReadROM(uint8_t *buffer)
 
 uint8_t OW_MatchROM(uint8_t *rom)
 {
- 	if (!OW_Reset())
-	 {
-		 return 0;
-	 }
+	if (!OW_Reset())
+	{
+		return 0;
+	}
 	OW_WriteByte(OW_CMD_MATCHROM);
 	uint8_t i = 0;
-	for(; i < 8; i++)
+	for (; i < 8; i++)
 	{
 		OW_WriteByte(rom[i]);
 	}

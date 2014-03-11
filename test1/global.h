@@ -27,8 +27,6 @@
 
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/gpio.h"
 #include "driverlib/timer.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/ssi.h"
@@ -64,6 +62,8 @@ extern volatile float OverallConsumption;
 
 #define BACKGROUND	ClrBlack
 #define FOREGROUND	ClrWhite
+
+#define CheckBit(byte, bit) (byte & (1 << bit))
 
 typedef const struct time
 {

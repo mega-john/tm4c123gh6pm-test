@@ -56,7 +56,7 @@
 #define OW_DS2433_FAMILY_CODE	0x23
 
 // rom-code size including CRC
-#define OW_ROMCODE_SIZE	8
+#define OW_ROMCODE_SIZE				8
 
 uint8_t OW_Reset(void);
 uint8_t OW_ReadBit(void);
