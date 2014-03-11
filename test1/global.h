@@ -65,6 +65,9 @@ extern volatile float OverallConsumption;
 #define BACKGROUND	ClrBlack
 #define FOREGROUND	ClrWhite
 
+#define sb(byte, bit) (port |= (1 << (bit)))	//set bit
+#define cb(byte, bit) (port &= ~(1 << (bit)))	//clear bit
+#define tb(byte, bit) (port ^= (1 << (bit)))	//toggle bit
 #define CheckBit(byte, bit) (byte & (1 << (bit)))
 
 typedef const struct time
