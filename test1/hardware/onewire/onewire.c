@@ -10,11 +10,11 @@
 
 extern void RunTasks(uint8_t tasks);
 
-#define OWPORTDIR P2DIR
-#define OWPORTOUT P2OUT
-#define OWPORTIN P2IN
-#define OWPORTREN P2REN
-#define OWPORTPIN BIT1
+//#define OWPORTDIR 		P2DIR
+//#define OWPORTOUT 		P2OUT
+//#define OWPORTIN 			P2IN
+//#define OWPORTREN 		P2REN
+//#define OWPORTPIN 		BIT1
 
 uint8_t owDevicesIDs[MAXDEVICES][8];
 
@@ -65,7 +65,7 @@ void identify_ow_devices()
 				//printf(" - Thermometer DS18B20"); // печатаем тип устройства
 				DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
 				//timerDelayMs(800); // ждем минимум 750 мс, пока конвентируется температура
-				SysCtlDelay(800);
+				delay_ms(800);
 				uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
 				DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
 				uint8_t themperature[3]; // в этот массив будет записана температура
@@ -90,7 +90,7 @@ void OW_Set(uint8_t mode)
 	if (mode)
 	{
 		cb(OW_PORT, OW_BIT);
-//		sb(OW_DDR, OW_BIT);
+		sb(OW_DDR, OW_BIT);
 	}
 	else
 	{
@@ -121,12 +121,12 @@ uint8_t OW_CheckIn(void)
 uint8_t OW_Reset(void)
 {
 	OW_Set(1);
-	SysCtlDelay(480);
+	delay_us(480);
 	OW_Set(0);
-	SysCtlDelay(60);
+	delay_us(60);
 	//Store line value and wait until the completion of 480uS period
 	uint8_t status = OW_CheckIn();
-	SysCtlDelay(420);
+	delay_us(420);
 	//Return the value read from the presence pulse (0=OK, 1=WRONG)
  return !status;
 //	return 1 if found
@@ -137,14 +137,14 @@ void OW_WriteBit(uint8_t bit)
 {
 	//Pull line low for 1uS
 	OW_Set(1);
-	SysCtlDelay(1);
+	delay_us(1);
 //If we want to write 1, release the line (if not will keep low)
 	if (bit)
 	{
 		OW_Set(0);
 	}
 	//Wait for 60uS and release the line
-	SysCtlDelay(60);
+	delay_us(60);
 	OW_Set(0);
 }
 
@@ -154,11 +154,11 @@ uint8_t OW_ReadBit(void)
 	//Pull line low for 1uS
 	OW_Set(1);
 //	_delay_us(1);
-	SysCtlDelay(1);
+	delay_us(1);
 	//Release line and wait for 14uS
 	OW_Set(0);
 //	_delay_us(14);
-	SysCtlDelay(14);
+	delay_us(14);
 	//Read line value
 	if (OW_CheckIn())
 	{
@@ -166,7 +166,7 @@ uint8_t OW_ReadBit(void)
 	}
 	//Wait for 45uS to end and return read value
 //	_delay_us(45);
-	SysCtlDelay(45);
+	delay_us(45);
 	return bit;
 //#endif
 }
