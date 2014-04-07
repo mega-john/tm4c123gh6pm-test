@@ -89,13 +89,13 @@ void OW_Set(uint8_t mode)
 #ifndef OW_TWO_PINS
 	if (mode)
 	{
-		cb(OW_PORT, OW_BIT);
-		sb(OW_DDR, OW_BIT);
+//		cb(OW_PORT, OW_BIT);
+//		sb(OW_DDR, OW_BIT);
 	}
 	else
 	{
-		cb(OW_PORT, OW_BIT);
-		cb(OW_DDR, OW_BIT);
+//		cb(OW_PORT, OW_BIT);
+//		cb(OW_DDR, OW_BIT);
 	}
 #else
 	if (mode)
