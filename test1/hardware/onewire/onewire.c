@@ -73,7 +73,7 @@ void OW_Set(ow_enum mode)
 
 uint8_t OW_CheckIn(void)
 {
-    return (GPIOPinRead(OW_PORT, OW_PIN) & OW_PIN) == OW_PIN;
+    return (GPIOPinRead(OW_PORT, OW_PIN) & OW_PIN);
 }
 
 uint8_t OW_Reset(void)

@@ -85,8 +85,7 @@ MAKE_MENU(MainMenu_3, false, false, MainMenu_4, MainMenu_3, NULL_MENU,		NULL_MEN
 MAKE_MENU(MainMenu_4, false, false, MainMenu_5, MainMenu_3, NULL_MENU,		NULL_MENU, MainMenu_4_select, MainMenu_4_enter, "Скорость");
 MAKE_MENU(MainMenu_5, true, true, MainMenu_1, MainMenu_4, NULL_MENU, NULL_MENU,		MainMenu_5_select, MainMenu_5_enter, "Время движения");
 
-void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3,
-		int32_t y3, int32_t color)
+void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, int32_t color)
 {
 	GrLineDraw(&g_sContext, x1, y1, x2, y2);
 	GrLineDraw(&g_sContext, x1, y1, x3, y3);
@@ -168,6 +167,16 @@ void DrawMenu()
 		firstElement = firstElement->Next;
 		offset += offsetStep;
 	} while (true);
+
+	char tmp[20];
+    DS18x20_StartMeasureAddressed(owDevicesIDs[0]); // запускаем измерение
+    delay_ms(800);// ждем минимум 750 мс, пока конвентируется температура
+    uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
+    DS18x20_ReadData(owDevicesIDs[0], data); // считываем данные
+    uint8_t themperature[3]; // в этот массив будет записана температура
+    DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
+    sprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
+    GrStringDraw(&g_sContext, tmp, -1, 10, 200, 0);
 }
 
 void MenuInitialize(/*tContext* context*/)

@@ -45,7 +45,6 @@ int main(void)
     ButtonsInit();
     SetUpTimers();
 
-    identify_ow_devices();
 //    uint8_t dev = owDevicesIDs[0][0];
 //	HWREGBITW()
 
@@ -83,6 +82,8 @@ int main(void)
     GrContextForegroundSet(&g_sContext, FOREGROUND);
     GrContextBackgroundSet(&g_sContext, BACKGROUND);
     MenuInitialize(&g_sContext);
+
+    identify_ow_devices();
 
 //    GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, ALL_LEDS);
 
