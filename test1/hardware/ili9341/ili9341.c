@@ -20,33 +20,6 @@
 
 //*****************************************************************************
 //
-// Defines the SSI and GPIO peripherals that are used for this display.
-//
-//*****************************************************************************
-#define DISPLAY_SSI_PERIPH          	SYSCTL_PERIPH_SSI3
-#define DISPLAY_SSI_GPIO_PERIPH     	SYSCTL_PERIPH_GPIOD
-#define DISPLAY_RST_GPIO_PERIPH     	SYSCTL_PERIPH_GPIOE
-
-//*****************************************************************************
-//
-// Defines the GPIO pin configuration macros for the pins that are used for
-// the SSI function.
-//
-//*****************************************************************************
-#define DISPLAY_PINCFG_SSICLK       	GPIO_PD0_SSI3CLK//sck
-#define DISPLAY_PINCFG_SSIFSS       	GPIO_PD1_SSI3FSS
-#define DISPLAY_PINCFG_SSIRX        	GPIO_PD2_SSI3RX//miso
-#define DISPLAY_PINCFG_SSITX        	GPIO_PD3_SSI3TX//mosi
-//*****************************************************************************
-//
-// Defines the port and pins for the SSI peripheral.
-//
-//*****************************************************************************
-#define DISPLAY_SSI_PORT            	GPIO_PORTD_BASE
-#define DISPLAY_SSI_PINS            	(GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3)
-
-//*****************************************************************************
-//
 // Defines the port and pins for the display C/S signal.
 //
 //*****************************************************************************
@@ -74,6 +47,8 @@
 #define DISPLAY_D_C_PIN             	GPIO_PIN_1
 #define TFT_DC_LOW						GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, 0)
 #define TFT_DC_HIGH						GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, DISPLAY_D_C_PIN)
+
+#define DISPLAY_COMMAND_PERIPH          SYSCTL_PERIPH_GPIOE
 
 #define DELAY_VALUE						300000
 #define constrain(amt, low, high) 		((amt) <= (low) ? (low) : ((amt) >= (high) ? (high) : (amt)))
@@ -357,7 +332,7 @@ void RectFill(void *pvDisplayData, const tRectangle *pRect, uint32_t ui32Value)
 
 void InitDisplay(void)
 {
-	SysCtlPeripheralEnable(DISPLAY_RST_GPIO_PERIPH);
+	SysCtlPeripheralEnable(DISPLAY_COMMAND_PERIPH);
 	GPIOPinTypeGPIOOutput(DISPLAY_RST_PORT, DISPLAY_RST_PIN);
 	GPIOPinTypeGPIOOutput(DISPLAY_CS_PORT, DISPLAY_CS_PIN);
 	GPIOPinTypeGPIOOutput(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN);

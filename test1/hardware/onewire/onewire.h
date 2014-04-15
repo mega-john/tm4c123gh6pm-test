@@ -41,7 +41,7 @@ typedef
 enum en
 {
     OW_IN = 0,
-    OW_OUT
+    OW_OUT = 1
 }ow_enum;
 
 
