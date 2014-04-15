@@ -44,8 +44,10 @@
 #include "hardware/ili9341/pictures/pictures.h"
 #include "menu/menu.h"
 #include "hardware/interrupts/timer.h"
-#include "hardware/onewire/onewire.h"
+//#include "hardware/onewire/onewire.h"
 #include "hardware/onewire/ds18x20.h"
+
+#define MAX_OW_DEVICES 4
 
 extern tContext g_sContext;
 

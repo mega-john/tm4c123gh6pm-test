@@ -12,6 +12,9 @@ Menu_Item_t NULL_MENU =
 Menu_Item_t* CurrentMenuItem = &NULL_MENU;
 static volatile bool updateMenu = false;
 
+
+uint8_t owDevicesIDs[MAX_OW_DEVICES][8];
+
 void ClearScreen()
 {
 	GrContextForegroundSet(&g_sContext, BACKGROUND);
