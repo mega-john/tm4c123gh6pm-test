@@ -145,8 +145,6 @@ void SPI_transfer16(uint16_t data)
 {
     SPI_transfer8(data >> 8);
     SPI_transfer8(data);
-//	SSIDataPut(SSIBASE, data);
-//	while(SSIBusy(SSIBASE));
 }
 
 void SPI_transfer24(uint32_t data)
@@ -154,8 +152,6 @@ void SPI_transfer24(uint32_t data)
     SPI_transfer8(data >> 16);
     SPI_transfer8(data >> 8);
     SPI_transfer8(data);
-//	SSIDataPut(SSIBASE, data);
-//	while(SSIBusy(SSIBASE));
 }
 
 void SPI_transfer32(uint32_t data)
@@ -164,8 +160,6 @@ void SPI_transfer32(uint32_t data)
     SPI_transfer8(data >> 16);
     SPI_transfer8(data >> 8);
     SPI_transfer8(data);
-//	SSIDataPut(SSIBASE, data);
-//	while(SSIBusy(SSIBASE));
 }
 
 uint8_t SPI_read8()

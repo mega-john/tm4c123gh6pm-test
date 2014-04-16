@@ -1,29 +1,37 @@
-#include <stdint.h>
+//#include <stdint.h>
 #include "global.h"
 
 tCodePointMap g_psCodePointMap_language[] =
 {
-{ CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode }, };
+        {CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode}
+};
 #define NUM_CODEPOINT_MAPS (sizeof(g_psCodePointMap_language) / sizeof(tCodePointMap))
 
 tGrLibDefaults g_sGrLibDefaultlanguage =
-{ GrDefaultStringRenderer, g_psCodePointMap_language, CODEPAGE_WIN1251,NUM_CODEPOINT_MAPS, 0 };
+{
+        GrDefaultStringRenderer,
+        g_psCodePointMap_language,
+        CODEPAGE_WIN1251,
+        NUM_CODEPOINT_MAPS,
+        0
+};
+
+tSchedulerTask g_psSchedulerTable[] =
+{
+    { MeausureTemperature, 0, 1000, 0, true }
+//    { DisplayTask, 0, 5, 0, true },
+//    { DistanceIRTask, 0, 100, 0, true },
+//    { AutoTask, 0, 10, 0, true },
+};
+unsigned long g_ulSchedulerNumTasks = (sizeof(g_psSchedulerTable) / sizeof(tSchedulerTask));
 
 tContext g_sContext;
 uint8_t red_state, green_state, blue_state;
 
-//#define SW1 					GPIO_PIN_4
-//#define SW2 					GPIO_PIN_0
-//#define ALL_SWITCHES		(SW1 | SW2)
-//#define LED_RED 				GPIO_PIN_1
-//#define LED_BLUE 			GPIO_PIN_2
-//#define LED_GREEN 			GPIO_PIN_3
-//#define ALL_LEDS				(LED_RED | LED_BLUE | LED_GREEN)
-
 void UnlockPin(uint32_t gpioPortBase, uint8_t pin)
 {
     HWREG(gpioPortBase + GPIO_O_LOCK) = GPIO_LOCK_KEY;
-    HWREG(gpioPortBase + GPIO_O_CR) = pin; //0xff;
+    HWREG(gpioPortBase + GPIO_O_CR) = pin;
     HWREG(gpioPortBase + GPIO_O_LOCK) = 0;
 }
 
@@ -32,11 +40,12 @@ void UnlockPinF0()
     UnlockPin(GPIO_PORTF_BASE, GPIO_PIN_0);
 }
 
-int main(void)
+void InitializePerepheral()
 {
     FPULazyStackingEnable();
-    SysCtlClockSet(
-    SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+    SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+
+    SchedulerInit(2500);
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
@@ -46,7 +55,7 @@ int main(void)
     SetUpTimers();
 
 //    uint8_t dev = owDevicesIDs[0][0];
-//	HWREGBITW()
+//  HWREGBITW()
 
 //    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, ALL_LEDS);
 //    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, ALL_SWITCHES);
@@ -69,9 +78,6 @@ int main(void)
     GrContextForegroundSet(&g_sContext, FOREGROUND);
     GrRectDraw(&g_sContext, &sRect);
 
-//	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial36);
-//	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
-//	GrContextFontSet(&g_sContext, (tFont*) &g_sFontExComic36);
     GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
 
     TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
@@ -83,9 +89,12 @@ int main(void)
     GrContextBackgroundSet(&g_sContext, BACKGROUND);
     MenuInitialize(&g_sContext);
 
-    identify_ow_devices();
+    SearchTempSensors();
+}
 
-//    GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, ALL_LEDS);
+int main(void)
+{
+    InitializePerepheral();
 
     while (1)
     {
@@ -103,7 +112,6 @@ int main(void)
         else if (BUTTON_PRESSED(UP_BUTTON, ui8ButtonState, ui8ButtonChanged))
         {
             MenuNavigate(MENU_PREVIOUS);
-//    		ClearScreen();
         }
         else if (BUTTON_PRESSED(LEFT_BUTTON, ui8ButtonState, ui8ButtonChanged))
         {
@@ -120,6 +128,7 @@ int main(void)
             MenuNavigate(MENU_CHILD);
             ClearScreen();
         }
-//        GPIOPinWrite(GPIO_PORTF_BASE, ALL_LEDS, red_state | blue_state | green_state);
+
+        SchedulerRun();
     }
 }

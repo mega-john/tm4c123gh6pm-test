@@ -8,13 +8,6 @@
 #include "../../global.h"
 #include "onewire.h"
 
-extern void RunTasks(uint8_t tasks);
-
-void OthersTasks(void)
-{
-//	RunTasks(0xFF);
-}
-
 static uint32_t OW_PERIPH = 0;
 static uint32_t OW_PORT = 0;
 static uint8_t OW_PIN = 0;
@@ -30,42 +23,16 @@ void OW_Init(uint32_t periph, uint32_t portBase, uint8_t pin)
     GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 }
 
-/*
-Если в DDRxn записан 1, то Pxn работает как выход, если 0, то как вход.
-
-Если в PORTxn записывается 1 и ножка Pxn сконфигурирована как вход, то активируется pull-up резистор.
-Чтобы отключить этот резистор, нужно записать в PORTxn лог. 0 или сконфигурировать ножку Pxn как выход.
-Ножка порта находится в третьем (отключенном) состоянии, когда активен сброс, а также если отсутствует тактовый сигнал.
-Если в PORTxn записывается 1 и ножка Pxn сконфигурирована как выход, то включается верхний ключ Pxn (на выходе 1),
-если в PORTxn записывается 0, то включается нижний ключ (на выходе 0).
-Записью лог. 1 в PINxn переключает величину PORTxn на противоположную, независимо от состояния DDRxn.
-Таким образом, инструкция SBI может использоваться для смены состояния одиночного бита порта.
-
-Переключение режима порта между входом и выходом.
-Когда происходит переключение от третьего состояния ({DDxn, PORTxn} = 0b00) до выходного состояния high ({DDxn, PORTxn} = 0b11),
-может с равной вероятностью произойти промежуточное состояние либо разрешенное pull-up ({DDxn, PORTxn} = 0b01),
-либо выходной ноль ({DDxn, PORTxn} = 0b10).
-
-Переключение между входом с pull-up и выходом low дает аналогичную проблему.
-Чтобы избежать этого, пользователь должен использовать промежуточное состояние - либо третье состояние ({DDxn, PORTxn} = 0b00),
-либо выходное состояние high ({DDxn, PORTxn} = 0b10).
- */
-
 void OW_Set(ow_enum mode)
 {
-    if (mode == OW_OUT)
+    if(mode == OW_OUT)
     {
-//		cb(OW_PORT, OW_BIT);
-//		sb(OW_DDR, OW_BIT);//set to outuput
         GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
         GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
         GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
     else
     {
-//		cb(OW_PORT, OW_BIT);
-//		cb(OW_DDR, OW_BIT);//set to input & disable pull-up resistor
-//        GPIOPinWrite(OW_PORT, OW_PIN, 0);
         GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
         GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
     }
@@ -87,8 +54,6 @@ uint8_t OW_Reset(void)
     delay_us(420);
     //Return the value read from the presence pulse (0=OK, 1=WRONG)
     return !status;
-    //	return 1 if found
-    //	return 0 if not found
 }
 
 void OW_WriteBit(uint8_t bit)
@@ -97,7 +62,7 @@ void OW_WriteBit(uint8_t bit)
     OW_Set(OW_OUT);
     delay_us(1);
     //If we want to write 1, release the line (if not will keep low)
-    if (bit)
+    if(bit)
     {
         OW_Set(OW_IN);
     }
@@ -142,19 +107,19 @@ uint8_t OW_ReadByte(void)
     {
         if(OW_ReadBit())
         {
-			sb(n, i);
+            sb(n, i);
         }
     }
-
     return n;
 }
 
 uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
 {
-    uint8_t i, j, next_diff;
-    uint8_t b;
+    uint8_t j;
+    uint8_t next_diff;
+    uint8_t bit;
 
-    if( !OW_Reset())
+    if(!OW_Reset())
     {
         return OW_PRESENCE_ERR;       // error, no device found
     }
@@ -162,39 +127,39 @@ uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
     OW_WriteByte(OW_CMD_SEARCHROM);     // ROM search command
     next_diff = OW_LAST_DEVICE;      // unchanged on last device
 
-    i = OW_ROMCODE_SIZE * 8;         // 8 bytes
+    uint8_t i = OW_ROMCODE_SIZE * 8;         // 8 bytes
     do
     {
         j = 8;                        // 8 bits
         do
         {
-            b = OW_ReadBit();			// read bit
+            bit = OW_ReadBit();			// read bit
             if(OW_ReadBit())
             { // read complement bit
-                if(b)                 // 11
+                if(bit)                 // 11
                 {
                     return OW_DATA_ERR;  // data error
                 }
             }
             else
             {
-                if( !b)
+                if(!bit)
                 { // 00 = 2 devices
                     if(diff > i || ((*id & 1) && diff != i))
                     {
-                        b = 1;               // now 1
+                        bit = 1;               // now 1
                         next_diff = i;       // next pass 0
                     }
                 }
             }
-            OW_WriteBit(b);               // write bit
+            OW_WriteBit(bit);               // write bit
             *id >>= 1;
-            if(b)
+            if(bit)
             {
                 *id |= 0x80;			// store bit
             }
             i--;
-        } while( --j);
+        } while(--j);
         id++;                            // next byte
     } while(i);
     return next_diff;                  // to continue search

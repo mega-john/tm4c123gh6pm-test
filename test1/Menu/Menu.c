@@ -7,11 +7,9 @@
 
 #include "../global.h"
 
-Menu_Item_t NULL_MENU =
-{ 0 };
+Menu_Item_t NULL_MENU = { 0 };
 Menu_Item_t* CurrentMenuItem = &NULL_MENU;
 static volatile bool updateMenu = false;
-
 
 uint8_t owDevicesIDs[MAX_OW_DEVICES][8];
 
@@ -120,8 +118,7 @@ void DrawSelection(uint16_t offset, bool isSelect)
 
 	GrContextForegroundSet(&g_sContext, isSelect ? FOREGROUND: BACKGROUND);
 	GrRectDraw(&g_sContext, &r);
-	GrCircleFill(&g_sContext, 220, offset + GrStringHeightGet(&g_sContext) / 2,
-			5);
+	GrCircleFill(&g_sContext, 220, offset + GrStringHeightGet(&g_sContext) / 2, 5);
 }
 
 void DrawMenu()
@@ -167,21 +164,10 @@ void DrawMenu()
 		firstElement = firstElement->Next;
 		offset += offsetStep;
 	} while (true);
-
-	char tmp[20];
-    DS18x20_StartMeasureAddressed(owDevicesIDs[0]); // запускаем измерение
-    delay_ms(800);// ждем минимум 750 мс, пока конвентируется температура
-    uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
-    DS18x20_ReadData(owDevicesIDs[0], data); // считываем данные
-    uint8_t themperature[3]; // в этот массив будет записана температура
-    DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
-    sprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
-    GrStringDraw(&g_sContext, tmp, -1, 10, 200, 0);
 }
 
-void MenuInitialize(/*tContext* context*/)
+void MenuInitialize()
 {
-//	gContext = context;
 	MenuNavigate(&Menu_1);
 }
 

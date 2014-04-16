@@ -17,10 +17,13 @@
 
 #define DS18X20_CHECK_CRC
 
-int8_t DS18x20_StartMeasure(void);
-int8_t DS18x20_StartMeasureAddressed(uint8_t* rom);
-int8_t DS18x20_ReadData(uint8_t *rom, uint8_t *buffer);
-void DS18x20_ConvertToThemperature(uint8_t* data, uint8_t* themp);
-void identify_ow_devices(void);
+//int8_t DS18x20_StartMeasure(void);
+//int8_t DS18x20_StartMeasureAddressed(uint8_t* rom);
+//int8_t DS18x20_ReadData(uint8_t *rom, uint8_t *buffer);
+//void DS18x20_ConvertToThemperature(uint8_t* data, uint8_t* themp);
+void SearchTempSensors(void);
+void MeausureTemperature(void * params);
+char* GetTemperatureString(uint8_t devNumber);
+uint8_t GetTempSensorsCount(void);
 
 #endif

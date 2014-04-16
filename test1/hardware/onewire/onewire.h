@@ -7,55 +7,22 @@
 #ifndef ONEWIRE_H_
 #define ONEWIRE_H_
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-
 #include "../../global.h"
 
-// Максимальное количество устройств на шине
-//#define MAXDEVICES 4
-
-// Если для эмуляции шины используется USART
-//#define UART_AS_OneWire
-
-// Если для эмуляции 1-wire не спольльзуется USART, но используется 2 пина (вход и выход)
-//#define OW_TWO_PINS
-
-//#define DDRC					1
-//#define PORTC					1
-//#define PINC					1
-
-//#define OW_DDR 					DDRC
-//#define OW_PORT 				SYSCTL_PERIPH_GPIOA
-//#define OW_PIN                  GPIO_PIN_7
-//#ifndef OW_TWO_PINS //если используется один пин, укажите его номер
-//	#define OW_BIT 2
-//#else // если используются 2 пина, укажите их номера
-//	#define OW_BIT_OUT 		    1
-//	#define OW_BIT_IN 			0
-//#endif
-
-typedef
-enum en
+typedef enum
 {
-    OW_IN = 0,
-    OW_OUT = 1
-}ow_enum;
-
+    OW_IN = 0, OW_OUT = 1
+} ow_enum;
 
 #define OW_CMD_SEARCHROM		0xF0
 #define OW_CMD_READROM			0x33
 #define OW_CMD_MATCHROM			0x55
 #define OW_CMD_SKIPROM			0xCC
 
-#define	OW_SEARCH_FIRST			0xFF		// start new search
+#define	OW_SEARCH_FIRST			0xFF
 #define	OW_PRESENCE_ERR			0xFF
 #define	OW_DATA_ERR				0xFE
-#define OW_LAST_DEVICE			0x00		// last device found
-//			0x01 ... 0x40: continue searching
-
+#define OW_LAST_DEVICE			0x00
 #define OW_DS1990_FAMILY_CODE	1
 #define OW_DS2405_FAMILY_CODE	5
 #define OW_DS2413_FAMILY_CODE	0x3A
@@ -73,7 +40,7 @@ enum en
 uint8_t OW_Reset(void);
 uint8_t OW_ReadBit(void);
 uint8_t OW_ReadByte(void);
-uint8_t OW_SearchROM(uint8_t diff, uint8_t *id );
+uint8_t OW_SearchROM(uint8_t diff, uint8_t *id);
 uint8_t OW_ReadROM(uint8_t *buffer);
 uint8_t OW_MatchROM(uint8_t *rom);
 void OW_WriteBit(uint8_t bit);
