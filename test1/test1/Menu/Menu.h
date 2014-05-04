@@ -73,3 +73,6 @@ extern void MainMenu_4_select();
 extern void MainMenu_4_enter();
 extern void MainMenu_5_select();
 extern void MainMenu_5_enter();
+
+
+void DrawTemperature(void * params);

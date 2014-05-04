@@ -18,8 +18,8 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
 
 tSchedulerTask g_psSchedulerTable[] =
 {
-    { MeasureTemperature, 0, 10000, 0, true }
-//    { DisplayTask, 0, 5, 0, true },
+//    { MeasureTemperature, 0, 1000, 0, true },
+    { DrawTemperature, 0, 500, 0, true },
 //    { DistanceIRTask, 0, 100, 0, true },
 //    { AutoTask, 0, 10, 0, true },
 };
@@ -79,8 +79,8 @@ void InitializePerepheral()
     GrContextBackgroundSet(&g_sContext, BACKGROUND);
     MenuInitialize(&g_sContext);
 
-    SearchTempSensors();
-//    SchedulerInit(1000);
+//    SearchTempSensors();
+    SchedulerInit(1000);
 }
 
 int main(void)
@@ -88,8 +88,6 @@ int main(void)
     InitializePerepheral();
 
 //    delay_ms(1000);
-
-    uint32_t cCount = 0;
 
     while (1)
     {
@@ -129,6 +127,6 @@ int main(void)
 //        	MeausureTemperature(0);
 //        	cCount = 0;
 //        }
-//        SchedulerRun();
+        SchedulerRun();
     }
 }

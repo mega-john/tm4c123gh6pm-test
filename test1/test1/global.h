@@ -45,8 +45,8 @@
 #include "hardware/ili9341/ili9341.h"
 #include "hardware/ili9341/pictures/pictures.h"
 #include "hardware/interrupts/timer.h"
-#include "hardware/onewire/onewire.h"
-#include "hardware/onewire/ds18x20.h"
+//#include "hardware/onewire/onewire.h"
+//#include "hardware/onewire/ds18x20.h"
 #include "scheduler.h"
 
 #define MAX_OW_DEVICES 4
@@ -72,6 +72,8 @@ extern volatile float OverallConsumption;
 #define cb(byte, bit) (byte &= ~(1 << (bit)))	//clear bit
 #define tb(byte, bit) (byte ^= (1 << (bit)))	//toggle bit
 #define CheckBit(byte, bit) (byte & (1 << (bit)))
+
+#define F_CPU	80000000
 
 //
 //data

@@ -12,6 +12,7 @@ Menu_Item_t* CurrentMenuItem = &NULL_MENU;
 static volatile bool updateMenu = false;
 
 uint8_t owDevicesIDs[MAX_OW_DEVICES][8];
+uint8_t themperature[MAX_OW_DEVICES][3];
 
 void ClearScreen()
 {
@@ -26,6 +27,22 @@ void ClearScreen()
 void ClearClientArea(tRectangle* area)
 {
 
+}
+
+void DrawTemperature(void * params)
+{
+	tRectangle r;
+	r.i16XMin = 10;
+	r.i16XMax = 234;
+	r.i16YMin = 280;
+	r.i16YMax = r.i16YMin + GrStringHeightGet(&g_sContext);
+
+	GrContextForegroundSet(&g_sContext, BACKGROUND);
+    char tmp[30] = "value";
+	usprintf(tmp, "value: %c%d.%1d C", themperature[0][0], themperature[0][1], themperature[0][2]);
+	GrRectFill(&g_sContext, &r);
+	GrContextForegroundSet(&g_sContext, FOREGROUND);
+	GrStringDraw(&g_sContext, tmp, 29, 10, 280, 1);
 }
 
 void MenuNavigate(Menu_Item_t* const NewMenu)

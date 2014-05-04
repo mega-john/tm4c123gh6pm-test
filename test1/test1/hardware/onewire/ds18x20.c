@@ -1,7 +1,12 @@
 ﻿#include "../../global.h"
 
 extern uint8_t owDevicesIDs[MAX_OW_DEVICES][8];
+extern uint8_t themperature[MAX_OW_DEVICES][3]; // в этот массив будет записана температура
 static uint8_t sensors_count = 0;
+
+//waterproof sensor pinout:
+//Output leads: Red (VCC), green (DATA), yellow (GND)
+
 
 int8_t DS18x20_StartMeasure(void)
 {
@@ -131,7 +136,6 @@ void DS18x20_ConvertToThemperature(uint8_t* data, uint8_t* themp)
 
 void MeasureTemperature(void * params)
 {
-    char tmp[30] = "value";
     uint8_t i = 0;
     for (; i < sensors_count; i++)
     {
@@ -139,11 +143,8 @@ void MeasureTemperature(void * params)
         delay_ms(800);// ждем минимум 750 мс, пока конвентируется температура
         uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
         DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
-        uint8_t themperature[3]; // в этот массив будет записана температура
-        DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
-//        usprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
-//        usprintf(tmp, "new value");
-        GrStringDraw(&g_sContext, tmp, 29, 10, 280, 0);
+//        uint8_t themperature[3]; // в этот массив будет записана температура
+        DS18x20_ConvertToThemperature(data, themperature[i]); // преобразовываем температуру в человекопонятный вид
     }
 }
 
@@ -196,26 +197,26 @@ void SearchTempSensors()
 
     MeasureTemperature(0);
 
-    for(i = 0; i < sensors_count; i++) // теперь сотируем устройства и запрашиваем данные
-    {
-        // узнать устройство можно по его груповому коду, который расположен в первом байте адресса
-        switch (owDevicesIDs[i][0])
-        {
-            case OW_DS18B20_FAMILY_CODE:
-            { // если найден термодатчик DS18B20
-              char tmp[20];
-              DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
-              delay_ms(800); // ждем минимум 750 мс, пока конвентируется температура
-              uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
-              DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
-              uint8_t themperature[3]; // в этот массив будет записана температура
-              DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
-              usprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
-              GrStringDraw(&g_sContext, tmp, -1, 10, 280, 0);
-            }
-            break;
-        }
-    };
+//    for(i = 0; i < sensors_count; i++) // теперь сотируем устройства и запрашиваем данные
+//    {
+//        // узнать устройство можно по его груповому коду, который расположен в первом байте адресса
+//        switch (owDevicesIDs[i][0])
+//        {
+//            case OW_DS18B20_FAMILY_CODE:
+//            { // если найден термодатчик DS18B20
+//              char tmp[20];
+//              DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
+//              delay_ms(800); // ждем минимум 750 мс, пока конвентируется температура
+//              uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
+//              DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
+//              uint8_t themperature[3]; // в этот массив будет записана температура
+//              DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
+//              usprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
+//              GrStringDraw(&g_sContext, tmp, -1, 10, 280, 0);
+//            }
+//            break;
+//        }
+//    };
 }
 
 
