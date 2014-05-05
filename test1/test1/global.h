@@ -47,6 +47,8 @@
 #include "hardware/interrupts/timer.h"
 //#include "hardware/onewire/onewire.h"
 //#include "hardware/onewire/ds18x20.h"
+#include "hardware/onewire_new/onewire.h"
+#include "hardware/onewire_new/ds18b20.h"
 #include "scheduler.h"
 
 #define MAX_OW_DEVICES 4

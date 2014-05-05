@@ -49,10 +49,16 @@ uint8_t OW_Reset(void)
     OW_Set(OW_OUT);
     delay_us(480);
     OW_Set(OW_IN);
-    delay_us(60);
+    delay_us(64);
     //Store line value and wait until the completion of 480uS period
     uint8_t status = OW_CheckIn();
     delay_us(420);
+    //new code, not sure needed this
+    status = OW_CheckIn();
+    if(status == 0)
+    {
+        return 1;
+    }
     //Return the value read from the presence pulse (0=OK, 1=WRONG)
     return !status;
 }
