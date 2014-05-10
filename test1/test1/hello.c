@@ -16,12 +16,32 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
         0
 };
 
+#define FAST_GPIOPinWrite(ulPort, ucPins, ucVal) HWREG(ulPort + (GPIO_O_DATA + (ucPins << 2))) = ucVal
+
+void ShakePin(void * params)
+{
+    static bool isSet = false;
+
+    if (isSet)
+    {
+        FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
+//        GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
+        isSet = false;
+    }
+    else
+    {
+        FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
+//        GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
+        isSet = true;
+    }
+}
+
 tSchedulerTask g_psSchedulerTable[] =
 {
 //    { MeasureTemperature, 0, 1000, 0, true },
     { DrawTemperature, 0, 500, 0, true },
 //    { DistanceIRTask, 0, 100, 0, true },
-//    { AutoTask, 0, 10, 0, true },
+//    { ShakePin, 0, 2, 0, true },
 };
 uint32_t g_ui32SchedulerNumTasks = (sizeof(g_psSchedulerTable) / sizeof(tSchedulerTask));
 
@@ -46,6 +66,14 @@ void InitializePerepheral()
     SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+ ///////////////////////
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    GPIODirModeSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_DIR_MODE_OUT);
+    GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+///////////////////////
+
+
 
     UnlockPinF0();
 
@@ -80,7 +108,7 @@ void InitializePerepheral()
     MenuInitialize(&g_sContext);
 
 //    SearchTempSensors();
-    SchedulerInit(1000);
+    SchedulerInit(100);
 }
 
 int main(void)
@@ -88,6 +116,17 @@ int main(void)
     InitializePerepheral();
 
 //    delay_ms(1000);
+
+    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
+    delay_ms(480);
+    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
+    delay_ms(480);
+    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
+    delay_ms(480);
+    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
+    delay_ms(480);
+    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
+
 
     while (1)
     {
@@ -127,6 +166,6 @@ int main(void)
 //        	MeausureTemperature(0);
 //        	cCount = 0;
 //        }
-        SchedulerRun();
+//        SchedulerRun();
     }
 }

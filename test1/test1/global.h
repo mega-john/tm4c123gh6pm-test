@@ -144,12 +144,12 @@ static RectDrawFg(const tRectangle *psRect, uint32_t foreGround)
 	GrRectDraw(&g_sContext, psRect);
 }
 
-static void delay_ms(unsigned long int millisecond)
+inline static void delay_ms(unsigned long int millisecond)
 {
 	SysCtlDelay(((unsigned long) millisecond * (SysCtlClockGet() / (3 * 1000))));
 }
 
-static void delay_us(unsigned long int microsecond)
+inline static void delay_us(unsigned long int microsecond)
 {
 	SysCtlDelay(((unsigned long) microsecond * (SysCtlClockGet() / (3 * 1000000))));
 }
