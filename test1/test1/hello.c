@@ -20,20 +20,20 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
 
 void ShakePin(void * params)
 {
-    static bool isSet = false;
-
-    if (isSet)
-    {
-        FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
-//        GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
-        isSet = false;
-    }
-    else
-    {
-        FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
-//        GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
-        isSet = true;
-    }
+//    static bool isSet = false;
+//
+//    if (isSet)
+//    {
+//        FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
+////        GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
+//        isSet = false;
+//    }
+//    else
+//    {
+//        FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
+////        GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
+//        isSet = true;
+//    }
 }
 
 tSchedulerTask g_psSchedulerTable[] =
@@ -118,13 +118,13 @@ int main(void)
 //    delay_ms(1000);
 
     FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
-    delay_ms(480);
+    delay_us(480);
     FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
-    delay_ms(480);
+    delay_us(480);
     FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
-    delay_ms(480);
+    delay_us(480);
     FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
-    delay_ms(480);
+    delay_us(480);
     FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
 
 
