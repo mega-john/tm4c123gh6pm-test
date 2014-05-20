@@ -109,6 +109,7 @@ void InitializePerepheral()
 
 //    SearchTempSensors();
     SchedulerInit(100);
+    InitDS1703();
 }
 
 int main(void)

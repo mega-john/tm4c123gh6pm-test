@@ -50,6 +50,8 @@
 #include "hardware/onewire_new/onewire.h"
 #include "hardware/onewire_new/ds18b20.h"
 #include "scheduler.h"
+#include "hardware/i2c/ds1703.h"
+
 
 #define MAX_OW_DEVICES 4
 
