@@ -11,5 +11,7 @@
 #include "../../global.h"
 
 void Init24x64(void);
+uint8_t Read24x64();
+void Write24x64();
 
 #endif /* _24X64_H_ */

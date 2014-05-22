@@ -40,3 +40,42 @@ void Init24x64(void)
 
     I2CMasterEnable(I2C1_BASE);
 }
+
+uint8_t Read24x64()
+{
+     I2CMasterSlaveAddrSet( I2C1_MASTER_BASE, SLAVE_ADDRESS, false ) ;
+
+     I2CMasterDataPut( I2C1_MASTER_BASE, 0x00 ) ;
+     I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START ) ;
+     while(I2CMasterBusy(I2C1_MASTER_BASE))  {}
+
+     I2CMasterDataPut( I2C1_MASTER_BASE, WRITE_ADDRESS ) ;
+     I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_CONT ) ;
+     while(I2CMasterBusy(I2C1_MASTER_BASE))  {}
+
+     I2CMasterSlaveAddrSet( I2C1_MASTER_BASE, SLAVE_ADDRESS, true ) ;
+     while(I2CMasterBusy(I2C1_MASTER_BASE))  {}
+
+     I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_SINGLE_RECEIVE ) ;
+     while(I2CMasterBusy(I2C1_MASTER_BASE))  {}
+
+     // Get Value
+     return I2CMasterDataGet( I2C1_MASTER_BASE ) ;
+}
+void Write24x64()
+{
+     I2CMasterSlaveAddrSet( I2C1_MASTER_BASE, SLAVE_ADDRESS, false ) ;
+
+     I2CMasterDataPut( I2C1_MASTER_BASE, 0x00 ) ;
+     I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START ) ;
+     while(I2CMasterBusy(I2C1_MASTER_BASE))  {}
+
+     I2CMasterDataPut( I2C1_MASTER_BASE, WRITE_ADDRESS ) ;
+     I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_CONT ) ;
+     while(I2CMasterBusy(I2C1_MASTER_BASE))  {}
+
+     I2CMasterDataPut( I2C1_MASTER_BASE, DATA ) ;
+     I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH) ;
+     while(I2CMasterBusy(I2C1_MASTER_BASE))  {}
+}
+
