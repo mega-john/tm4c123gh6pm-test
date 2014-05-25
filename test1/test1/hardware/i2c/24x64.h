@@ -13,8 +13,11 @@
 #define DEV_ADDR_24CXX	0xA0
 #define DEV_ADDR_DS1703	0xD0
 
-void Init24x64(void);
-uint8_t Read24x64Byte();
-void Write24x64Byte(uint32_t address, uint8_t data);
+void InitI2C(void);
+uint32_t Read24x64(uint16_t addr, uint8_t *buff, uint32_t len);
+uint32_t Write24x64(uint16_t addr, uint8_t *buff, uint32_t len);
+
+//uint32_t I2C_Write(uint8_t dev_addr, uint16_t addr, uint8_t *buff, uint32_t len);
+//uint32_t I2C_Read(uint8_t dev_addr, uint16_t addr, uint8_t *buff, uint32_t len);
 
 #endif /* _24X64_H_ */

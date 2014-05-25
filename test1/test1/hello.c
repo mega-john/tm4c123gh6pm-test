@@ -109,7 +109,16 @@ void InitializePerepheral()
 
 //    SearchTempSensors();
     SchedulerInit(100);
-    InitDS1703();
+//    InitDS1703();
+    InitI2C();
+}
+
+void TestEEPROM()
+{
+    uint8_t write_buf[6] = {0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
+    uint32_t res = Write24x64(0x00, &write_buf[0], 6);
+    uint8_t read_buf[6] = {0, 0, 0, 0, 0, 0};
+    res = Read24x64(0x00, &read_buf[0], 6);
 }
 
 int main(void)
@@ -128,6 +137,8 @@ int main(void)
     delay_us(480);
     FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
 
+
+    TestEEPROM();
 
     while (1)
     {
