@@ -99,10 +99,10 @@ void InitializePerepheral()
 
     GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
 
-    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
-    GrContextForegroundSet(&g_sContext, BACKGROUND);
-    GrContextBackgroundSet(&g_sContext, ClrYellow);
-    GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200, ClrYellow);
+//    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
+//    GrContextForegroundSet(&g_sContext, BACKGROUND);
+//    GrContextBackgroundSet(&g_sContext, ClrYellow);
+//    GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200, ClrYellow);
     GrContextForegroundSet(&g_sContext, FOREGROUND);
     GrContextBackgroundSet(&g_sContext, BACKGROUND);
     MenuInitialize(&g_sContext);
@@ -115,11 +115,19 @@ void InitializePerepheral()
 
 void TestEEPROM()
 {
-    uint8_t write_buf[6] = {0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
-    uint32_t res = Write24x64(0x00, &write_buf[0], 6);
-    delay_ms(1);
-    uint8_t read_buf[6] = {0, 0, 0, 0, 0, 0};
-    res = Read24x64(0x00, &read_buf[0], 6);
+    uint32_t res = 0;
+    uint8_t write_buf[6] = {0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6};
+//    uint16_t l = sizeof(g_pui8ImageFuelComp);
+    res = Write24x64(0, &g_pui8ImageFuelComp[0], 33);
+    delay_ms(10);
+     uint8_t read_buf[165];
+    res = Read24x64(0, &read_buf[0], 33);
+
+    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
+    GrContextForegroundSet(&g_sContext, BACKGROUND);
+    GrContextBackgroundSet(&g_sContext, ClrYellow);
+    GrTransparentImageDraw(&g_sContext, read_buf, 20, 200, ClrYellow);
+
 }
 
 int main(void)
@@ -140,7 +148,7 @@ int main(void)
 
 
     TestEEPROM();
-
+    while (1);
     while (1)
     {
         ProcessMenu();

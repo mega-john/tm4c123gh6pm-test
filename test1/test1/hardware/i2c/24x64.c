@@ -55,9 +55,9 @@ void InitI2C(void)
     GPIOPinConfigure(GPIO_PA6_I2C1SCL);
     GPIOPinTypeI2CSCL(GPIO_PORTA_BASE, GPIO_PIN_6);
 
-    I2CMasterInitExpClk(I2C1_BASE, SysCtlClockGet(), false);
+    I2CMasterInitExpClk(I2C1_BASE, SysCtlClockGet(), true);
 
-//    I2CMasterEnable(I2C1_BASE);
+    I2CMasterEnable(I2C1_BASE);
 }
 
 
