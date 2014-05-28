@@ -118,10 +118,10 @@ void TestEEPROM()
     uint32_t res = 0;
     uint8_t write_buf[6] = {0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6};
 //    uint16_t l = sizeof(g_pui8ImageFuelComp);
-    res = Write24x64(0, &g_pui8ImageFuelComp[0], 33);
-    delay_ms(10);
+    res = Write24x64(0, &g_pui8ImageFuelComp[0], 165);
+    delay_ms(4);
      uint8_t read_buf[165];
-    res = Read24x64(0, &read_buf[0], 33);
+    res = Read24x64(0, &read_buf[0], 165);
 
     TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
     GrContextForegroundSet(&g_sContext, BACKGROUND);
