@@ -18,6 +18,11 @@ tGrLibDefaults g_sGrLibDefaultlanguage =
 
 #define FAST_GPIOPinWrite(ulPort, ucPins, ucVal) HWREG(ulPort + (GPIO_O_DATA + (ucPins << 2))) = ucVal
 
+void __error__(char *pcFilename, uint32_t ui32Line)
+{
+    UARTprintf("\r!__error__! file: %s line: %i", pcFilename, ui32Line);
+}
+
 void ShakePin(void * params)
 {
 //    static bool isSet = false;
@@ -58,6 +63,41 @@ void UnlockPin(uint32_t gpioPortBase, uint8_t pin)
 void UnlockPinF0()
 {
     UnlockPin(GPIO_PORTF_BASE, GPIO_PIN_0);
+}
+
+//*****************************************************************************
+//
+// Configure the UART and its pins.  This must be called before UARTprintf().
+//
+//*****************************************************************************
+void ConfigureUART(void)
+{
+    //
+    // Enable the GPIO Peripheral used by the UART.
+    //
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+
+    //
+    // Enable UART0
+    //
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+
+    //
+    // Configure GPIO Pins for UART mode.
+    //
+    GPIOPinConfigure(GPIO_PA0_U0RX);
+    GPIOPinConfigure(GPIO_PA1_U0TX);
+    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+
+    //
+    // Use the internal 16MHz oscillator as the UART clock source.
+    //
+    UARTClockSourceSet(UART0_BASE, UART_CLOCK_PIOSC);
+
+    //
+    // Initialize the UART for console I/O.
+    //
+    UARTStdioConfig(0, 115200, 16000000);
 }
 
 void InitializePerepheral()
@@ -111,17 +151,23 @@ void InitializePerepheral()
     SchedulerInit(100);
 //    InitDS1703();
     InitI2C();
+
+    ConfigureUART();
 }
 
 void TestEEPROM()
 {
     uint32_t res = 0;
-    uint8_t write_buf[6] = {0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6};
+//    uint8_t write_buf[6] = {0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6};
 //    uint16_t l = sizeof(g_pui8ImageFuelComp);
+    UARTprintf("\rwrite: %i bytes", 165);
     res = Write24x64(0, &g_pui8ImageFuelComp[0], 165);
-    delay_ms(4);
+    UARTprintf("\rwriten: %i", res);
+    delay_ms(10);
      uint8_t read_buf[165];
-    res = Read24x64(0, &read_buf[0], 165);
+//     UARTprintf("\rread: %i bytes", 165);
+//    res = Read24x64(0, &read_buf[0], 165);
+//    UARTprintf("\rwas read: %i", res);
 
     TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
     GrContextForegroundSet(&g_sContext, BACKGROUND);
@@ -145,9 +191,12 @@ int main(void)
 //    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
 //    delay_us(480);
 //    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
-
+    UARTprintf("\rstart TestEEPROM");
 
     TestEEPROM();
+
+    UARTprintf("\rend TestEEPROM");
+
     while (1);
     while (1)
     {

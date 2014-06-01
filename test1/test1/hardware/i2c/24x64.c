@@ -7,6 +7,36 @@
 
 #include "24x64.h"
 
+static void CheckI2CResult(int line, const char* f)
+{
+#ifdef DEBUG
+    uint32_t error = I2CMasterErr(I2C1_BASE);
+    if (error != 0)
+    {
+        UARTprintf("\r%s line: %i, error code: %i", f, line, error);
+
+//        UARTprintf("Send Zero Error:\n");
+//        switch (error)
+//        {
+//        case I2C_MASTER_ERR_ADDR_ACK:
+//            UARTprintf("1 I2C_MASTER_ERR_ADDR_ACK\n");
+//            break;
+//        case I2C_MASTER_ERR_DATA_ACK:
+//            UARTprintf("2 I2C_MASTER_ERR_DATA_ACK\n");
+//            break;
+//        case I2C_MASTER_ERR_ARB_LOST:
+//            UARTprintf("3 I2C_MASTER_ERR_ARB_LOST\n");
+//            break;
+//        default:
+//            UARTprintf("WTF: %d\n", error);
+//        }
+
+    }
+#else
+    return;
+#endif
+}
+
 void InitI2C(void)
 {
     //
@@ -32,107 +62,6 @@ void InitI2C(void)
     I2CMasterEnable(I2C1_BASE);
 }
 
-
-
-//uint32_t I2C_Write(uint8_t dev_addr, uint16_t addr, uint8_t *buff, uint32_t len)
-//{
-//    uint32_t l = len;
-//
-//    I2CMasterSlaveAddrSet(I2C1_BASE, (dev_addr >> 1), false);// adr (0xA0) 1010 translated to 0x50.  Note R/W bit = 0
-//
-//    I2CMasterDataPut(I2C1_BASE, (uint8_t)(addr >> 8));// 1st Byte (MSB of eeprom adr)
-//    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);// generates the I2C START Condition
-//    while(I2CMasterBusy(I2C1_BASE));
-//
-//    I2CMasterDataPut(I2C1_BASE, (uint8_t)(addr & 0x00FF));// 2nd Byte (LSB of eeprom adr)
-//    I2CMasterControl(I2C1_BASE,  I2C_MASTER_CMD_BURST_SEND_CONT);// NO START nor STOP Condx.
-//    while(I2CMasterBusy(I2C1_BASE));
-//
-//    while (l--)
-//    {
-//        I2CMasterDataPut(I2C1_BASE, *buff++);
-//        if (l == 0)
-//        {
-//            I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
-//        }
-//        else
-//        {
-//            I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
-//        }
-//        while (I2CMasterBusy(I2C1_BASE));
-//    }
-//
-//    return len;
-//}
-//
-//uint32_t I2C_Read(uint8_t dev_addr, uint16_t addr, uint8_t *buff, uint32_t len)
-//{
-//    uint32_t l;
-//
-//    if (len == 0)
-//    {
-//        return 0;
-//    }
-//
-//    if (!buff)
-//    {
-//        return 0;
-//    }
-//
-//    I2CMasterSlaveAddrSet(I2C1_BASE, (dev_addr >> 1), false);// adr (0xA0) 1010 translated to 0x50.  Note R/W bit = 0
-//    I2CMasterDataPut(I2C1_BASE, (uint8_t) (addr >> 8));// 1st Byte (MSB of eeprom adr)
-//    I2CMasterControl(I2C1_BASE, I2C_MCS_START | I2C_MCS_RUN);
-//    while (I2CMasterBusy(I2C1_BASE))
-//    {
-//    };
-//
-//    I2CMasterDataPut(I2C1_BASE, (uint8_t) (addr & 0x00FF));// 2nd Byte (LSB of eeprom adr)
-//    I2CMasterControl(I2C1_BASE, I2C_MCS_RUN);
-//    while (I2CMasterBusy(I2C1_BASE))
-//    {
-//    };
-//
-//    if (len == 1)
-//    {
-//        I2CMasterSlaveAddrSet(I2C1_BASE, (dev_addr >> 1), true);
-//        I2CMasterControl(I2C1_BASE, I2C_MCS_START | I2C_MCS_STOP | I2C_MCS_RUN);
-//        while (I2CMasterBusy(I2C1_BASE))
-//        {
-//        };
-//        *buff = I2CMasterDataGet(I2C1_BASE);
-//    }
-//    else
-//    {
-//        l = len;
-//        I2CMasterSlaveAddrSet(I2C1_BASE, (dev_addr >> 1), true);
-//        I2CMasterControl(I2C1_BASE, I2C_MCS_ACK | I2C_MCS_START | I2C_MCS_RUN);
-//        while (I2CMasterBusy(I2C1_BASE))
-//        {
-//        };
-//        uint8_t d = I2CMasterDataGet(I2C1_BASE);
-//        *buff++ = d;
-//
-//        while (l--)
-//        {
-//            if (l == 0)
-//            {
-//                I2CMasterControl(I2C1_BASE, I2C_MCS_STOP | I2C_MCS_RUN);
-//            }
-//            else
-//            {
-//                I2CMasterControl(I2C1_BASE, I2C_MCS_ACK | I2C_MCS_RUN);
-//            }
-//            while (I2CMasterBusy(I2C1_BASE))
-//            {
-//            };
-//            d = I2CMasterDataGet(I2C1_BASE);
-//            *buff++ = d;
-//        }
-//    }
-//
-//    return len;
-//}
-
 uint32_t I2C_Read(uint16_t dev_addr, uint16_t addr, uint8_t *buff, uint32_t len)
 {
 	uint32_t l;
@@ -148,43 +77,62 @@ uint32_t I2C_Read(uint16_t dev_addr, uint16_t addr, uint8_t *buff, uint32_t len)
     }
 
     I2CMasterSlaveAddrSet(I2C1_BASE, dev_addr, false);
+    CheckI2CResult(__LINE__, __FILE__);
     I2CMasterDataPut(I2C1_BASE, (uint8_t)(addr >> 8));
+    CheckI2CResult(__LINE__, __FILE__);
     I2CMasterControl(I2C1_BASE, I2C_MCS_START | I2C_MCS_RUN);
+    CheckI2CResult(__LINE__, __FILE__);
     while(I2CMasterBusy(I2C1_BASE));
+    CheckI2CResult(__LINE__, __FILE__);
 
     I2CMasterDataPut(I2C1_BASE, (uint8_t)addr);
+    CheckI2CResult(__LINE__, __FILE__);
     I2CMasterControl(I2C1_BASE, I2C_MCS_RUN);
+    CheckI2CResult(__LINE__, __FILE__);
     while(I2CMasterBusy(I2C1_BASE));
+    CheckI2CResult(__LINE__, __FILE__);
 
     if (len == 1)
     {
         I2CMasterSlaveAddrSet(I2C1_BASE, dev_addr, true);
+        CheckI2CResult(__LINE__, __FILE__);
         I2CMasterControl(I2C1_BASE, I2C_MCS_START | I2C_MCS_STOP | I2C_MCS_RUN);
-        while(I2CMasterBusy(I2C1_BASE));
+        while (I2CMasterBusy(I2C1_BASE));
+        CheckI2CResult(__LINE__, __FILE__);
         *buff = I2CMasterDataGet(I2C1_BASE);
-        while(I2CMasterBusy(I2C1_BASE));
+        CheckI2CResult(__LINE__, __FILE__);
+        while (I2CMasterBusy(I2C1_BASE));
+        CheckI2CResult(__LINE__, __FILE__);
    }
     else
     {
         l = len;
         I2CMasterSlaveAddrSet(I2C1_BASE, dev_addr, true);
+        CheckI2CResult(__LINE__, __FILE__);
         I2CMasterControl(I2C1_BASE, I2C_MCS_ACK | I2C_MCS_START | I2C_MCS_RUN);
+        CheckI2CResult(__LINE__, __FILE__);
         while(I2CMasterBusy(I2C1_BASE));
+        CheckI2CResult(__LINE__, __FILE__);
         *buff++ = I2CMasterDataGet(I2C1_BASE);
+        CheckI2CResult(__LINE__, __FILE__);
         while(I2CMasterBusy(I2C1_BASE));
+        CheckI2CResult(__LINE__, __FILE__);
 
         while(l--)
         {
             if (l == 0)
             {
                 I2CMasterControl(I2C1_BASE, I2C_MCS_STOP | I2C_MCS_RUN);
-            }
+                CheckI2CResult(__LINE__, __FILE__);
+           }
             else
             {
                 I2CMasterControl(I2C1_BASE, I2C_MCS_ACK | I2C_MCS_RUN);
-            }
+                CheckI2CResult(__LINE__, __FILE__);
+           }
             while(I2CMasterBusy(I2C1_BASE));
             *buff++ = I2CMasterDataGet(I2C1_BASE);
+            CheckI2CResult(__LINE__, __FILE__);
         }
     }
 
@@ -209,31 +157,40 @@ uint32_t I2C_Write(uint16_t dev_addr, uint16_t addr, uint8_t *buff, uint32_t len
     uint32_t l = endaddr - addr;
 
     I2CMasterSlaveAddrSet(I2C1_BASE, dev_addr, false);
+    CheckI2CResult(__LINE__, __FILE__);
     I2CMasterDataPut(I2C1_BASE, (uint8_t)(addr >> 8));
+    CheckI2CResult(__LINE__, __FILE__);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    CheckI2CResult(__LINE__, __FILE__);
     while(I2CMasterBusy(I2C1_BASE));
+    CheckI2CResult(__LINE__, __FILE__);
 
     I2CMasterDataPut(I2C1_BASE, (uint8_t)addr);
+    CheckI2CResult(__LINE__, __FILE__);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
+    CheckI2CResult(__LINE__, __FILE__);
     while(I2CMasterBusy(I2C1_BASE));
+    CheckI2CResult(__LINE__, __FILE__);
 
     uint32_t result = 0;
     while(l--)
     {
         I2CMasterDataPut(I2C1_BASE, *buff++);
+        CheckI2CResult(__LINE__, __FILE__);
         result++;
         if (l == 0)
         {
             I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
-        }
+            CheckI2CResult(__LINE__, __FILE__);
+       }
         else
         {
             I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
+            CheckI2CResult(__LINE__, __FILE__);
         }
         while(I2CMasterBusy(I2C1_BASE));
-    }
-//    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_STOP);
-//    while(I2CMasterBusy(I2C1_BASE));
+        CheckI2CResult(__LINE__, __FILE__);
+   }
 
     return result;
 }
@@ -250,9 +207,9 @@ uint32_t Write24x64(uint16_t addr, uint8_t *buff, uint32_t len)
 
     do
     {
-//        rv = ee24xx_write_page(eeaddr, len, buf);
+        UARTprintf("\rI2C_Write addr: %i, buff: %i, len: %i", addr, buff, len);
         rv = I2C_Write(DEV_ADDR_24C64, addr, buff, len);
-        delay_ms(4);
+//        delay_ms(4);
         if(rv == 0)
         {
             return 0;

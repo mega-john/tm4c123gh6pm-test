@@ -45,6 +45,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEBUGGING_MODEL.527690569" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEFINE.335228944" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="ccs=&quot;ccs&quot;"/>
+									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="PART_TM4C123GH6PM"/>
 									<listOptionValue builtIn="false" value="TARGET_IS_TM4C123_RB1"/>
 								</option>

@@ -33,10 +33,11 @@
 #include "driverlib/fpu.h"
 #include "driverlib/i2c.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/uart.h"
 #include "utils/softi2c.h"
 #include "utils/spi_flash.h"
 #include "utils/ustdlib.h"
-
+#include "utils/uartstdio.h"
 #include "grlib/grlib.h"
 
 #include "menu/menu.h"

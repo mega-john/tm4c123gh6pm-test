@@ -31,6 +31,11 @@
 			<location>C:/ti/TivaWare_C_Series-2.1.0.12573/utils/scheduler.c</location>
 		</link>
 		<link>
+			<name>Utils/uartstdio.c</name>
+			<type>1</type>
+			<location>C:/ti/TivaWare_C_Series-2.1.0.12573/utils/uartstdio.c</location>
+		</link>
+		<link>
 			<name>Utils/ustdlib.c</name>
 			<type>1</type>
 			<location>C:/ti/TivaWare_C_Series-2.1.0.12573/utils/ustdlib.c</location>
