@@ -92,8 +92,6 @@ MAKE_MENU(Menu_4_3, false, true, Menu_4_1, Menu_4_2, Menu_4, Menu_4_3_1,		L1I1_S
 MAKE_MENU(Menu_4_3_1, true, false, Menu_4_3_2, Menu_4_3_1, Menu_4_3, NULL_MENU,		L1I1_Select, L1I1_Enter, "салон");
 MAKE_MENU(Menu_4_3_2, false, true, Menu_4_3_1, Menu_4_3_2, Menu_4_3, NULL_MENU,		L1I1_Select, L1I1_Enter, "улица");
 
-
-
 MAKE_MENU(MainMenu_1, true, false, MainMenu_2, MainMenu_5, NULL_MENU, NULL_MENU,		MainMenu_1_select, MainMenu_1_enter, "Расход");
 MAKE_MENU(MainMenu_2, false, false, MainMenu_3, MainMenu_1, NULL_MENU,		NULL_MENU, MainMenu_2_select, MainMenu_2_enter, "Запас хода");
 MAKE_MENU(MainMenu_3, false, false, MainMenu_4, MainMenu_3, NULL_MENU,		NULL_MENU, MainMenu_3_select, MainMenu_3_enter, "Пробег");

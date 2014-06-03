@@ -53,23 +53,13 @@
 #include "scheduler.h"
 #include "hardware/i2c/ds1703.h"
 #include "hardware/i2c/24x64.h"
-
+#include "hardware/interrupts/interrupts.h"
 
 #define MAX_OW_DEVICES 4
 
 extern tContext g_sContext;
 
 static tSoftI2C g_sI2C;
-
-extern volatile uint32_t InFuelImpulses;
-extern volatile uint32_t OutFuelImpulses;
-extern volatile uint32_t InDistanceImpulses;
-
-extern volatile float CurrentDistance;
-extern volatile float TotalDistance;
-extern volatile float PeakConsumption;
-extern volatile float TotalConsumption;
-extern volatile float OverallConsumption;
 
 #define BACKGROUND	ClrBlack
 #define FOREGROUND	ClrWhite
@@ -79,7 +69,7 @@ extern volatile float OverallConsumption;
 #define tb(byte, bit) (byte ^= (1 << (bit)))	//toggle bit
 #define CheckBit(byte, bit) (byte & (1 << (bit)))
 
-#define F_CPU	80000000
+
 
 //
 //data
@@ -157,5 +147,23 @@ inline static void delay_us(unsigned long int microsecond)
 {
 	SysCtlDelay(((unsigned long) microsecond * (SysCtlClockGet() / (3 * 1000000))));
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// sensors variables
+////////////////////////////////////////////////////////////////////////////////////
+static uint32_t	InFuelImpulses;
+static uint32_t	OutFuelImpulses;
+static int32_t	TotalFuelImpulses;
+static uint32_t	InDistanceImpulses;
+////////////////////////////////////////////////////////////////////////////////////
+// global variables
+////////////////////////////////////////////////////////////////////////////////////
+
+float CurrentDistance;
+float TotalDistance;
+float PeakConsumption;
+float TotalConsumption;
+float OverallConsumption;
 
 #endif /* GLOBAL_H_ */

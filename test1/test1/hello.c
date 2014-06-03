@@ -113,7 +113,7 @@ void InitializePerepheral()
     GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
 ///////////////////////
 
-
+    IntMasterDisable();
 
     UnlockPinF0();
 
@@ -153,26 +153,37 @@ void InitializePerepheral()
     InitI2C();
 
     ConfigureUART();
+
+    SetupExternalInterrupts();
+
+    SetUpTimers();
+
+    //
+    // Enable processor interrupts.
+    //
+    IntMasterEnable();
 }
 
 void TestEEPROM()
 {
-    uint32_t res = 0;
+	uint32_t res = 0;
 //    uint8_t write_buf[6] = {0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6};
 //    uint16_t l = sizeof(g_pui8ImageFuelComp);
-    UARTprintf("\rwrite: %i bytes", 165);
-    res = Write24x64(0, &g_pui8ImageFuelComp[0], 165);
-    UARTprintf("\rwriten: %i", res);
-    delay_ms(10);
-     uint8_t read_buf[165];
-//     UARTprintf("\rread: %i bytes", 165);
-//    res = Read24x64(0, &read_buf[0], 165);
-//    UARTprintf("\rwas read: %i", res);
+	UARTprintf("\rwrite: %i bytes", 165);
+	uint32_t size = sizeof(&g_pui8ImageFuelComp)
+			/ sizeof(&g_pui8ImageFuelComp[0]);
+	res = Write24x64(0, &g_pui8ImageFuelComp[0], size);
+	UARTprintf("\rwriten: %i", res);
+	delay_ms(10);
+	uint8_t read_buf[165];
+	UARTprintf("\rread: %i bytes", size);
+	res = Read24x64(0, &read_buf[0], size);
+	UARTprintf("\rwas read: %i", res);
 
-    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
-    GrContextForegroundSet(&g_sContext, BACKGROUND);
-    GrContextBackgroundSet(&g_sContext, ClrYellow);
-    GrTransparentImageDraw(&g_sContext, read_buf, 20, 200, ClrYellow);
+	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
+	GrContextForegroundSet(&g_sContext, BACKGROUND);
+	GrContextBackgroundSet(&g_sContext, ClrYellow);
+	GrTransparentImageDraw(&g_sContext, read_buf, 20, 200, ClrYellow);
 
 }
 
@@ -180,17 +191,6 @@ int main(void)
 {
     InitializePerepheral();
 
-//    delay_ms(1000);
-
-//    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
-//    delay_us(480);
-//    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
-//    delay_us(480);
-//    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
-//    delay_us(480);
-//    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_PIN_6);
-//    delay_us(480);
-//    FAST_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_6, 0);
     UARTprintf("\rstart TestEEPROM");
 
     TestEEPROM();

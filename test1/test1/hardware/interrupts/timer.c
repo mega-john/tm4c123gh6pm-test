@@ -26,7 +26,6 @@ void SetupTimer0()
 {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
 	TimerDisable(TIMER0_BASE, TIMER_BOTH);
-	IntMasterEnable();
 	TimerConfigure(TIMER0_BASE,
 			TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC);
 	//80mHz/128 = 625000Hz, тоесть 62500 тиков ~ 100ms
@@ -91,11 +90,7 @@ void SetupTimer4()
     // pull-up or pull-down, this will not be required.
     //
     GPIOPadConfigSet(GPIO_PORTC_BASE, GPIO_PIN_0, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
-    //
-    // Enable processor interrupts.
-    //
-    IntMasterEnable();
-    //
+
     // Configure the timers in downward edge count mode.
     //
     // TODO: Modify this to configure the specific general purpose
