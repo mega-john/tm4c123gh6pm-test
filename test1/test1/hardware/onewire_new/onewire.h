@@ -8,7 +8,7 @@
 /* Hardware connection                     */
 /*******************************************/
 
-#define F_CPU	80000000
+#define F_CPU	80000000L
 
 /* Define OW_ONE_BUS if only one 1-Wire-Bus is used
  in the application -> shorter code.
