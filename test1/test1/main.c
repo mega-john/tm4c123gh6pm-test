@@ -1,22 +1,4 @@
-//#include <stdint.h>
-#include "global.h"
-
-tCodePointMap g_psCodePointMap_language[] =
-{
-        {CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode}
-};
-#define NUM_CODEPOINT_MAPS (sizeof(g_psCodePointMap_language) / sizeof(tCodePointMap))
-
-tGrLibDefaults g_sGrLibDefaultlanguage =
-{
-        GrDefaultStringRenderer,
-        g_psCodePointMap_language,
-        CODEPAGE_WIN1251,
-        NUM_CODEPOINT_MAPS,
-        0
-};
-
-#define FAST_GPIOPinWrite(ulPort, ucPins, ucVal) HWREG(ulPort + (GPIO_O_DATA + (ucPins << 2))) = ucVal
+#include "main.h"
 
 void __error__(char *pcFilename, uint32_t ui32Line)
 {
@@ -41,14 +23,14 @@ void ShakePin(void * params)
 //    }
 }
 
-tSchedulerTask g_psSchedulerTable[] =
-{
-//    { MeasureTemperature, 0, 1000, 0, true },
-    { DrawTemperature, 0, 500, 0, true },
-//    { DistanceIRTask, 0, 100, 0, true },
-//    { ShakePin, 0, 2, 0, true },
-};
-uint32_t g_ui32SchedulerNumTasks = (sizeof(g_psSchedulerTable) / sizeof(tSchedulerTask));
+//tSchedulerTask g_psSchedulerTable[] =
+//{
+////    { MeasureTemperature, 0, 1000, 0, true },
+//    { DrawTemperature, 0, 500, 0, true },
+////    { DistanceIRTask, 0, 100, 0, true },
+////    { ShakePin, 0, 2, 0, true },
+//};
+//uint32_t g_ui32SchedulerNumTasks = (sizeof(g_psSchedulerTable) / sizeof(tSchedulerTask));
 
 tContext g_sContext;
 uint8_t red_state, green_state, blue_state;
@@ -148,7 +130,7 @@ void InitializePerepheral()
     MenuInitialize(&g_sContext);
 
 //    SearchTempSensors();
-    SchedulerInit(100);
+//    SchedulerInit(100);
 //    InitDS1703();
     InitI2C();
 

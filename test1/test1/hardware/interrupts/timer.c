@@ -173,9 +173,9 @@ void Timer4IntHandlerA()
 void Timer4IntHandlerB()
 {
 }
-void Timer5IntHandlerA()
-{
-}
+//void Timer5IntHandlerA()//used in delay.c
+//{
+//}
 void Timer5IntHandlerB()
 {
 }
