@@ -43,6 +43,8 @@
 #include "utils/uartstdio.h"
 #include "grlib/grlib.h"
 
+#include "defines.h"
+
 #include "menu/menu.h"
 #include "hardware/buttons.h"
 #include "hardware/ili9341/fonts/fonts.h"
@@ -58,6 +60,7 @@
 #include "hardware/i2c/24x64.h"
 #include "hardware/interrupts/interrupts.h"
 #include "delay.h"
+
 
 #define MAX_OW_DEVICES 4
 
