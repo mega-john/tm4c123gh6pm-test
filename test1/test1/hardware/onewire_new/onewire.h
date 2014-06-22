@@ -8,8 +8,6 @@
 /* Hardware connection                     */
 /*******************************************/
 
-#define F_CPU	80000000L
-
 /* Define OW_ONE_BUS if only one 1-Wire-Bus is used
  in the application -> shorter code.
  If not defined make sure to call ow_set_bus() before using
@@ -47,8 +45,6 @@
 // sensores have been parasite-powered.
 #define OW_USE_INTERNAL_PULLUP     0  /* 0=external, 1=internal */
 
-/*******************************************/
-
 #define OW_MATCH_ROM    0x55
 #define OW_SKIP_ROM     0xCC
 #define OW_SEARCH_ROM   0xF0
@@ -60,16 +56,12 @@
 #define OW_ROMCODE_SIZE 8
 
 extern uint8_t ow_reset(void);
-
 extern uint8_t ow_bit_io(uint8_t b);
 extern uint8_t ow_byte_wr(uint8_t b);
 extern uint8_t ow_byte_rd(void);
-
 extern uint8_t ow_rom_search(uint8_t diff, uint8_t *id);
-
 extern void ow_command(uint8_t command, uint8_t *id);
 extern void ow_command_with_parasite_enable(uint8_t command, uint8_t *id);
-
 extern void ow_parasite_enable(void);
 extern void ow_parasite_disable(void);
 extern uint8_t ow_input_pin_state(void);

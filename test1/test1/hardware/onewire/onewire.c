@@ -18,8 +18,9 @@ void OW_Init(uint32_t periph, uint32_t portBase, uint8_t pin)
     OW_PIN = pin;
 
     SysCtlPeripheralEnable(OW_PERIPH);
-    GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_OD);
+    GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
+//    GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
+//    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_OD);
 //    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 }
 
@@ -27,14 +28,16 @@ void OW_Set(ow_enum mode)
 {
     if(mode == OW_OUT)
     {
+        GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
 //        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
+//        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
         GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
     else
     {
+        GPIOPinTypeGPIOInput(OW_PORT, OW_PIN);
 //        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
-        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
+//        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
         GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
 }
@@ -120,7 +123,7 @@ uint8_t OW_ReadByte(void)
     return n;
 }
 
-uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
+uint8_t OW_SearchROM(uint8_t diff, uint8_t* id)
 {
     uint8_t j;
     uint8_t next_diff;
@@ -172,7 +175,7 @@ uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
     return next_diff;                  // to continue search
 }
 
-void OW_FindROM(uint8_t *diff, uint8_t id[])
+void OW_FindROM(uint8_t* diff, uint8_t id[])
 {
     while(1)
     {
@@ -186,7 +189,7 @@ void OW_FindROM(uint8_t *diff, uint8_t id[])
     }
 }
 
-uint8_t OW_ReadROM(uint8_t *buffer)
+uint8_t OW_ReadROM(uint8_t* buffer)
 {
     if(!OW_Reset())
     {
@@ -201,7 +204,7 @@ uint8_t OW_ReadROM(uint8_t *buffer)
     return 1;
 }
 
-uint8_t OW_MatchROM(uint8_t *rom)
+uint8_t OW_MatchROM(uint8_t* rom)
 {
     if(!OW_Reset())
     {

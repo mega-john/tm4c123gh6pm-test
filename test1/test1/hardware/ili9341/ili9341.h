@@ -33,13 +33,13 @@
 #define COLOR24TO16BIT(rgb)		((((rgb) & 0x00f80000) >> 8) | (((rgb) & 0x0000fc00) >> 5) | (((rgb) & 0x000000f8) >> 3))
 
 /**Macro definitions for char display direction**/
-#define ORIENTATION_LEFT2RIGHT 0
-#define ORIENTATION_DOWN2UP    1
-#define ORIENTATION_RIGHT2LEFT 2
-#define ORIENTATION_UP2DOWN    3
+#define ORIENTATION_LEFT2RIGHT  0
+#define ORIENTATION_DOWN2UP     1
+#define ORIENTATION_RIGHT2LEFT  2
+#define ORIENTATION_UP2DOWN     3
 
-#define DISPLAY_WIDTH					239
-#define DISPLAY_HEIGHT					319
+#define DISPLAY_WIDTH		    239
+#define DISPLAY_HEIGHT			319
 
 //*****************************************************************************
 //

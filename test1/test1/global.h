@@ -51,16 +51,17 @@
 #include "hardware/ili9341/ili9341.h"
 #include "hardware/ili9341/pictures/pictures.h"
 #include "hardware/interrupts/timer.h"
-//#include "hardware/onewire/onewire.h"
-//#include "hardware/onewire/ds18x20.h"
-#include "hardware/onewire_new/onewire.h"
-#include "hardware/onewire_new/ds18b20.h"
+#include "hardware/onewire/onewire.h"
+#include "hardware/onewire/ds18x20.h"
+//#include "hardware/onewire_new/onewire.h"
+//#include "hardware/onewire_new/ds18b20.h"
 //#include "scheduler.h"
 #include "hardware/i2c/ds1703.h"
 #include "hardware/i2c/24x64.h"
 #include "hardware/interrupts/interrupts.h"
 #include "delay.h"
 
+#define F_CPU   80000000L
 
 #define MAX_OW_DEVICES 4
 
@@ -76,17 +77,17 @@ static tSoftI2C g_sI2C;
 #define tb(byte, bit) (byte ^= (1 << (bit)))	//toggle bit
 #define CheckBit(byte, bit) (byte & (1 << (bit)))
 
-#define min(a,b) ((a)<(b)?(a):(b))
-#define max(a,b) ((a)>(b)?(a):(b))
-#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
-#define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
-#define radians(deg) ((deg)*DEG_TO_RAD)
-#define degrees(rad) ((rad)*RAD_TO_DEG)
-#define sq(x) ((x)*(x))
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+#define constrain(amt, low, high) ((amt) <= (low) ? (low) : ((amt) >= (high) ? (high) : (amt)))
+#define round(x) ((x) >= 0 ? (long)((x) + 0.5) : (long)((x) - 0.5))
+#define radians(deg) ((deg) * DEG_TO_RAD)
+#define degrees(rad) ((rad) * RAD_TO_DEG)
+#define sq(x) ((x) * (x))
 
-#define clockCyclesPerMicrosecond() ( 80000000L / 1000000L )
-#define clockCyclesToMicroseconds(a) ( (a) / clockCyclesPerMicrosecond() )
-#define microsecondsToClockCycles(a) ( (a) * clockCyclesPerMicrosecond() )
+#define clockCyclesPerMicrosecond() (80000000L / 1000000L)
+#define clockCyclesToMicroseconds(a) ((a) / clockCyclesPerMicrosecond())
+#define microsecondsToClockCycles(a) ((a) * clockCyclesPerMicrosecond())
 
 #define lowByte(w) ((uint8_t) ((w) & 0xff))
 #define highByte(w) ((uint8_t) ((w) >> 8))

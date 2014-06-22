@@ -31,6 +31,7 @@
 #include "driverlib/sysctl.h"
 #include "inc/hw_types.h"
 #include "inc/hw_memmap.h"
+#include "../global.h"
 #include "buttons.h"
 
 //*****************************************************************************
@@ -91,7 +92,7 @@ uint8_t ButtonsPoll(uint8_t *pui8Delta, uint8_t *pui8RawState)
     // (inverting the bit sense) if the caller supplied storage for the
     // raw value.
     //
-    ui32Data = (GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS));
+    ui32Data = (GPIOPinRead(BUTTONS_PORT, ALL_BUTTONS));
     if(pui8RawState)
     {
         *pui8RawState = (uint8_t)~ui32Data;
@@ -160,19 +161,19 @@ void ButtonsInit(void)
     //
     // Enable the GPIO port to which the pushbuttons are connected.
     //
-    SysCtlPeripheralEnable(BUTTONS_GPIO_PERIPH);
+    SysCtlPeripheralEnable(BUTTONS_PERIPH);
 
     //
     // Set each of the button GPIO pins as an input with a pull-up.
     //
-    GPIODirModeSet(BUTTONS_GPIO_BASE, ALL_BUTTONS, GPIO_DIR_MODE_IN);
-    GPIOPadConfigSet(BUTTONS_GPIO_BASE, ALL_BUTTONS, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+    GPIODirModeSet(BUTTONS_PORT, ALL_BUTTONS, GPIO_DIR_MODE_IN);
+    GPIOPadConfigSet(BUTTONS_PORT, ALL_BUTTONS, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 
     //
     // Initialize the debounced button state with the current state read from
     // the GPIO bank.
     //
-    g_ui8ButtonStates = GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS);
+    g_ui8ButtonStates = GPIOPinRead(BUTTONS_PORT, ALL_BUTTONS);
 }
 
 //*****************************************************************************

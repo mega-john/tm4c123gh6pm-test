@@ -14,44 +14,21 @@
 #include "driverlib/rom.h"
 #include "driverlib/pin_map.h"
 #include "grlib/grlib.h"
+#include "../../global.h"
 #include "ili_initialization.h"
 #include "ili9341.h"
 #include "../SPI/SPI.h"
 
-//*****************************************************************************
-//
-// Defines the port and pins for the display C/S signal.
-//
-//*****************************************************************************
-#define DISPLAY_CS_PORT            		GPIO_PORTE_BASE
-#define DISPLAY_CS_PIN	             	GPIO_PIN_3
-#define TFT_CS_LOW						GPIOPinWrite(DISPLAY_CS_PORT, DISPLAY_CS_PIN, 0)
-#define TFT_CS_HIGH						GPIOPinWrite(DISPLAY_CS_PORT, DISPLAY_CS_PIN, DISPLAY_CS_PIN)
+#define TFT_CS_LOW		GPIOPinWrite(DISPLAY_CS_PORT, DISPLAY_CS_PIN, 0)
+#define TFT_CS_HIGH		GPIOPinWrite(DISPLAY_CS_PORT, DISPLAY_CS_PIN, DISPLAY_CS_PIN)
 
-//*****************************************************************************
-//
-// Defines the port and pins for the display reset signal.
-//
-//*****************************************************************************
-#define DISPLAY_RST_PORT            	GPIO_PORTE_BASE
-#define DISPLAY_RST_PIN             	GPIO_PIN_2
-#define TFT_RST_ON						GPIOPinWrite(DISPLAY_RST_PORT, DISPLAY_RST_PIN, 0)
-#define TFT_RST_OFF						GPIOPinWrite(DISPLAY_RST_PORT, DISPLAY_RST_PIN, DISPLAY_RST_PIN)
+#define TFT_RST_ON		GPIOPinWrite(DISPLAY_RST_PORT, DISPLAY_RST_PIN, 0)
+#define TFT_RST_OFF		GPIOPinWrite(DISPLAY_RST_PORT, DISPLAY_RST_PIN, DISPLAY_RST_PIN)
 
-//*****************************************************************************
-//
-// Defines the port and pins for the display Data/Command (D/C) signal.
-//
-//*****************************************************************************
-#define DISPLAY_D_C_PORT            	GPIO_PORTE_BASE
-#define DISPLAY_D_C_PIN             	GPIO_PIN_1
-#define TFT_DC_LOW						GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, 0)
-#define TFT_DC_HIGH						GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, DISPLAY_D_C_PIN)
+#define TFT_DC_LOW		GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, 0)
+#define TFT_DC_HIGH		GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, DISPLAY_D_C_PIN)
 
-#define DISPLAY_COMMAND_PERIPH          SYSCTL_PERIPH_GPIOE
-
-#define DELAY_VALUE						300000
-#define constrain(amt, low, high) 		((amt) <= (low) ? (low) : ((amt) >= (high) ? (high) : (amt)))
+#define DELAY_VALUE		300000
 
 void TFT_sendCMD(uint8_t index)
 {
@@ -123,12 +100,7 @@ uint8_t TFT_readID(void)
 	}
 	if (!ToF) /* data!=ID                     */
 	{
-		//Serial.print("Read TFT ID failed, ID should be 0x09341, but read ID = 0x");
-		for (i = 0; i < 3; i++)
-		{
-			//Serial.print(data[i],HEX);
-		}
-		//Serial.println();
+	    UARTprintf("\nRead TFT ID failed, ID should be 0x09341, but read ID = 0x%x%x%x", data[0], data[1], data[2]);
 	}
 	return ToF;
 }
@@ -332,21 +304,16 @@ void RectFill(void *pvDisplayData, const tRectangle *pRect, uint32_t ui32Value)
 
 void InitDisplay(void)
 {
-	SysCtlPeripheralEnable(DISPLAY_COMMAND_PERIPH);
+	SysCtlPeripheralEnable(DISPLAY_RST_PERIPH);
 	GPIOPinTypeGPIOOutput(DISPLAY_RST_PORT, DISPLAY_RST_PIN);
+    SysCtlPeripheralEnable(DISPLAY_CS_PERIPH);
 	GPIOPinTypeGPIOOutput(DISPLAY_CS_PORT, DISPLAY_CS_PIN);
+    SysCtlPeripheralEnable(DISPLAY_D_C_PERIPH);
 	GPIOPinTypeGPIOOutput(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN);
 
 	//start display initialization
 	SPI_begin(3);
 	SPI_setDataMode(SPI_MODE3);
-	/*
-	 uint8_t ii = 0;
-	 for(; ii < 11;ii++)
-	 {
-	 SPI_transfer(0);
-	 }
-	 */
 	TFT_RST_ON;
 	SysCtlDelay(DELAY_VALUE);
 	TFT_RST_OFF;
