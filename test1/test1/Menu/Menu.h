@@ -1,3 +1,6 @@
+#ifndef _MENU_H
+#define _MENU_H
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -74,5 +77,9 @@ extern void MainMenu_4_enter();
 extern void MainMenu_5_select();
 extern void MainMenu_5_enter();
 
+extern void L1I1_Enter(void);
+extern void L1I1_Select(void);
 
 void DrawTemperature(void * params);
+
+#endif _MENU_H

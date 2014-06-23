@@ -152,8 +152,7 @@ void TestEEPROM()
 //    uint8_t write_buf[6] = {0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6};
 //    uint16_t l = sizeof(g_pui8ImageFuelComp);
 	UARTprintf("\rwrite: %i bytes", 165);
-	uint32_t size = sizeof(&g_pui8ImageFuelComp)
-			/ sizeof(&g_pui8ImageFuelComp[0]);
+	uint32_t size = 165;//sizeof(&g_pui8ImageFuelComp)/ sizeof(g_pui8ImageFuelComp[0]);
 	res = Write24x64(0, &g_pui8ImageFuelComp[0], size);
 	UARTprintf("\rwriten: %i", res);
 	delay_ms(10);
@@ -179,7 +178,9 @@ int main(void)
 
     UARTprintf("\rend TestEEPROM");
 
-    while (1);
+    SearchTempSensors();
+
+//    while (1);
     while (1)
     {
         ProcessMenu();
