@@ -97,27 +97,21 @@ static tSoftI2C g_sI2C;
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
-static RectFillFg(const tRectangle *psRect, uint32_t foreGround)
+typedef struct
 {
-	GrContextForegroundSet(&g_sContext, foreGround);
-	GrRectFill(&g_sContext, psRect);
-}
+    bool update_temperature;
+    bool update_menu;
+} fl;
 
-static RectDrawFg(const tRectangle *psRect, uint32_t foreGround)
-{
-	GrContextForegroundSet(&g_sContext, foreGround);
-	GrRectDraw(&g_sContext, psRect);
-}
-
-inline static void delay_ms(unsigned long int millisecond)
-{
-	SysCtlDelay(((unsigned long) millisecond * (SysCtlClockGet() / (3 * 1000))));
-}
-
-inline static void delay_us(unsigned long int microsecond)
-{
-	SysCtlDelay(((unsigned long) microsecond * (SysCtlClockGet() / (3 * 1000000))));
-}
+//static void delay_ms(unsigned long int millisecond)
+//{
+//	SysCtlDelay(((unsigned long) millisecond * (SysCtlClockGet() / (3 * 1000))));
+//}
+//
+//static void delay_us(unsigned long int microsecond)
+//{
+//	SysCtlDelay(((unsigned long) microsecond * (SysCtlClockGet() / (3 * 1000000))));
+//}
 
 ////////////////////////////////////////////////////////////////////////////////////
 // sensors variables

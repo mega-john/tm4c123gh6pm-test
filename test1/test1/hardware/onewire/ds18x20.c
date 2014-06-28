@@ -140,7 +140,7 @@ void MeasureTemperature(void * params)
     for (; i < sensors_count; i++)
     {
         DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
-        delay_ms(800);// ждем минимум 750 мс, пока конвентируется температура
+        delayMilliseconds(800);// ждем минимум 750 мс, пока конвентируется температура
         uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
         DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
 //        uint8_t themperature[3]; // в этот массив будет записана температура
@@ -191,7 +191,7 @@ uint8_t OW_SearchDevices(void) // поиск всех устройств на ш
 
 void SearchTempSensors()
 {
-    OW_Init(SYSCTL_PERIPH_GPIOA, GPIO_PORTA_BASE, GPIO_PIN_5);
+    OW_Init();
     OW_Reset();
     uint8_t i = OW_SearchDevices();
 

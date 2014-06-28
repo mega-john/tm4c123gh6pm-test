@@ -19,9 +19,14 @@
 #define IN_DISTANCE_PORT        GPIO_PORTF_BASE
 #define IN_DISTANCE_PERIPH      SYSCTL_PERIPH_GPIOF
 
+//one wire defines
+#define OW_PERIPH               SYSCTL_PERIPH_GPIOA
+#define OW_PORT                 GPIO_PORTA_BASE
+#define OW_PIN                  GPIO_PIN_5
+
 
 //SPI
-#define SPI_SPEED               20000000UL
+#define SPI_SPEED               30000000UL
 
 //temperature sensors defines
 

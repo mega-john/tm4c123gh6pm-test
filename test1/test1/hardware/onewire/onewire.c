@@ -7,77 +7,75 @@
 
 #include "../../global.h"
 
-static uint32_t OW_PERIPH = 0;
-static uint32_t OW_PORT = 0;
-static uint8_t OW_PIN = 0;
-
-void OW_Init(uint32_t periph, uint32_t portBase, uint8_t pin)
+void OW_Init()
 {
-    OW_PERIPH = periph;
-    OW_PORT = portBase;
-    OW_PIN = pin;
-
     SysCtlPeripheralEnable(OW_PERIPH);
-    GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
+
+    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
 //    GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
-//    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_OD);
-//    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 }
 
 void OW_Set(ow_enum mode)
 {
     if(mode == OW_OUT)
     {
-        GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
-//        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-//        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
+//        GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
+
+//        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
+        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
         GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
     else
     {
-        GPIOPinTypeGPIOInput(OW_PORT, OW_PIN);
-//        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
-//        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
+//        GPIOPinTypeGPIOInput(OW_PORT, OW_PIN);
+
+//        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
         GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
 }
 
-uint8_t OW_CheckIn(void)
+int32_t OW_CheckIn(void)
 {
-    return (GPIOPinRead(OW_PORT, OW_PIN) & OW_PIN);// == OW_PIN;
+    int32_t pinRead = GPIOPinRead(OW_PORT, OW_PIN);
+//    pinRead = GPIOPinRead(OW_PORT, OW_PIN);
+    int32_t result = ((pinRead & OW_PIN) == OW_PIN);
+    return result;
+//    return (GPIOPinRead(OW_PORT, OW_PIN) != 0);
 }
 
 uint8_t OW_Reset(void)
 {
     OW_Set(OW_OUT);
-    delay_us(480);
+    delayMicroseconds(480);
     OW_Set(OW_IN);
-    delay_us(64);
-    //Store line value and wait until the completion of 480uS period
+    delayMicroseconds(60);
     uint8_t status = OW_CheckIn();
-    delay_us(420);
-    //new code, not sure needed this
+    delayMicroseconds(480);
     status = OW_CheckIn();
-    if(status == 0)
-    {
-        return 1;
-    }
-    //Return the value read from the presence pulse (0=OK, 1=WRONG)
-    return !status;
+
+    return status;
+//
+//    if(status != 0)
+//    {
+//        return 1;
+//    }
+//    //Return the value read from the presence pulse (0=OK, 1=WRONG)
+//    return !status;
 }
 
 void OW_WriteBit(uint8_t bit)
 {
     //Pull line low for 1uS
     OW_Set(OW_OUT);
-    delay_us(1);
+    delayMicroseconds(1);
     //If we want to write 1, release the line (if not will keep low)
     if(bit)
     {
         OW_Set(OW_IN);
     }
     //Wait for 60uS and release the line
-    delay_us(60);
+    delayMicroseconds(60);
     OW_Set(OW_IN);
 }
 
@@ -86,17 +84,17 @@ uint8_t OW_ReadBit(void)
     uint8_t bit = 0;
     //Pull line low for 1uS
     OW_Set(OW_OUT);
-    delay_us(1);
+    delayMicroseconds(1);
     //Release line and wait for 14uS
     OW_Set(OW_IN);
-    delay_us(14);
+    delayMicroseconds(14);
     //Read line value
     if(OW_CheckIn())
     {
         bit = 1;
     }
     //Wait for 45uS to end and return read value
-    delay_us(45);
+    delayMicroseconds(45);
     return bit;
 }
 
@@ -123,7 +121,7 @@ uint8_t OW_ReadByte(void)
     return n;
 }
 
-uint8_t OW_SearchROM(uint8_t diff, uint8_t* id)
+uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
 {
     uint8_t j;
     uint8_t next_diff;
@@ -175,7 +173,7 @@ uint8_t OW_SearchROM(uint8_t diff, uint8_t* id)
     return next_diff;                  // to continue search
 }
 
-void OW_FindROM(uint8_t* diff, uint8_t id[])
+void OW_FindROM(uint8_t *diff, uint8_t id[])
 {
     while(1)
     {
@@ -189,7 +187,7 @@ void OW_FindROM(uint8_t* diff, uint8_t id[])
     }
 }
 
-uint8_t OW_ReadROM(uint8_t* buffer)
+uint8_t OW_ReadROM(uint8_t *buffer)
 {
     if(!OW_Reset())
     {
@@ -204,7 +202,7 @@ uint8_t OW_ReadROM(uint8_t* buffer)
     return 1;
 }
 
-uint8_t OW_MatchROM(uint8_t* rom)
+uint8_t OW_MatchROM(uint8_t *rom)
 {
     if(!OW_Reset())
     {

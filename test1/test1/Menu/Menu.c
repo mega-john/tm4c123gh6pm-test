@@ -188,6 +188,8 @@ void MenuInitialize()
 	MenuNavigate(&Menu_1);
 }
 
+extern fl flags;
+
 void ProcessMenu()
 {
 	tRectangle sRect;
@@ -203,6 +205,10 @@ void ProcessMenu()
 
 		DrawMenu();
 		updateMenu = false;
-		DrawTemperature(NULL);
+	}
+	if(flags.update_menu)
+	{
+        DrawTemperature(NULL);
+        flags.update_menu=false;
 	}
 }

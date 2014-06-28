@@ -1,5 +1,7 @@
 #include "main.h"
 
+volatile fl flags;
+
 void __error__(char *pcFilename, uint32_t ui32Line)
 {
     UARTprintf("\r!__error__! file: %s line: %i", pcFilename, ui32Line);
@@ -85,21 +87,23 @@ void ConfigureUART(void)
 void InitializePerepheral()
 {
     FPULazyStackingEnable();
-    SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+//    SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+
+    timerInit();
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
- ///////////////////////
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    GPIODirModeSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-///////////////////////
+// ///////////////////////
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+//    GPIODirModeSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_DIR_MODE_OUT);
+//    GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+/////////////////////////
 
     IntMasterDisable();
 
     UnlockPinF0();
 
-    ButtonsInit();
+//    ButtonsInit();
     SetUpTimers();
 
     InitDisplay();
@@ -121,7 +125,7 @@ void InitializePerepheral()
 
     GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
 
-//    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
+    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
 //    GrContextForegroundSet(&g_sContext, BACKGROUND);
 //    GrContextBackgroundSet(&g_sContext, ClrYellow);
 //    GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200, ClrYellow);
@@ -129,20 +133,13 @@ void InitializePerepheral()
     GrContextBackgroundSet(&g_sContext, BACKGROUND);
     MenuInitialize(&g_sContext);
 
-//    SearchTempSensors();
-//    SchedulerInit(100);
-//    InitDS1703();
     InitI2C();
 
     ConfigureUART();
 
     SetupExternalInterrupts();
 
-    SetUpTimers();
 
-    //
-    // Enable processor interrupts.
-    //
     IntMasterEnable();
 }
 
@@ -155,7 +152,7 @@ void TestEEPROM()
 	uint32_t size = 165;//sizeof(&g_pui8ImageFuelComp)/ sizeof(g_pui8ImageFuelComp[0]);
 	res = Write24x64(0, &g_pui8ImageFuelComp[0], size);
 	UARTprintf("\rwriten: %i", res);
-	delay_ms(10);
+	delayMilliseconds(10);
 	uint8_t read_buf[165];
 	UARTprintf("\rread: %i bytes", size);
 	res = Read24x64(0, &read_buf[0], size);
@@ -165,6 +162,8 @@ void TestEEPROM()
 	GrContextForegroundSet(&g_sContext, BACKGROUND);
 	GrContextBackgroundSet(&g_sContext, ClrYellow);
 	GrTransparentImageDraw(&g_sContext, read_buf, 20, 200, ClrYellow);
+    GrContextForegroundSet(&g_sContext, FOREGROUND);
+    GrContextBackgroundSet(&g_sContext, BACKGROUND);
 
 }
 
@@ -172,18 +171,24 @@ int main(void)
 {
     InitializePerepheral();
 
-    UARTprintf("\rstart TestEEPROM");
+//    UARTprintf("\rstart TestEEPROM");
+//    TestEEPROM();
+//    UARTprintf("\rend TestEEPROM");
 
-    TestEEPROM();
-
-    UARTprintf("\rend TestEEPROM");
-
+    flags.update_temperature = false;
     SearchTempSensors();
 
 //    while (1);
     while (1)
     {
         ProcessMenu();
+
+        if(flags.update_temperature)
+        {
+            MeasureTemperature(0);
+            flags.update_temperature = false;
+            flags.update_menu = true;
+        }
 
         uint8_t ui8ButtonState;
         uint8_t ui8ButtonChanged;

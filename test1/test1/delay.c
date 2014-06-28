@@ -9,6 +9,9 @@
 
 static void (*SysTickCbFuncs[8])(uint32_t ui32TimeMS);
 static unsigned long milliseconds = 0;
+static unsigned long tmp = 0;
+
+extern fl flags;
 
 void timerInit()
 {
@@ -76,6 +79,11 @@ void Timer5IntHandlerA(void)
 
     TimerIntClear(TIMER5_BASE, TIMER_TIMA_TIMEOUT);
 	milliseconds++;
+	if(tmp++ >= 1000)
+	{
+	    flags.update_temperature = true;
+	    tmp = 0;
+	}
 }
 
 void registerSysTickCb(void (*userFunc)(uint32_t))

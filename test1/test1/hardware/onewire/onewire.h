@@ -14,9 +14,10 @@ typedef enum
     OW_IN = 0, OW_OUT = 1
 } ow_enum;
 
-#define OW_CMD_SEARCHROM		0xF0
 #define OW_CMD_READROM			0x33
-#define OW_CMD_MATCHROM			0x55
+#define OW_CMD_MATCHROM         0x55
+#define OW_CMD_SEARCHROM        0xF0
+#define OW_CMD_ALARMSEARCH      0xEC
 #define OW_CMD_SKIPROM			0xCC
 
 #define	OW_SEARCH_FIRST			0xFF
@@ -46,6 +47,6 @@ uint8_t OW_MatchROM(uint8_t *rom);
 void OW_WriteBit(uint8_t bit);
 void OW_WriteByte(uint8_t byte);
 void OW_FindROM(uint8_t *diff, uint8_t id[]);
-void OW_Init(uint32_t periph, uint32_t portBase, uint8_t pin);
+void OW_Init();
 
 #endif /* ONEWIRE_H_ */
