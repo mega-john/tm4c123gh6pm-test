@@ -1,6 +1,6 @@
 #include "main.h"
 
-volatile fl flags;
+volatile update_flags flags;
 
 void __error__(char *pcFilename, uint32_t ui32Line)
 {
@@ -84,12 +84,44 @@ void ConfigureUART(void)
     UARTStdioConfig(0, 115200, 16000000);
 }
 
+#define INTERNAL_EEPROM_SAVE_ADDRESS    0x3FF00
+
+extern float Distance;
+
+void InitInternalEEPROM()
+{
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_EEPROM0);
+    EEPROMInit();
+    uint32_t size = EEPROMSizeGet();
+//    TotalDistance = 123.45;
+//    FuelSpetInTravel = 1.543;
+//    unsigned long pulData[2];
+//    unsigned long pulRead[2];
+//    pulData[0] = 0x12345678;
+//    pulData[1] = 0x56789abc;
+//    FlashErase(0x10000);
+//    FlashProgram((uint32_t*)&pulData, 0x10000, sizeof(pulData));
+    uint32_t test=0xABCDEF;
+    uint32_t result = EEPROMProgram((uint32_t*)&test, 0, 1);
+    if(result != 0)
+    {
+        UARTprintf("\rwriten: %i", result);
+    }
+    test = 0xffffffff;
+    EEPROMRead((uint32_t*)&test, 0, 1);
+    if(test != 0xffffffff)
+    {
+        UARTprintf("\rwriten: %i", test);
+    }
+}
+
 void InitializePerepheral()
 {
     FPULazyStackingEnable();
 //    SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 
     timerInit();
+    InitInternalEEPROM();
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
@@ -170,6 +202,8 @@ void TestEEPROM()
 int main(void)
 {
     InitializePerepheral();
+
+    InitInternalEEPROM();
 
 //    UARTprintf("\rstart TestEEPROM");
 //    TestEEPROM();

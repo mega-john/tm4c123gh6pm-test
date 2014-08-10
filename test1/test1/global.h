@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <float.h>
 
 #include "inc/hw_gpio.h"
 #include "inc/hw_memmap.h"
@@ -37,6 +38,9 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/uart.h"
 #include "driverlib/systick.h"
+#include "driverlib/onewire.h"
+#include "driverlib/eeprom.h"
+#include "driverlib/flash.h"
 #include "utils/softi2c.h"
 #include "utils/spi_flash.h"
 #include "utils/ustdlib.h"
@@ -101,17 +105,28 @@ typedef struct
 {
     bool update_temperature;
     bool update_menu;
-} fl;
+} update_flags;
 
-//static void delay_ms(unsigned long int millisecond)
-//{
-//	SysCtlDelay(((unsigned long) millisecond * (SysCtlClockGet() / (3 * 1000))));
-//}
-//
-//static void delay_us(unsigned long int microsecond)
-//{
-//	SysCtlDelay(((unsigned long) microsecond * (SysCtlClockGet() / (3 * 1000000))));
-//}
+typedef union
+{
+    struct
+    {
+        uint8_t seconds;
+        uint8_t minutes;
+        uint8_t hours;
+        uint8_t days;
+    }dt;
+    uint16_t tt;
+}TravelTime;
+
+typedef struct
+{
+    TravelTime tt;
+
+    float distance_in_meters;
+//    uint8_t seconds;
+//    uint8_t seconds;
+}ReportItem;
 
 ////////////////////////////////////////////////////////////////////////////////////
 // sensors variables
@@ -120,14 +135,18 @@ static uint32_t	InFuelImpulses;
 static uint32_t	OutFuelImpulses;
 static int32_t	TotalFuelImpulses;
 static uint32_t	InDistanceImpulses;
+
 ////////////////////////////////////////////////////////////////////////////////////
 // global variables
 ////////////////////////////////////////////////////////////////////////////////////
+float Distance;//рассто€ние за текущую поездку в метрах
+float TotalDistance;//всего пройдено в метрах
 
-float CurrentDistance;
-float TotalDistance;
-float PeakConsumption;
-float TotalConsumption;
-float OverallConsumption;
+float AverageConsumptionInTravel;//средний расход топлива за поездку л/100км
+float CurrentConsumptionInTravel;//текущий расход топлива за поездку л/100км
+float AverageConsumption;//общий средний расход топлива в л/100км
+float FuelSpetInTravel;//израсходовано топлива за поездку в л
+float FuelTotalSpent;//всего израсходовано топлива в л
+
 
 #endif /* GLOBAL_H_ */

@@ -41,4 +41,10 @@
 			<location>C:/ti/TivaWare_C_Series-2.1.0.12573/utils/ustdlib.c</location>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SW_ROOT</name>
+			<value>$%7BPARENT-1-CCS_INSTALL_ROOT%7D/TivaWare_C_Series-2.1.0.12573</value>
+		</variable>
+	</variableList>
 </projectDescription>

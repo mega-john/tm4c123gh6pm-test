@@ -1,10 +1,6 @@
 #ifndef DS18X20_H_
 #define DS18X20_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -117,8 +113,5 @@ extern void DS18X20_show_id_uart( uint8_t *id, size_t n );
 extern uint8_t DS18X20_read_meas_all_verbose( void );
 #endif /* DS18X20_VERBOSE */
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

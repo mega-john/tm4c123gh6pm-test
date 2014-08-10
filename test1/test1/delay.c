@@ -11,7 +11,7 @@ static void (*SysTickCbFuncs[8])(uint32_t ui32TimeMS);
 static unsigned long milliseconds = 0;
 static unsigned long tmp = 0;
 
-extern fl flags;
+extern update_flags flags;
 
 void timerInit()
 {

@@ -188,7 +188,7 @@ void MenuInitialize()
 	MenuNavigate(&Menu_1);
 }
 
-extern fl flags;
+extern update_flags flags;
 
 void ProcessMenu()
 {
