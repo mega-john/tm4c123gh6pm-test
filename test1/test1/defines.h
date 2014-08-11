@@ -35,6 +35,7 @@
 
 
 //EEPROM defines
+#define INTERNAL_EEPROM_DEVICE_ADDRESS	0x400AF000
 
 //display defines
 #define DISPLAY_CS_PORT         GPIO_PORTE_BASE
@@ -57,5 +58,7 @@
 #define RIGHT_BUTTON            GPIO_PIN_2
 #define SELECT_BUTTON           GPIO_PIN_1
 #define ALL_BUTTONS             (LEFT_BUTTON | RIGHT_BUTTON | UP_BUTTON |  DOWN_BUTTON | SELECT_BUTTON)
+
+
 
 #endif /* DEFINES_H_ */

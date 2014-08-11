@@ -88,48 +88,74 @@ void ConfigureUART(void)
 
 extern float Distance;
 
+void InternalEEPROMWrite(unsigned char * pucBuffer, int iLength, int iOffset)
+{
+    //
+    // Write the info to the EEPROM.
+    //
+    EEPROMProgram((uint32_t *)pucBuffer, (uint32_t)(0 + iOffset), (uint32_t)iLength);
+}
+
+void InternalEEPROMRead(unsigned char * pucBuffer, int iLength, int iOffset)
+{
+    //
+    // Read the requested data.
+    //
+    EEPROMRead((uint32_t *)pucBuffer, (uint32_t)(0 + iOffset), (uint32_t)iLength);
+}
+
 void InitInternalEEPROM()
 {
+    //
+    // Enable the EEPROM peripheral.
+    //
     SysCtlPeripheralEnable(SYSCTL_PERIPH_EEPROM0);
+
+    //
+    // Initialize the EEPROM
+    //
     EEPROMInit();
-    uint32_t size = EEPROMSizeGet();
-//    TotalDistance = 123.45;
-//    FuelSpetInTravel = 1.543;
-//    unsigned long pulData[2];
-//    unsigned long pulRead[2];
-//    pulData[0] = 0x12345678;
-//    pulData[1] = 0x56789abc;
-//    FlashErase(0x10000);
-//    FlashProgram((uint32_t*)&pulData, 0x10000, sizeof(pulData));
-    uint32_t test=0xABCDEF;
-    uint32_t result = EEPROMProgram((uint32_t*)&test, 0, 1);
-    if(result != 0)
-    {
-        UARTprintf("\rwriten: %i", result);
-    }
-    test = 0xffffffff;
-    EEPROMRead((uint32_t*)&test, 0, 1);
-    if(test != 0xffffffff)
-    {
-        UARTprintf("\rwriten: %i", test);
-    }
+}
+
+void TestInternalEEPROM()
+{
+	UARTprintf("\n init internal EEPROM");
+	InitInternalEEPROM();
+
+//	EEPROMMassErase();
+//	unsigned long pulRead[2];
+//	int writeData=0xabcdefff;
+	const unsigned char writeData[6] = {0x11,0x22,0x33,0x44,0x55,0x66};
+	int size = sizeof(writeData) + 2;
+
+//	UARTprintf("\n write to internal EEPROM");
+//	InternalEEPROMWrite((unsigned char *)writeData, size, 0);
+	unsigned char readData[6] = {0};
+	UARTprintf("\n read from internal EEPROM");
+	InternalEEPROMRead((unsigned char *)readData, size, 0);
+	uint8_t i = 0;
+	UARTprintf("\n result: ", readData[i]);
+	for(;i < size; i++)
+	{
+		UARTprintf("0x%x ", readData[i]);
+	}
+
+	float f = 0.123456789;
+	UARTprintf("\n write to internal EEPROM float %4.4f", f);
+	InternalEEPROMWrite((unsigned char *)&f, sizeof(float), 0);
+	UARTprintf("\n read from internal EEPROM");
+	float ff = 0;
+	InternalEEPROMRead((unsigned char *)&ff, sizeof(float), 0);
+	UARTprintf("\n result: %4.4f", ff);
 }
 
 void InitializePerepheral()
 {
     FPULazyStackingEnable();
-//    SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 
     timerInit();
-    InitInternalEEPROM();
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-
-// ///////////////////////
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-//    GPIODirModeSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_DIR_MODE_OUT);
-//    GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-/////////////////////////
 
     IntMasterDisable();
 
@@ -203,7 +229,7 @@ int main(void)
 {
     InitializePerepheral();
 
-    InitInternalEEPROM();
+    TestInternalEEPROM();
 
 //    UARTprintf("\rstart TestEEPROM");
 //    TestEEPROM();
