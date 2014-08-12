@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <float.h>
+#include <math.h>
 
 #include "inc/hw_gpio.h"
 #include "inc/hw_memmap.h"
@@ -63,7 +64,9 @@
 #include "hardware/i2c/ds1703.h"
 #include "hardware/i2c/24x64.h"
 #include "hardware/interrupts/interrupts.h"
+#include "hardware/EEPROM/internalEEPROM.h"
 #include "delay.h"
+#include "lib/ftoa.h"
 
 #define F_CPU   80000000L
 

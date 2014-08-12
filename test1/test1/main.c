@@ -84,70 +84,9 @@ void ConfigureUART(void)
     UARTStdioConfig(0, 115200, 16000000);
 }
 
-#define INTERNAL_EEPROM_SAVE_ADDRESS    0x3FF00
+//#define INTERNAL_EEPROM_SAVE_ADDRESS    0x3FF00
 
 extern float Distance;
-
-void InternalEEPROMWrite(unsigned char * pucBuffer, int iLength, int iOffset)
-{
-    //
-    // Write the info to the EEPROM.
-    //
-    EEPROMProgram((uint32_t *)pucBuffer, (uint32_t)(0 + iOffset), (uint32_t)iLength);
-}
-
-void InternalEEPROMRead(unsigned char * pucBuffer, int iLength, int iOffset)
-{
-    //
-    // Read the requested data.
-    //
-    EEPROMRead((uint32_t *)pucBuffer, (uint32_t)(0 + iOffset), (uint32_t)iLength);
-}
-
-void InitInternalEEPROM()
-{
-    //
-    // Enable the EEPROM peripheral.
-    //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_EEPROM0);
-
-    //
-    // Initialize the EEPROM
-    //
-    EEPROMInit();
-}
-
-void TestInternalEEPROM()
-{
-	UARTprintf("\n init internal EEPROM");
-	InitInternalEEPROM();
-
-//	EEPROMMassErase();
-//	unsigned long pulRead[2];
-//	int writeData=0xabcdefff;
-	const unsigned char writeData[6] = {0x11,0x22,0x33,0x44,0x55,0x66};
-	int size = sizeof(writeData) + 2;
-
-//	UARTprintf("\n write to internal EEPROM");
-//	InternalEEPROMWrite((unsigned char *)writeData, size, 0);
-	unsigned char readData[6] = {0};
-	UARTprintf("\n read from internal EEPROM");
-	InternalEEPROMRead((unsigned char *)readData, size, 0);
-	uint8_t i = 0;
-	UARTprintf("\n result: ", readData[i]);
-	for(;i < size; i++)
-	{
-		UARTprintf("0x%x ", readData[i]);
-	}
-
-	float f = 0.123456789;
-	UARTprintf("\n write to internal EEPROM float %4.4f", f);
-	InternalEEPROMWrite((unsigned char *)&f, sizeof(float), 0);
-	UARTprintf("\n read from internal EEPROM");
-	float ff = 0;
-	InternalEEPROMRead((unsigned char *)&ff, sizeof(float), 0);
-	UARTprintf("\n result: %4.4f", ff);
-}
 
 void InitializePerepheral()
 {

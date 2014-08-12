@@ -11,10 +11,7 @@ void InFuelInterrupt(void)
 	if (GPIOIntStatus(IN_FUEL_PORT, false) & IN_FUEL_PIN)
 	{
 		InFuelImpulses++;
-		// PF4 was interrupt cause
 		UARTprintf("\nInFuelInterrupt");
-//		GPIOIntRegister(GPIO_PORTF_BASE, onButtonUp); // Register our handler function for port F
-//		GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_RISING_EDGE); // Configure PF4 for rising edge trigger
 		GPIOIntClear(IN_FUEL_PORT, IN_FUEL_PIN);  // Clear interrupt flag
 	}
 }
@@ -23,10 +20,8 @@ void OutFuelInterrupt(void)
 {
 	if (GPIOIntStatus(OUT_FUEL_PORT, false) & OUT_FUEL_PIN)
 	{
-		// PF4 was interrupt cause
+		OutFuelImpulses++;
 		UARTprintf("\nOutFuelInterrupt");
-//		GPIOIntRegister(GPIO_PORTF_BASE, onButtonUp); // Register our handler function for port F
-//		GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_RISING_EDGE); // Configure PF4 for rising edge trigger
 		GPIOIntClear(OUT_FUEL_PORT, IN_FUEL_PIN);  // Clear interrupt flag
 	}
 }
@@ -35,11 +30,18 @@ void DistanceImpulseInterrupt(void)
 {
 	if (GPIOIntStatus(IN_DISTANCE_PORT, false) & IN_DISTANCE_PIN)
 	{
-		// PF4 was interrupt cause
+		InDistanceImpulses++
 		UARTprintf("\nDistanceImpulseInterrupt");
-//		GPIOIntRegister(GPIO_PORTF_BASE, onButtonUp); // Register our handler function for port F
-//		GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_RISING_EDGE); // Configure PF4 for rising edge trigger
 		GPIOIntClear(IN_DISTANCE_PORT, IN_FUEL_PIN);  // Clear interrupt flag
+	}
+}
+
+void ShutdownInterrupt(void)
+{
+	if (GPIOIntStatus(SHUTDOWN_PORT, false) & SHUTDOWN_PIN)
+	{
+		UARTprintf("\nShutdownInterrupt");
+		GPIOIntClear(SHUTDOWN_PORT, SHUTDOWN_PIN);  // Clear interrupt flag
 	}
 }
 
@@ -62,8 +64,5 @@ void SetupExternalInterrupts(void)
 	SetupInterrupt(IN_FUEL_PERIPH, IN_FUEL_PORT, IN_FUEL_PIN, true, InFuelInterrupt);
 	SetupInterrupt(OUT_FUEL_PERIPH, OUT_FUEL_PORT, OUT_FUEL_PIN, true, OutFuelInterrupt);
 	SetupInterrupt(IN_DISTANCE_PERIPH, IN_DISTANCE_PORT, IN_DISTANCE_PIN, true, DistanceImpulseInterrupt);
+	SetupInterrupt(SHUTDOWN_PERIPH, SHUTDOWN_PORT, SHUTDOWN_PIN, true, ShutdownInterrupt);
 }
-
-
-
-
