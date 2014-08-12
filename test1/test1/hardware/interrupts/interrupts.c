@@ -30,7 +30,7 @@ void DistanceImpulseInterrupt(void)
 {
 	if (GPIOIntStatus(IN_DISTANCE_PORT, false) & IN_DISTANCE_PIN)
 	{
-		InDistanceImpulses++
+		InDistanceImpulses++;
 		UARTprintf("\nDistanceImpulseInterrupt");
 		GPIOIntClear(IN_DISTANCE_PORT, IN_FUEL_PIN);  // Clear interrupt flag
 	}
