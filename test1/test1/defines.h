@@ -9,19 +9,19 @@
 #define DEFINES_H_
 
 //external interrupts defines
-#define IN_FUEL_PIN             GPIO_PIN_4
-#define IN_FUEL_PORT            GPIO_PORTF_BASE
-#define IN_FUEL_PERIPH          SYSCTL_PERIPH_GPIOF
-#define OUT_FUEL_PIN            GPIO_PIN_5
-#define OUT_FUEL_PORT           GPIO_PORTF_BASE
-#define OUT_FUEL_PERIPH         SYSCTL_PERIPH_GPIOF
-#define IN_DISTANCE_PIN         GPIO_PIN_6
-#define IN_DISTANCE_PORT        GPIO_PORTF_BASE
-#define IN_DISTANCE_PERIPH      SYSCTL_PERIPH_GPIOF
+#define IN_FUEL_PIN             GPIO_PIN_5
+#define IN_FUEL_PORT            GPIO_PORTB_BASE
+#define IN_FUEL_PERIPH          SYSCTL_PERIPH_GPIOB
+#define OUT_FUEL_PIN            GPIO_PIN_0
+#define OUT_FUEL_PORT           GPIO_PORTB_BASE
+#define OUT_FUEL_PERIPH         SYSCTL_PERIPH_GPIOB
+#define IN_DISTANCE_PIN         GPIO_PIN_1
+#define IN_DISTANCE_PORT        GPIO_PORTB_BASE
+#define IN_DISTANCE_PERIPH      SYSCTL_PERIPH_GPIOB
 
-#define SHUTDOWN_PIN            GPIO_PIN_7
-#define SHUTDOWN_PORT			GPIO_PORTF_BASE
-#define SHUTDOWN_PERIPH			SYSCTL_PERIPH_GPIOF
+#define SHUTDOWN_PIN            GPIO_PIN_4
+#define SHUTDOWN_PORT			GPIO_PORTE_BASE
+#define SHUTDOWN_PERIPH			SYSCTL_PERIPH_GPIOE
 
 //one wire defines
 #define OW_PERIPH               SYSCTL_PERIPH_GPIOA
