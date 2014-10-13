@@ -49,13 +49,13 @@ void InitI2C(void)
     // Enable pin PA7 for I2C1 I2C1SDA
     //
     GPIOPinConfigure(GPIO_PA7_I2C1SDA);
-    GPIOPinTypeI2C(GPIO_PORTA_BASE, GPIO_PIN_7);
+    GPIOPinTypeI2C(GPIO_PORTA_BASE, I2C_EEPROM_SDA_PIN);
 
     //
     // Enable pin PA6 for I2C1 I2C1SCL
     //
     GPIOPinConfigure(GPIO_PA6_I2C1SCL);
-    GPIOPinTypeI2CSCL(GPIO_PORTA_BASE, GPIO_PIN_6);
+    GPIOPinTypeI2CSCL(GPIO_PORTA_BASE, I2C_EEPROM_SCL_PIN);
 
     I2CMasterInitExpClk(I2C1_BASE, SysCtlClockGet(), true);
 

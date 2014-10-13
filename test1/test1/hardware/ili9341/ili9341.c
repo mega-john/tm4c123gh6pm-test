@@ -102,6 +102,10 @@ uint8_t TFT_readID(void)
 	{
 	    UARTprintf("\nRead TFT ID failed, ID should be 0x09341, but read ID = 0x%x%x%x", data[0], data[1], data[2]);
 	}
+	else
+	{
+        UARTprintf("\nRead TFT ID OK, ID = 0x%x%x%x", data[0], data[1], data[2]);
+	}
 	return ToF;
 }
 
@@ -340,15 +344,15 @@ void InitDisplay(void)
 
 const tDisplay g_sILI9341 =
 {
-		sizeof(tDisplay),
-		0,
-		240,
-		320,
-		PixelDraw,
-		PixelDrawMultiple,
-		LineDrawH,
-		LineDrawV,
-		RectFill,
-		ColorTranslate,
-		Flush
+        sizeof(tDisplay),
+        0,
+        240,
+        320,
+        PixelDraw,
+        PixelDrawMultiple,
+        LineDrawH,
+        LineDrawV,
+        RectFill,
+        ColorTranslate,
+        Flush
 };

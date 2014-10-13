@@ -87,7 +87,7 @@ int8_t DS18x20_ReadData(uint8_t *rom, uint8_t *buffer)
     {
         OW_MatchROM(rom);
     }
-    OW_WriteByte(THERM_CMD_RSCRATCHPAD);
+    OW_WriteByte(THERM_CMD_READ_SCRATCHPAD);
 
 #ifdef DS18X20_CHECK_CRC
     unsigned char buff[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -108,6 +108,33 @@ int8_t DS18x20_ReadData(uint8_t *rom, uint8_t *buffer)
     buffer[1] = OW_ReadByte();// Read TH
 #endif
 
+    return 1;
+}
+
+int8_t DS18x20_WriteData(uint8_t *rom, uint8_t *buffer)
+{
+    //Reset, skip ROM and send command to read Scratchpad
+    if(!OW_Reset())
+    {
+        return 0;
+    }
+//    if(rom[0] == 0)
+//    {
+//        OW_WriteByte(OW_CMD_SKIPROM);
+//    }
+//    else
+//    {
+        OW_MatchROM(rom);
+//    }
+    OW_WriteByte(THERM_CMD_WRITE_SCRATCHPAD);
+
+//    OW_WriteByte(buffer[0]);
+//    OW_WriteByte(buffer[1]);
+//    OW_WriteByte(buffer[2]);
+
+    OW_WriteByte(0xff);
+    OW_WriteByte(0xff);
+    OW_WriteByte(0x00);
     return 1;
 }
 
@@ -140,7 +167,7 @@ void MeasureTemperature(void * params)
     for (; i < sensors_count; i++)
     {
         DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
-        delayMilliseconds(800);// ждем минимум 750 мс, пока конвентируется температура
+        delayMilliseconds(100);// ждем минимум 750 мс, пока конвентируется температура
         uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
         DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
 //        uint8_t themperature[3]; // в этот массив будет записана температура
@@ -194,6 +221,11 @@ void SearchTempSensors()
     OW_Init();
     OW_Reset();
     uint8_t i = OW_SearchDevices();
+    i = 0;
+    for (; i < sensors_count; i++)
+    {
+        DS18x20_WriteData(owDevicesIDs[i], 0);
+    }
 
     MeasureTemperature(0);
 

@@ -12,7 +12,6 @@ void OW_Init()
     SysCtlPeripheralEnable(OW_PERIPH);
 
     GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
-//    GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
 }
 
 void OW_Set(ow_enum mode)
@@ -21,15 +20,11 @@ void OW_Set(ow_enum mode)
     {
 //        GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
 
-//        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
         GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
         GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
     else
     {
-//        GPIOPinTypeGPIOInput(OW_PORT, OW_PIN);
-
-//        GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
         GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
         GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
@@ -38,7 +33,6 @@ void OW_Set(ow_enum mode)
 int32_t OW_CheckIn(void)
 {
     int32_t pinRead = GPIOPinRead(OW_PORT, OW_PIN);
-//    pinRead = GPIOPinRead(OW_PORT, OW_PIN);
     int32_t result = ((pinRead & OW_PIN) == OW_PIN);
     return result;
 //    return (GPIOPinRead(OW_PORT, OW_PIN) != 0);
@@ -215,4 +209,13 @@ uint8_t OW_MatchROM(uint8_t *rom)
         OW_WriteByte(rom[i]);
     }
     return 1;
+}
+
+uint8_t OW_SetPrecision(uint8_t p)
+{
+//    ow_write_byte(0x4E) //send command to write scratchpad
+//    ow_write_byte(0xFF) //buffer TH
+//    ow_write_byte(0xFF) //buffer TL
+//    ow_write_byte(0x00) //send 0 to config register
+    return 0;
 }

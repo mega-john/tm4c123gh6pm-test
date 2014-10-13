@@ -14,11 +14,11 @@ typedef enum
     OW_IN = 0, OW_OUT = 1
 } ow_enum;
 
+#define OW_CMD_SEARCHROM        0xF0
 #define OW_CMD_READROM			0x33
 #define OW_CMD_MATCHROM         0x55
-#define OW_CMD_SEARCHROM        0xF0
+#define OW_CMD_SKIPROM          0xCC
 #define OW_CMD_ALARMSEARCH      0xEC
-#define OW_CMD_SKIPROM			0xCC
 
 #define	OW_SEARCH_FIRST			0xFF
 #define	OW_PRESENCE_ERR			0xFF

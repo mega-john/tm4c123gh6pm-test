@@ -8,6 +8,8 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+//#define PART_TM4C123GH6PM
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -28,6 +30,7 @@
 #include "inc/hw_ints.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_timer.h"
+#include "inc/hw_onewire.h"
 
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
@@ -42,6 +45,7 @@
 #include "driverlib/onewire.h"
 #include "driverlib/eeprom.h"
 #include "driverlib/flash.h"
+#include "driverlib/onewire.h"
 #include "utils/softi2c.h"
 #include "utils/spi_flash.h"
 #include "utils/ustdlib.h"
