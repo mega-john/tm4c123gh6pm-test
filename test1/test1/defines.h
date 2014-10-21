@@ -70,8 +70,6 @@
 #define I2C_EEPROM_SDA_PIN  GPIO_PIN_7
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////
 //
 // Maximum number of devices that search can be performed using this module.
@@ -101,8 +99,6 @@
 // Degree of the CRC polynomial
 //
 #define POLY_DEGREE 8
-
-
 
 
 #endif /* DEFINES_H_ */

@@ -13,13 +13,8 @@ static unsigned long tmp = 0;
 
 extern update_flags flags;
 
-void timerInit()
+void DelayInit()
 {
-    //
-    //  Run at system clock at 80MHz
-    //
-    SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
-
     //
     //  SysTick is used for delay() and delayMicroseconds()
     //
@@ -42,7 +37,6 @@ void timerInit()
     TimerEnable(TIMER5_BASE, TIMER_A);
 
     IntMasterEnable();
-
 }
 
 unsigned long micros(void)

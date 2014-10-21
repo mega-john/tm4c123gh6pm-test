@@ -16,32 +16,55 @@
 #define LED_RED_ON		LED_RED
 #define LED_RED_OFF		0
 
-#define TIMER_100ms			62500
-#define TIMER_PRESCALLER	127
+#define CPU_CLOCK           80000000UL
+#define TIMER_PRESCALLER    127UL
+#define MS(x)               (x / 1000.0)
+#define US(x)               (x / 1000000.0)
+
+#define SETUP_TIMER_MS(x)  ((CPU_CLOCK / (TIMER_PRESCALLER + 1UL)) * MS(x));
+#define SETUP_TIMER_US(x)  ((CPU_CLOCK / (TIMER_PRESCALLER + 1UL)) * US(x));
+
 
 //extern uint8_t red_state;//, green_state, blue_state;
 uint32_t intCount = 0;
 
+bool b = false;
+
 void SetupTimer0()
 {
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+//    GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPD);
+//    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_DIR_MODE_OUT);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+
+
+
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
 	TimerDisable(TIMER0_BASE, TIMER_BOTH);
-	TimerConfigure(TIMER0_BASE,	TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC);
+	TimerConfigure(TIMER0_BASE,	TIMER_CFG_PERIODIC_UP | TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC);
 	//80mHz/128 = 625000Hz, тоесть 62500 тиков ~ 100ms
-	TimerPrescaleSet(TIMER0_BASE, TIMER_A, 127);
-	TimerPrescaleSet(TIMER0_BASE, TIMER_B, 127);
+	TimerPrescaleSet(TIMER0_BASE, TIMER_A, TIMER_PRESCALLER);
+	TimerPrescaleSet(TIMER0_BASE, TIMER_B, TIMER_PRESCALLER);
 	//	uint64_t tValue = SysCtlClockGet()/2000;
-	TimerLoadSet(TIMER0_BASE, TIMER_A, TIMER_100ms);
+    uint32_t t = SETUP_TIMER_US(100);
+    uint32_t t1 = SETUP_TIMER_MS(1);
+    uint32_t t2 = SETUP_TIMER_MS(100);
+    uint32_t t3 = SETUP_TIMER_MS(1000);
+    uint32_t t4 = SETUP_TIMER_MS(10000);
+//    TimerLoadSet(TIMER0_BASE, TIMER_A, t4);
+    TimerLoadSet(TIMER0_BASE, TIMER_B, t1);
 	//
-	// Configure the Timer0B interrupt for timer timeout.
+	// Configure the Timer0 interrupt for timer timeout.
 	//
-	TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    TimerIntEnable(TIMER0_BASE, TIMER_TIMB_TIMEOUT);
 	//
-	// Enable the Timer0B interrupt on the processor (NVIC).
+	// Enable the Timer0 interrupt on the processor (NVIC).
 	//
-	IntEnable(INT_TIMER0A);
+    IntEnable(INT_TIMER0A);
+    IntEnable(INT_TIMER0B);
 	//
-	// Enable Timer0B.
+	// Enable Timer0.
 	//
 	TimerEnable(TIMER0_BASE, TIMER_BOTH);
 }
@@ -135,10 +158,12 @@ void Timer0IntHandlerA()
 		if (red_state == 0)
 		{
 			red_state = LED_RED_ON;
+//	        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
 		}
 		else
 		{
 			red_state = LED_RED_OFF;
+//	        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
 		}
 		intCount = 0;
 	}
@@ -147,6 +172,18 @@ void Timer0IntHandlerA()
 }
 void Timer0IntHandlerB()
 {
+    TimerIntClear(TIMER0_BASE, TIMER_TIMB_TIMEOUT);
+//    TimerLoadSet(TIMER0_BASE, TIMER_B, 650);
+    if(b)
+    {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
+        b = false;
+    }
+    else
+    {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
+        b = true;
+    }
 }
 void Timer1IntHandlerA()
 {

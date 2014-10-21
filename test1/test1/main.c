@@ -88,11 +88,21 @@ void ConfigureUART(void)
 
 extern float Distance;
 
+void SetupSystemClock()
+{
+    //
+    //  Run at system clock at 80MHz
+    //
+    SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+}
+
 void InitializePerepheral()
 {
+    SetupSystemClock();
+
     FPULazyStackingEnable();
 
-    timerInit();
+    DelayInit();
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
@@ -134,8 +144,7 @@ void InitializePerepheral()
 
     ConfigureUART();
 
-    SetupExternalInterrupts();
-
+//    SetupExternalInterrupts();
 
     IntMasterEnable();
 }
@@ -166,6 +175,10 @@ void TestEEPROM()
 
 int main(void)
 {
+//    SetupSystemClock();
+//
+//    SetUpTimers();
+
     InitializePerepheral();
 
     TestInternalEEPROM();

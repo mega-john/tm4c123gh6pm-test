@@ -14,7 +14,7 @@
 #define SYSTICKHZ               100
 #define SYSTICK_INT_PRIORITY    0x80
 
-void timerInit();
+void DelayInit();
 void delayMicroseconds(uint32_t microseconds);
 void delayMilliseconds(uint32_t milliseconds);
 
