@@ -20,9 +20,11 @@
 #define TIMER_PRESCALLER    127UL
 #define MS(x)               (x / 1000.0)
 #define US(x)               (x / 1000000.0)
+#define NS(x)               (x / 1000000000.0)
 
 #define SETUP_TIMER_MS(x)  ((CPU_CLOCK / (TIMER_PRESCALLER + 1UL)) * MS(x));
 #define SETUP_TIMER_US(x)  ((CPU_CLOCK / (TIMER_PRESCALLER + 1UL)) * US(x));
+#define SETUP_TIMER_NS(x)  ((CPU_CLOCK / (TIMER_PRESCALLER + 1UL)) * NS(x));
 
 
 //extern uint8_t red_state;//, green_state, blue_state;
@@ -33,11 +35,11 @@ bool b = false;
 void SetupTimer0()
 {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+//    SysCtlGPIOAHBEnable(SYSCTL_PERIPH_GPIOB);
 //    GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPD);
 //    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_DIR_MODE_OUT);
+//    GPIOPinTypeGPIOOutput(GPIO_PORTB_AHB_BASE, GPIO_PIN_5);
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
-
-
 
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
 	TimerDisable(TIMER0_BASE, TIMER_BOTH);
@@ -46,13 +48,13 @@ void SetupTimer0()
 	TimerPrescaleSet(TIMER0_BASE, TIMER_A, TIMER_PRESCALLER);
 	TimerPrescaleSet(TIMER0_BASE, TIMER_B, TIMER_PRESCALLER);
 	//	uint64_t tValue = SysCtlClockGet()/2000;
-    uint32_t t = SETUP_TIMER_US(100);
-    uint32_t t1 = SETUP_TIMER_MS(1);
+    uint32_t t = SETUP_TIMER_NS(10000);
+    uint32_t t1 = SETUP_TIMER_MS(10);
     uint32_t t2 = SETUP_TIMER_MS(100);
     uint32_t t3 = SETUP_TIMER_MS(1000);
     uint32_t t4 = SETUP_TIMER_MS(10000);
 //    TimerLoadSet(TIMER0_BASE, TIMER_A, t4);
-    TimerLoadSet(TIMER0_BASE, TIMER_B, t1);
+    TimerLoadSet(TIMER0_BASE, TIMER_B, t);
 	//
 	// Configure the Timer0 interrupt for timer timeout.
 	//
@@ -176,12 +178,14 @@ void Timer0IntHandlerB()
 //    TimerLoadSet(TIMER0_BASE, TIMER_B, 650);
     if(b)
     {
-        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
+//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
+        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = 0;
         b = false;
     }
     else
     {
-        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
+//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
+        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = GPIO_PIN_5;
         b = true;
     }
 }

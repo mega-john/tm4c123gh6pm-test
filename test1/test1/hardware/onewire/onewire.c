@@ -10,24 +10,22 @@
 void OW_Init()
 {
     SysCtlPeripheralEnable(OW_PERIPH);
-
-    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
+    GPIOPadConfigSet(OW_PORT, OW_PIN, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+//    GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
+//    GPIOPinTypeGPIOOutput(OW_PORT, OW_PIN);
 }
 
 void OW_Set(ow_enum mode)
 {
     if(mode == OW_OUT)
     {
-//        GPIOPinTypeGPIOOutputOD(OW_PORT, OW_PIN);
-
         GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
-        GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
     else
     {
         GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
-        GPIOPinWrite(OW_PORT, OW_PIN, 0);
     }
+    GPIOPinWrite(OW_PORT, OW_PIN, 0);
 }
 
 int32_t OW_CheckIn(void)
@@ -35,17 +33,16 @@ int32_t OW_CheckIn(void)
     int32_t pinRead = GPIOPinRead(OW_PORT, OW_PIN);
     int32_t result = ((pinRead & OW_PIN) == OW_PIN);
     return result;
-//    return (GPIOPinRead(OW_PORT, OW_PIN) != 0);
 }
 
 uint8_t OW_Reset(void)
 {
     OW_Set(OW_OUT);
-    delayMicroseconds(480);
+    delayMicroseconds(485);
     OW_Set(OW_IN);
-    delayMicroseconds(60);
+    delayMicroseconds(65);
     uint8_t status = OW_CheckIn();
-    delayMicroseconds(480);
+    delayMicroseconds(420);
     status = OW_CheckIn();
 
     return status;

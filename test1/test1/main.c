@@ -94,6 +94,7 @@ void SetupSystemClock()
     //  Run at system clock at 80MHz
     //
     SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+//    SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5 | SYSCTL_OSC_INT | SYSCTL_MAIN_OSC_DIS);
 }
 
 void InitializePerepheral()
