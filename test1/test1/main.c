@@ -184,11 +184,12 @@ int main(void)
 
     TestInternalEEPROM();
 
+    UARTprintf("\rstart");
 //    UARTprintf("\rstart TestEEPROM");
 //    TestEEPROM();
 //    UARTprintf("\rend TestEEPROM");
 
-    flags.update_temperature = false;
+    flags.update_temperature = true;
     SearchTempSensors();
 
 //    while (1);
@@ -198,9 +199,9 @@ int main(void)
 
         if(flags.update_temperature)
         {
-            MeasureTemperature(0);
             flags.update_temperature = false;
             flags.update_menu = true;
+            MeasureTemperature(0);
         }
 
         uint8_t ui8ButtonState;

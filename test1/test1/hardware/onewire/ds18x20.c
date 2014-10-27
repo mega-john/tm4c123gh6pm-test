@@ -4,6 +4,9 @@ extern uint8_t owDevicesIDs[MAX_OW_DEVICES][8];
 extern uint8_t themperature[MAX_OW_DEVICES][3]; // в этот массив будет записана температура
 static uint8_t sensors_count = 0;
 
+extern update_flags flags;
+
+
 //waterproof sensor pinout:
 //Output leads: Red (VCC), green (DATA), yellow (GND)
 
@@ -113,7 +116,6 @@ int8_t DS18x20_ReadData(uint8_t *rom, uint8_t *buffer)
 
 int8_t DS18x20_WriteData(uint8_t *rom, uint8_t *buffer)
 {
-    //Reset, skip ROM and send command to read Scratchpad
     if(!OW_Reset())
     {
         return 0;
@@ -128,10 +130,6 @@ int8_t DS18x20_WriteData(uint8_t *rom, uint8_t *buffer)
 //    }
     OW_WriteByte(THERM_CMD_WRITE_SCRATCHPAD);
 
-//    OW_WriteByte(buffer[0]);
-//    OW_WriteByte(buffer[1]);
-//    OW_WriteByte(buffer[2]);
-
     OW_WriteByte(0xff);
     OW_WriteByte(0xff);
     OW_WriteByte(0x00);
@@ -140,39 +138,62 @@ int8_t DS18x20_WriteData(uint8_t *rom, uint8_t *buffer)
 
 void DS18x20_ConvertToThemperature(uint8_t* data, uint8_t* themp)
 {
-    //Store temperature integer digits and decimal digits
-    themp[1] = data[0] >> 4;
-    themp[1] |= (data[1] & 0x07) << 4;
-    //Store decimal digits
-    themp[2] = data[0] & 0xf;
-    themp[2] *= 5;
-    if(data[1] > 0xFB)
-    {
-        themp[1] = 127 - themp[1];
-        themp[0] = '-';
-    }
-    else if((data[0] == 0x00) && (data[1] == 0x00))
-    {
-        themp[0] = ' ';
-    }
-    else
-    {
-        themp[0] = '+';
-    }
+    uint16_t meas;
+
+    meas = data[0];  // LSB
+    meas |= ((uint16_t) data[1]) << 8; // MSB
+
+
+    themp[1]   = (uint8_t)(meas >> 4);
+    themp[2]  = (uint8_t)((meas * 625) & 0x000F);
+
+    themp[0] = '+';
+
+
+//    //Store temperature integer digits and decimal digits
+//    themp[1] = data[0] >> 4;
+//    themp[1] |= (data[1] & 0x07) << 4;
+//    //Store decimal digits
+//    themp[2] = data[0] & 0xf;
+//    themp[2] *= 5;
+//    if(data[1] > 0xFB)
+//    {
+//        themp[1] = 127 - themp[1];
+//        themp[0] = '-';
+//    }
+//    else if((data[0] == 0x00) && (data[1] == 0x00))
+//    {
+//        themp[0] = ' ';
+//    }
+//    else
+//    {
+//        themp[0] = '+';
+//    }
 }
 
 void MeasureTemperature(void * params)
 {
     uint8_t i = 0;
+    DS18x20_StartMeasure();
+    delayMilliseconds(1000);// ждем минимум 750 мс, пока конвентируется температура
     for (; i < sensors_count; i++)
     {
-        DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
-        delayMilliseconds(100);// ждем минимум 750 мс, пока конвентируется температура
+//        DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
+//        delayMilliseconds(100);// ждем минимум 750 мс, пока конвентируется температура
         uint8_t data[2]; // переменная для хранения старшего и младшего байта данных
-        DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
-//        uint8_t themperature[3]; // в этот массив будет записана температура
-        DS18x20_ConvertToThemperature(data, themperature[i]); // преобразовываем температуру в человекопонятный вид
-    }
+        uint8_t res = DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
+        if (res)
+        {
+            DS18x20_ConvertToThemperature(data, themperature[i]); // преобразовываем температуру в человекопонятный вид
+        }
+        else
+        {
+            UARTprintf("\nCRC error");
+        }
+//        UARTprintf("\nt[0] 0x%02x", data[0]);
+//        UARTprintf("\nt[1] 0x%02x", data[1]);
+   }
+   flags.update_temperature = true;
 }
 
 char* GetTemperature(uint8_t devNumber)
@@ -224,10 +245,10 @@ void SearchTempSensors()
     i = 0;
     for (; i < sensors_count; i++)
     {
-        DS18x20_WriteData(owDevicesIDs[i], 0);
+//        DS18x20_WriteData(owDevicesIDs[i], 0);
     }
 
-    MeasureTemperature(0);
+//    MeasureTemperature(0);
 
 //    for(i = 0; i < sensors_count; i++) // теперь сотируем устройства и запрашиваем данные
 //    {

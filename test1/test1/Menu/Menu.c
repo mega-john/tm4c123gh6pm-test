@@ -65,7 +65,7 @@ void DrawTemperature(void * params)
 
 	GrContextForegroundSet(&g_sContext, BACKGROUND);
     char tmp[30] = "value";
-	usprintf(tmp, "value: %c%d.%1d C", themperature[0][0], themperature[0][1], themperature[0][2]);
+	usprintf(tmp, "value: %c%d.%d C", themperature[0][0], themperature[0][1], themperature[0][2]);
 	GrRectFill(&g_sContext, &r);
 	GrContextForegroundSet(&g_sContext, FOREGROUND);
 	GrStringDraw(&g_sContext, tmp, 29, 10, 280, 1);

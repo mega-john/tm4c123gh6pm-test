@@ -68,6 +68,8 @@ void delayMilliseconds(uint32_t milliseconds)
 	}
 }
 
+bool b = false;
+
 void Timer5IntHandlerA(void)
 {
 
@@ -75,8 +77,20 @@ void Timer5IntHandlerA(void)
 	milliseconds++;
 	if(tmp++ >= 1000)
 	{
-	    flags.update_temperature = true;
+//	    flags.update_temperature = true;
 	    tmp = 0;
+	    if(b)
+	    {
+	//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
+	        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = 0;
+	        b = false;
+	    }
+	    else
+	    {
+	//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
+	        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = GPIO_PIN_5;
+	        b = true;
+	    }
 	}
 }
 

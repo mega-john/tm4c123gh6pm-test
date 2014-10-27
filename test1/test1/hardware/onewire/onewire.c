@@ -17,14 +17,16 @@ void OW_Init()
 
 void OW_Set(ow_enum mode)
 {
-    if(mode == OW_OUT)
-    {
-        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
-    }
-    else
-    {
-        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
-    }
+//    if(mode == OW_OUT)
+//    {
+//        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_OUT);
+//    }
+//    else
+//    {
+//        GPIODirModeSet(OW_PORT, OW_PIN, GPIO_DIR_MODE_IN);
+//    }
+    GPIODirModeSet(OW_PORT, OW_PIN, mode == OW_OUT ? GPIO_DIR_MODE_OUT : GPIO_DIR_MODE_IN);
+
     GPIOPinWrite(OW_PORT, OW_PIN, 0);
 }
 

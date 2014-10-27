@@ -30,7 +30,7 @@
 //extern uint8_t red_state;//, green_state, blue_state;
 uint32_t intCount = 0;
 
-bool b = false;
+//bool b = false;
 
 void SetupTimer0()
 {
@@ -176,18 +176,18 @@ void Timer0IntHandlerB()
 {
     TimerIntClear(TIMER0_BASE, TIMER_TIMB_TIMEOUT);
 //    TimerLoadSet(TIMER0_BASE, TIMER_B, 650);
-    if(b)
-    {
-//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
-        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = 0;
-        b = false;
-    }
-    else
-    {
-//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
-        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = GPIO_PIN_5;
-        b = true;
-    }
+//    if(b)
+//    {
+////        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
+//        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = 0;
+//        b = false;
+//    }
+//    else
+//    {
+////        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
+//        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = GPIO_PIN_5;
+//        b = true;
+//    }
 }
 void Timer1IntHandlerA()
 {
