@@ -145,7 +145,8 @@ void DS18x20_ConvertToThemperature(uint8_t* data, uint8_t* themp)
 
 
     themp[1]   = (uint8_t)(meas >> 4);
-    themp[2]  = (uint8_t)((meas * 625) & 0x000F);
+    themp[2]  = (uint8_t)((((meas) & 0x000F)));
+//    themp[2]  = (uint8_t)((((meas) & 0x000F) * 625) >> 4);
 
     themp[0] = '+';
 
@@ -245,7 +246,7 @@ void SearchTempSensors()
     i = 0;
     for (; i < sensors_count; i++)
     {
-//        DS18x20_WriteData(owDevicesIDs[i], 0);
+        DS18x20_WriteData(owDevicesIDs[i], 0);
     }
 
 //    MeasureTemperature(0);

@@ -5,6 +5,7 @@
  *      Author: estarcev
  */
 
+#include <stdlib.h>
 #include "../global.h"
 
 Menu_Item_t NULL_MENU = { 0 };
@@ -65,7 +66,11 @@ void DrawTemperature(void * params)
 
 	GrContextForegroundSet(&g_sContext, BACKGROUND);
     char tmp[30] = "value";
-	usprintf(tmp, "value: %c%d.%d C", themperature[0][0], themperature[0][1], themperature[0][2]);
+    char buffer[sizeof(int) * 8 + 1];
+    ltoa(themperature[0][2] * 625, buffer);
+    buffer[4] = '\0';
+    usprintf(tmp, "value: %c%d.%s C", themperature[0][0], themperature[0][1], buffer);
+//    usprintf(tmp, "value: %c%d.%d C", themperature[0][0], themperature[0][1], themperature[0][2]);
 	GrRectFill(&g_sContext, &r);
 	GrContextForegroundSet(&g_sContext, FOREGROUND);
 	GrStringDraw(&g_sContext, tmp, 29, 10, 280, 1);
