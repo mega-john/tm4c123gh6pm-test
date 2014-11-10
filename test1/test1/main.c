@@ -7,6 +7,7 @@ void __error__(char *pcFilename, uint32_t ui32Line)
     UARTprintf("\r!__error__! file: %s line: %i", pcFilename, ui32Line);
 }
 
+
 void ShakePin(void * params)
 {
 //    static bool isSet = false;
