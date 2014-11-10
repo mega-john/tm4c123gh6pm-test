@@ -91,6 +91,14 @@ uint8_t OW_ReadBit(void)
     return bit;
 }
 
+#ifdef UART_AS_OneWire
+uint8_t OW_WriteByte(uint8_t byte)
+{
+//    UARTConfigSetExpClk(UART1_BASE, UART_CLOCK_SYSTEM)
+    return 0;
+}
+#else
+
 void OW_WriteByte(uint8_t byte)
 {
     uint8_t i = 0;
@@ -113,6 +121,7 @@ uint8_t OW_ReadByte(void)
     }
     return n;
 }
+#endif
 
 uint8_t OW_SearchROM(uint8_t diff, uint8_t *id)
 {

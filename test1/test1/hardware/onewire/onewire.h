@@ -38,15 +38,30 @@ typedef enum
 // rom-code size including CRC
 #define OW_ROMCODE_SIZE			8
 
+// Если для эмуляции шины используется USART
+//#define UART_AS_OneWire
+
+void OW_Init();
+
 uint8_t OW_Reset(void);
+void OW_WriteBit(uint8_t bit);
 uint8_t OW_ReadBit(void);
-uint8_t OW_ReadByte(void);
+
+#ifndef UART_AS_OneWire
+    uint8_t OW_ReadByte(void);
+    void OW_WriteByte(uint8_t byte);
+#else
+    uint8_t OW_WriteByte(uint8_t byte);
+    #define OW_ReadByte() OW_WriteByte(0xFF)
+#endif
+
+
+//uint8_t OW_ReadByte(void);
+//void OW_WriteByte(uint8_t byte);
+
 uint8_t OW_SearchROM(uint8_t diff, uint8_t *id);
+void OW_FindROM(uint8_t *diff, uint8_t id[]);
 uint8_t OW_ReadROM(uint8_t *buffer);
 uint8_t OW_MatchROM(uint8_t *rom);
-void OW_WriteBit(uint8_t bit);
-void OW_WriteByte(uint8_t byte);
-void OW_FindROM(uint8_t *diff, uint8_t id[]);
-void OW_Init();
 
 #endif /* ONEWIRE_H_ */

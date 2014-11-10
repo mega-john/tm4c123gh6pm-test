@@ -6,7 +6,6 @@
  */
 #include "timer.h"
 
-
 #define SW1 			GPIO_PIN_4
 #define SW2 			GPIO_PIN_0
 #define LED_RED 		GPIO_PIN_1
@@ -26,11 +25,8 @@
 #define SETUP_TIMER_US(x)  ((CPU_CLOCK / (TIMER_PRESCALLER + 1UL)) * US(x));
 #define SETUP_TIMER_NS(x)  ((CPU_CLOCK / (TIMER_PRESCALLER + 1UL)) * NS(x));
 
-
 //extern uint8_t red_state;//, green_state, blue_state;
 uint32_t intCount = 0;
-
-//bool b = false;
 
 void SetupTimer0()
 {
@@ -48,7 +44,7 @@ void SetupTimer0()
 	TimerPrescaleSet(TIMER0_BASE, TIMER_A, TIMER_PRESCALLER);
 	TimerPrescaleSet(TIMER0_BASE, TIMER_B, TIMER_PRESCALLER);
 	//	uint64_t tValue = SysCtlClockGet()/2000;
-    uint32_t t = SETUP_TIMER_NS(10000);
+    uint32_t t = SETUP_TIMER_US(100);
     uint32_t t1 = SETUP_TIMER_MS(10);
     uint32_t t2 = SETUP_TIMER_MS(100);
     uint32_t t3 = SETUP_TIMER_MS(1000);
@@ -172,22 +168,25 @@ void Timer0IntHandlerA()
 //	GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, red_state | blue_state | green_state);
 //    GrStringDraw(&g_sContext, red_state ? "a  " : "  b", -1, 10, 290, 0);
 }
+
+bool bb = false;
+
 void Timer0IntHandlerB()
 {
     TimerIntClear(TIMER0_BASE, TIMER_TIMB_TIMEOUT);
 //    TimerLoadSet(TIMER0_BASE, TIMER_B, 650);
-//    if(b)
-//    {
-////        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
-//        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = 0;
-//        b = false;
-//    }
-//    else
-//    {
-////        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
-//        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = GPIO_PIN_5;
-//        b = true;
-//    }
+    if(bb)
+    {
+//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0);
+        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = 0;
+        bb = false;
+    }
+    else
+    {
+//        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5);
+        HWREG(GPIO_PORTB_BASE + (GPIO_O_DATA + (GPIO_PIN_5 << 2))) = GPIO_PIN_5;
+        bb = true;
+    }
 }
 void Timer1IntHandlerA()
 {
