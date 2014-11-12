@@ -41,9 +41,9 @@ int32_t OW_CheckIn(void)
 uint8_t OW_Reset(void)
 {
     OW_Set(OW_OUT);
-    delayMicroseconds(485);
+    delayMicroseconds(480);
     OW_Set(OW_IN);
-    delayMicroseconds(65);
+    delayMicroseconds(60);
     uint8_t status = OW_CheckIn();
     delayMicroseconds(420);
     status = OW_CheckIn();
