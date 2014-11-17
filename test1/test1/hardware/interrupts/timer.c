@@ -45,10 +45,10 @@ void SetupTimer0()
 	TimerPrescaleSet(TIMER0_BASE, TIMER_B, TIMER_PRESCALLER);
 	//	uint64_t tValue = SysCtlClockGet()/2000;
     uint32_t t = SETUP_TIMER_US(100);
-    uint32_t t1 = SETUP_TIMER_MS(10);
-    uint32_t t2 = SETUP_TIMER_MS(100);
-    uint32_t t3 = SETUP_TIMER_MS(1000);
-    uint32_t t4 = SETUP_TIMER_MS(10000);
+//    uint32_t t1 = SETUP_TIMER_MS(10);
+//    uint32_t t2 = SETUP_TIMER_MS(100);
+//    uint32_t t3 = SETUP_TIMER_MS(1000);
+//    uint32_t t4 = SETUP_TIMER_MS(10000);
 //    TimerLoadSet(TIMER0_BASE, TIMER_A, t4);
     TimerLoadSet(TIMER0_BASE, TIMER_B, t);
 	//
