@@ -14,22 +14,12 @@
 #include "driverlib/rom.h"
 #include "driverlib/pin_map.h"
 #include "grlib/grlib.h"
-#include "../../global.h"
+#include "../../../global.h"
 #include "ili_initialization.h"
 #include "ili9341.h"
-#include "../SPI/SPI.h"
+#include "../../SPI/SPI.h"
 
-
-#define TFT_CS_LOW		GPIOPinWrite(DISPLAY_CS_PORT, DISPLAY_CS_PIN, 0)
-#define TFT_CS_HIGH		GPIOPinWrite(DISPLAY_CS_PORT, DISPLAY_CS_PIN, DISPLAY_CS_PIN)
-
-#define TFT_RST_ON		GPIOPinWrite(DISPLAY_RST_PORT, DISPLAY_RST_PIN, 0)
-#define TFT_RST_OFF		GPIOPinWrite(DISPLAY_RST_PORT, DISPLAY_RST_PIN, DISPLAY_RST_PIN)
-
-#define TFT_DC_LOW		GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, 0)
-#define TFT_DC_HIGH		GPIOPinWrite(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN, DISPLAY_D_C_PIN)
-
-#define DELAY_VALUE		300000
+#ifdef ILI9341
 
 void TFT_sendCMD(uint8_t index)
 {
@@ -343,7 +333,7 @@ void InitDisplay(void)
 	TFT_sendCMD(0x2c);	        //Memory Write
 }
 
-const tDisplay g_sILI9341 =
+const tDisplay psDisplay =
 {
         sizeof(tDisplay),
         0,
@@ -357,3 +347,5 @@ const tDisplay g_sILI9341 =
         ColorTranslate,
         Flush
 };
+
+#endif

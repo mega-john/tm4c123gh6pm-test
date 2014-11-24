@@ -6,9 +6,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "grlib/grlib.h"
-#include "../hardware/ili9341/ili9341.h"
-
 extern void ProcessMenu();
 extern void MenuInitialize(/*tContext* context*/);
 extern void ClearScreen();

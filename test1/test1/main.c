@@ -35,7 +35,6 @@ void ShakePin(void * params)
 //};
 //uint32_t g_ui32SchedulerNumTasks = (sizeof(g_psSchedulerTable) / sizeof(tSchedulerTask));
 
-tContext g_sContext;
 uint8_t red_state, green_state, blue_state;
 
 void UnlockPin(uint32_t gpioPortBase, uint8_t pin)
@@ -115,31 +114,31 @@ void InitializePerepheral()
 //    ButtonsInit();
     SetUpTimers();
 
-    InitDisplay();
-
-    GrContextInit(&g_sContext, &g_sILI9341);
-
-    GrLibInit(&g_sGrLibDefaultlanguage);
-
-    tRectangle sRect;
-    sRect.i16XMin = 0;
-    sRect.i16YMin = 0;
-    sRect.i16XMax = DISPLAY_WIDTH;
-    sRect.i16YMax = DISPLAY_HEIGHT;
-    GrContextForegroundSet(&g_sContext, BACKGROUND);
-    GrRectFill(&g_sContext, &sRect);
-
-    GrContextForegroundSet(&g_sContext, FOREGROUND);
-    GrRectDraw(&g_sContext, &sRect);
-
-    GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
-
-    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
+//    InitDisplay();
+    InitializeDisplay();
+//    GrContextInit(&g_sContext, &psDisplay);
+//
+//    GrLibInit(&g_sGrLibDefaultlanguage);
+//
+//    tRectangle sRect;
+//    sRect.i16XMin = 0;
+//    sRect.i16YMin = 0;
+//    sRect.i16XMax = DISPLAY_WIDTH;
+//    sRect.i16YMax = DISPLAY_HEIGHT;
 //    GrContextForegroundSet(&g_sContext, BACKGROUND);
-//    GrContextBackgroundSet(&g_sContext, ClrYellow);
-//    GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200, ClrYellow);
-    GrContextForegroundSet(&g_sContext, FOREGROUND);
-    GrContextBackgroundSet(&g_sContext, BACKGROUND);
+//    GrRectFill(&g_sContext, &sRect);
+//
+//    GrContextForegroundSet(&g_sContext, FOREGROUND);
+//    GrRectDraw(&g_sContext, &sRect);
+//
+//    GrContextFontSet(&g_sContext, (tFont*) &g_sFontExArial24);
+//
+//    TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
+////    GrContextForegroundSet(&g_sContext, BACKGROUND);
+////    GrContextBackgroundSet(&g_sContext, ClrYellow);
+////    GrTransparentImageDraw(&g_sContext, g_pui8ImageFuelComp, 20, 200, ClrYellow);
+//    GrContextForegroundSet(&g_sContext, FOREGROUND);
+//    GrContextBackgroundSet(&g_sContext, BACKGROUND);
     MenuInitialize(&g_sContext);
 
     InitI2C();
@@ -158,7 +157,7 @@ void TestEEPROM()
 //    uint16_t l = sizeof(g_pui8ImageFuelComp);
 	UARTprintf("\rwrite: %i bytes", 165);
 	uint32_t size = 165;//sizeof(&g_pui8ImageFuelComp)/ sizeof(g_pui8ImageFuelComp[0]);
-	res = Write24x64(0, &g_pui8ImageFuelComp[0], size);
+//	res = Write24x64(0, &g_pui8ImageFuelComp[0], size);
 	UARTprintf("\rwriten: %i", res);
 	delayMilliseconds(10);
 	uint8_t read_buf[165];
@@ -166,12 +165,12 @@ void TestEEPROM()
 	res = Read24x64(0, &read_buf[0], size);
 	UARTprintf("\rwas read: %i", res);
 
-	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
-	GrContextForegroundSet(&g_sContext, BACKGROUND);
-	GrContextBackgroundSet(&g_sContext, ClrYellow);
-	GrTransparentImageDraw(&g_sContext, read_buf, 20, 200, ClrYellow);
-    GrContextForegroundSet(&g_sContext, FOREGROUND);
-    GrContextBackgroundSet(&g_sContext, BACKGROUND);
+//	TFT_setOrientation(ORIENTATION_RIGHT2LEFT);
+//	GrContextForegroundSet(&g_sContext, BACKGROUND);
+//	GrContextBackgroundSet(&g_sContext, ClrYellow);
+//	GrTransparentImageDraw(&g_sContext, read_buf, 20, 200, ClrYellow);
+//    GrContextForegroundSet(&g_sContext, FOREGROUND);
+//    GrContextBackgroundSet(&g_sContext, BACKGROUND);
 
 }
 

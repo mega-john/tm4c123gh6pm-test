@@ -56,9 +56,11 @@
 
 #include "menu/menu.h"
 #include "hardware/buttons.h"
-#include "hardware/ili9341/fonts/fonts.h"
-#include "hardware/ili9341/ili9341.h"
-#include "hardware/ili9341/pictures/pictures.h"
+#include "hardware/Display/display.h"
+
+//#include "hardware/Display/ili9341/fonts/fonts.h"
+//#include "hardware/Display/ili9341/ili9341.h"
+//#include "hardware/Display/ili9341/pictures/pictures.h"
 #include "hardware/interrupts/timer.h"
 #include "hardware/onewire/onewire.h"
 #include "hardware/onewire/ds18x20.h"
@@ -107,6 +109,8 @@ static tSoftI2C g_sI2C;
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
+
+#define FAST_GPIOPinWrite(ulPort, ucPins, ucVal) (HWREG(ulPort + (GPIO_O_DATA + (ucPins << 2))) = ucVal)
 
 typedef struct
 {
