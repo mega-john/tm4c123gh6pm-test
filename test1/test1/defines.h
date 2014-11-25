@@ -31,37 +31,6 @@
 #define OW_PORT                 GPIO_PORTA_BASE
 #define OW_PIN                  GPIO_PIN_5
 
-#ifdef ILI9341
-
-
-//пины подключения дисплея
-//display defines
-#define DISPLAY_CS_PORT         GPIO_PORTE_BASE
-#define DISPLAY_CS_PERIPH       SYSCTL_PERIPH_GPIOE
-#define DISPLAY_CS_PIN          GPIO_PIN_3
-#define DISPLAY_RST_PORT        GPIO_PORTE_BASE
-#define DISPLAY_RST_PERIPH      SYSCTL_PERIPH_GPIOE
-#define DISPLAY_RST_PIN         GPIO_PIN_2
-#define DISPLAY_D_C_PORT        GPIO_PORTE_BASE
-#define DISPLAY_D_C_PERIPH      SYSCTL_PERIPH_GPIOE
-#define DISPLAY_D_C_PIN         GPIO_PIN_1
-
-
-#else//SSD1289
-//пины подключения дисплея
-//display defines
-#define DISPLAY_CS_PORT         GPIO_PORTE_BASE
-#define DISPLAY_CS_PERIPH       SYSCTL_PERIPH_GPIOE
-#define DISPLAY_CS_PIN          GPIO_PIN_3
-#define DISPLAY_RST_PORT        GPIO_PORTE_BASE
-#define DISPLAY_RST_PERIPH      SYSCTL_PERIPH_GPIOE
-#define DISPLAY_RST_PIN         GPIO_PIN_2
-#define DISPLAY_D_C_PORT        GPIO_PORTE_BASE
-#define DISPLAY_D_C_PERIPH      SYSCTL_PERIPH_GPIOE
-#define DISPLAY_D_C_PIN         GPIO_PIN_1
-
-#endif
-
 //пины подключения кнопок управления
 //buttons defines
 #define BUTTONS_PERIPH          SYSCTL_PERIPH_GPIOF
@@ -87,7 +56,6 @@
 #define INTERNAL_EEPROM_DEVICE_ADDRESS	0x400AF000
 #define I2C_EEPROM_SCL_PIN  GPIO_PIN_6
 #define I2C_EEPROM_SDA_PIN  GPIO_PIN_7
-
 
 ////////////////////////////////////////////////////////////////////////////
 //

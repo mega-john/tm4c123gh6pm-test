@@ -1,9 +1,11 @@
 //*****************************************************************************
 //
-//! \addtogroup display_api
+//! \addtogroup TFT_api
 //! @{
 //
 //*****************************************************************************
+
+#if defined(ILI9341)
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -19,7 +21,6 @@
 #include "ili9341.h"
 #include "../../SPI/SPI.h"
 
-#ifdef ILI9341
 
 void TFT_sendCMD(uint8_t index)
 {
@@ -156,8 +157,8 @@ void PixelDrawMultiple(void *pvDisplayData,
 						const uint8_t *pucData,
 						const uint8_t *pucPalette)
 {
-	TFT_setCol(x, DISPLAY_WIDTH);
-	TFT_setPage(y, DISPLAY_HEIGHT);
+	TFT_setCol(x, TFT_WIDTH);
+	TFT_setPage(y, TFT_HEIGHT);
 	TFT_sendCMD(0x2c);
 
 	uint32_t ulPixel = 0;
@@ -299,12 +300,12 @@ void RectFill(void *pvDisplayData, const tRectangle *pRect, uint32_t ui32Value)
 
 void InitDisplay(void)
 {
-	SysCtlPeripheralEnable(DISPLAY_RST_PERIPH);
-	GPIOPinTypeGPIOOutput(DISPLAY_RST_PORT, DISPLAY_RST_PIN);
-    SysCtlPeripheralEnable(DISPLAY_CS_PERIPH);
-	GPIOPinTypeGPIOOutput(DISPLAY_CS_PORT, DISPLAY_CS_PIN);
-    SysCtlPeripheralEnable(DISPLAY_D_C_PERIPH);
-	GPIOPinTypeGPIOOutput(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN);
+	SysCtlPeripheralEnable(TFT_RST_PERIPH);
+	GPIOPinTypeGPIOOutput(TFT_RST_PORT, TFT_RST_PIN);
+    SysCtlPeripheralEnable(TFT_CS_PERIPH);
+	GPIOPinTypeGPIOOutput(TFT_CS_PORT, TFT_CS_PIN);
+    SysCtlPeripheralEnable(TFT_D_C_PERIPH);
+	GPIOPinTypeGPIOOutput(TFT_D_C_PORT, TFT_D_C_PIN);
 
 	//start display initialization
 	SPI_begin(3);

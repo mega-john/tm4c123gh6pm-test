@@ -25,13 +25,12 @@ static tGrLibDefaults g_sGrLibDefaultlanguage =
         0
 };
 
-
-//#define ILI9341
-
-#ifdef ILI9341
-#include "ili9341/ili9341.h"
+#if  defined(ILI9341)
+    #include "ili9341/ili9341.h"
+#elif defined(SSD1289)
+    #include "ssd1289/ssd1289.h"
 #else
-#include "ssd1289/ssd1289.h"
+    #error Define diplay type!
 #endif
 
 void InitializeDisplay(void);

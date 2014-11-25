@@ -45,9 +45,9 @@ void ClearScreen()
 {
 	GrContextForegroundSet(&g_sContext, BACKGROUND);
 	uint16_t i = 0;
-	for (; i < DISPLAY_HEIGHT; i++)
+	for (; i < TFT_HEIGHT; i++)
 	{
-		GrLineDrawH(&g_sContext, 0, DISPLAY_WIDTH, i);
+		GrLineDrawH(&g_sContext, 0, TFT_WIDTH, i);
 	}
 }
 
@@ -153,17 +153,17 @@ void DrawMenu()
 
 	if (firstElement->Parent == &NULL_MENU)
 	{
-		GrStringDrawCentered(&g_sContext, "Наcтройки", -1, DISPLAY_WIDTH / 2,
+		GrStringDrawCentered(&g_sContext, "Наcтройки", -1, TFT_WIDTH / 2,
 				GrStringHeightGet(&g_sContext) / 2, 1);
-		GrLineDrawH(&g_sContext, 1, DISPLAY_WIDTH, offset);
-//		GrLineDrawH(&g_sContext, 1, DISPLAY_WIDTH, ++offset);
+		GrLineDrawH(&g_sContext, 1, TFT_WIDTH, offset);
+//		GrLineDrawH(&g_sContext, 1, TFT_WIDTH, ++offset);
 	}
 	else
 	{
 		GrStringDrawCentered(&g_sContext, firstElement->Parent->Text, -1,
-				DISPLAY_WIDTH / 2, GrStringHeightGet(&g_sContext) / 2, 1);
-		GrLineDrawH(&g_sContext, 1, DISPLAY_WIDTH, offset);
-//		GrLineDrawH(&g_sContext, 1, DISPLAY_WIDTH, ++offset);
+				TFT_WIDTH / 2, GrStringHeightGet(&g_sContext) / 2, 1);
+		GrLineDrawH(&g_sContext, 1, TFT_WIDTH, offset);
+//		GrLineDrawH(&g_sContext, 1, TFT_WIDTH, ++offset);
 	}
 	offset += 5;
 	do
@@ -200,8 +200,8 @@ void ProcessMenu()
 	tRectangle sRect;
 	sRect.i16XMin = 0;
 	sRect.i16YMin = 0;
-	sRect.i16XMax = DISPLAY_WIDTH;
-	sRect.i16YMax = DISPLAY_HEIGHT;
+	sRect.i16XMax = TFT_WIDTH;
+	sRect.i16YMax = TFT_HEIGHT;
 
 	if (updateMenu)
 	{
