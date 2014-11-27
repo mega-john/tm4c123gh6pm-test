@@ -20,27 +20,23 @@
 #define TFT_WIDTH           239
 #define TFT_HEIGHT          319
 
-#define LCD_DataPortH   GPIO_PORTB_BASE
+#define TFT_Data_Port           GPIO_PORTB_BASE
+#define TFT_Data_Periph         SYSCTL_PERIPH_GPIOE
 
-#define TFT_CS_PORT         GPIO_PORTE_BASE
-#define TFT_CS_PERIPH       SYSCTL_PERIPH_GPIOE
-#define TFT_CS_PIN          GPIO_PIN_3
-#define TFT_RST_PORT        GPIO_PORTE_BASE
-#define TFT_RST_PERIPH      SYSCTL_PERIPH_GPIOE
-#define TFT_RST_PIN         GPIO_PIN_2
-#define TFT_D_C_PORT        GPIO_PORTE_BASE
-#define TFT_D_C_PERIPH      SYSCTL_PERIPH_GPIOE
-#define TFT_D_C_PIN         GPIO_PIN_1
+#define TFT_Command_Port        GPIO_PORTF_BASE
+#define TFT_Command_Periph      SYSCTL_PERIPH_GPIOF
 
-#define TFT_CS_LOW      GPIOPinWrite(TFT_CS_PORT, TFT_CS_PIN, 0)
-#define TFT_CS_HIGH     GPIOPinWrite(TFT_CS_PORT, TFT_CS_PIN, TFT_CS_PIN)
+#define TFT_RS_PIN              GPIO_PIN_4
+#define TFT_WR_PIN              GPIO_PIN_5
 
-#define TFT_RST_ON      GPIOPinWrite(TFT_RST_PORT, TFT_RST_PIN, 0)
-#define TFT_RST_OFF     GPIOPinWrite(TFT_RST_PORT, TFT_RST_PIN, TFT_RST_PIN)
 
-#define TFT_DC_LOW      GPIOPinWrite(TFT_D_C_PORT, TFT_D_C_PIN, 0)
-#define TFT_DC_HIGH     GPIOPinWrite(TFT_D_C_PORT, TFT_D_C_PIN, TFT_D_C_PIN)
+#define TFT_RS_LOW              GPIOPinWrite(TFT_Command_Port, TFT_RS_PIN, ~TFT_RS_PIN)
+#define TFT_RS_HIGH             GPIOPinWrite(TFT_Command_Port, TFT_RS_PIN, TFT_RS_PIN)
+#define TFT_WR_LOW              GPIOPinWrite(TFT_Command_Port, TFT_WR_PIN, ~TFT_WR_PIN)
+#define TFT_WR_HIGH             GPIOPinWrite(TFT_Command_Port, TFT_WR_PIN, TFT_WR_PIN)
 
+
+#define TFT_Data                (HWREG(TFT_Data_Port + (GPIO_O_DATA + (0xFF << 2))))
 
 //*****************************************************************************
 //

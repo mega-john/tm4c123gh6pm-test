@@ -11,29 +11,29 @@
 
 void LCD_Writ_Bus(char VH, char VL)   //Параллельно данных Write функция
 {
-    LCD_DataPortH = VH;
-    LCD_WR = 0;
-    LCD_WR = 1;
-    LCD_DataPortH = VL;
-    LCD_WR = 0;
-    LCD_WR = 1;
+    TFT_Data = VH;
+    TFT_WR_LOW;
+    TFT_WR_HIGH;
+    TFT_Data = VL;
+    TFT_WR_LOW;
+    TFT_WR_HIGH;
 }
 
 void LCD_WR_DATA8(char VH, char VL) //8-Bit параметр для передачи данных
 {
-    LCD_RS = 1;
+    TFT_RS_HIGH;
     LCD_Writ_Bus(VH, VL);
 }
 
 void LCD_WR_DATA(int da)
 {
-    LCD_RS = 1;
+    TFT_RS_HIGH;
     LCD_Writ_Bus(da >> 8, da);
 }
 
 void LCD_WR_REG(int da)
 {
-    LCD_RS = 0;
+    TFT_RS_LOW;
     LCD_Writ_Bus(da >> 8, da);
 }
 
@@ -238,83 +238,83 @@ void InitDisplay(void)
 //    TFT_sendCMD(0x29);          //Display on
 //    TFT_sendCMD(0x2c);          //Memory Write
     LCD_WR_REG_DATA(0x0000, 0x0001);
-    delayms(1);  //Открыть кристалл
+    delayMilliseconds(1);  //Открыть кристалл
     LCD_WR_REG_DATA(0x0003, 0xA8A4);
-    delayms(1);   //0xA8A4
+    delayMilliseconds(1);   //0xA8A4
     LCD_WR_REG_DATA(0x000C, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x000D, 0x080C);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x000E, 0x2B00);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x001E, 0x00B7);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0001, 0x2B3F);
-    delayms(1);   //Выход управления привода 320 * 240 0x6B3F
+    delayMilliseconds(1);   //Выход управления привода 320 * 240 0x6B3F
     LCD_WR_REG_DATA(0x0002, 0x0600);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0010, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0011, 0x6070);
-    delayms(1);        //0x4030           //Определить формат данных 16 цветов
+    delayMilliseconds(1);        //0x4030           //Определить формат данных 16 цветов
     LCD_WR_REG_DATA(0x0005, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0006, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0016, 0xEF1C);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0017, 0x0003);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0007, 0x0233);
-    delayms(1);        //0x0233
+    delayMilliseconds(1);        //0x0233
     LCD_WR_REG_DATA(0x000B, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x000F, 0x0000);
-    delayms(1);        //Сканирование начальный адрес
+    delayMilliseconds(1);        //Сканирование начальный адрес
     LCD_WR_REG_DATA(0x0041, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0042, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0048, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0049, 0x013F);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x004A, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x004B, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0044, 0xEF00);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0045, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0046, 0x013F);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0030, 0x0707);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0031, 0x0204);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0032, 0x0204);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0033, 0x0502);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0034, 0x0507);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0035, 0x0204);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0036, 0x0204);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0037, 0x0502);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x003A, 0x0302);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x003B, 0x0302);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0023, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0024, 0x0000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x0025, 0x8000);
-    delayms(1);
+    delayMilliseconds(1);
     LCD_WR_REG_DATA(0x004f, 0);        //ОК первый сайт 0
     LCD_WR_REG_DATA(0x004e, 0);        //В первой колонке адрес 0
     LCD_WR_REG(0x0022);
