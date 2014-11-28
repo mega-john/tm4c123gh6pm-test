@@ -176,10 +176,14 @@ void TestEEPROM()
 
 int main(void)
 {
-//    SetupSystemClock();
+    SetupSystemClock();
 //
 //    SetUpTimers();
+    FPULazyStackingEnable();
 
+    InitializeDisplay();
+
+    while(1);
     InitializePerepheral();
 
     TestInternalEEPROM();

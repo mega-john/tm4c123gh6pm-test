@@ -14,10 +14,20 @@ extern void InitDisplay(void);
 void InitializeDisplay(void)
 {
     InitDisplay();
-
+    LCD_Clear(0xF800);
+    while(1);
     GrContextInit(&g_sContext, &psDisplay);
 
     GrLibInit(&g_sGrLibDefaultlanguage);
+    while(1)
+    {
+        PixelDraw(0, 100, 100, 0xF800);
+        PixelDraw(0, 101, 100, 0xF800);
+        PixelDraw(0, 102, 100, 0xF800);
+        PixelDraw(0, 103, 100, 0xF800);
+        PixelDraw(0, 104, 100, 0xF800);
+    }
+
 
 //    tRectangle sRect;
 //    sRect.i16XMin = 0;

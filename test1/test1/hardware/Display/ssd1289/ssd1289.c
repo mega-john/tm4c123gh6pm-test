@@ -9,54 +9,81 @@
 
 #include "ssd1289.h"
 
-void LCD_Writ_Bus(char VH, char VL)   //Параллельно данных Write функция
+char BitSwap(char x)
 {
-    TFT_Data = VH;
+ return ((x&0x01)<<8)|((x&0x02)<<6)|((x&0x04)<<4)|((x&0x08)<<2)|((x&0x10)>>2)|((x&20)>>4)|((x&0x40)>>6)|((x&0x80)>>8);
+}
+
+void TFT_Write_Bus(char VH, char VL)   //Параллельно данных Write функция
+{
+    GPIOPinWrite(TFT_Data_Port, 0xff, VH);
+//    TFT_Data = BitSwap(VH);
     TFT_WR_LOW;
     TFT_WR_HIGH;
-    TFT_Data = VL;
+    GPIOPinWrite(TFT_Data_Port, 0xff, VL);
+//    TFT_Data = BitSwap(VL);
     TFT_WR_LOW;
     TFT_WR_HIGH;
 }
 
-void LCD_WR_DATA8(char VH, char VL) //8-Bit параметр для передачи данных
+void TFT_Write_Data8(char VH, char VL) //8-Bit параметр для передачи данных
 {
     TFT_RS_HIGH;
-    LCD_Writ_Bus(VH, VL);
+    TFT_Write_Bus(VH, VL);
 }
 
-void LCD_WR_DATA(int da)
+void TFT_Write_Data16(int da)
 {
     TFT_RS_HIGH;
-    LCD_Writ_Bus(da >> 8, da);
+    TFT_Write_Bus(da >> 8, da);
 }
 
-void LCD_WR_REG(int da)
+void TFT_Write_Command(int da)
 {
     TFT_RS_LOW;
-    LCD_Writ_Bus(da >> 8, da);
+    TFT_Write_Bus(da >> 8, da);
 }
 
-void LCD_WR_REG_DATA(int reg, int da)
+void TFT_Write_Command_Data(int reg, int da)
 {
-    LCD_WR_REG(reg);
-    LCD_WR_DATA(da);
+    TFT_Write_Command(reg);
+    TFT_Write_Data16(da);
+    SysCtlDelay(30000);
 }
 
-void Address_set(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+void TFT_Write_Address(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
-    LCD_WR_REG_DATA(0x0044, (x2 << 8) + x1);
-    LCD_WR_REG_DATA(0x0045, y1);
-    LCD_WR_REG_DATA(0x0046, y2);
-    LCD_WR_REG_DATA(0x004e, x1);
-    LCD_WR_REG_DATA(0x004f, y1);
-    LCD_WR_REG(0x0022);
+    TFT_Write_Command_Data(0x0044, (x2 << 8) + x1);
+    TFT_Write_Command_Data(0x0045, y1);
+    TFT_Write_Command_Data(0x0046, y2);
+    TFT_Write_Command_Data(0x004e, x1);
+    TFT_Write_Command_Data(0x004f, y1);
+    TFT_Write_Command(0x0022);
 }
 
 void PixelDraw(void *pvDisplayData, int32_t x, int32_t y, uint32_t color)
 {
-//    TFT_setXY(x, y);
-//    TFT_sendData16(color);
+    TFT_CS_LOW;
+    TFT_Write_Address(x, y, x, y);
+    TFT_Write_Data16(color);
+    TFT_CS_HIGH;
+}
+
+void LCD_Clear(uint16_t Color)
+{
+    uint8_t VH,VL;
+    uint16_t i,j;
+    VH=Color>>8;
+    VL=Color;
+    TFT_Write_Address(0,0,128-1,128-1);
+    for(i=0;i<128;i++)
+     {
+      for (j=0;j<128;j++)
+        {
+          TFT_Write_Data8(VH,VL);
+        }
+
+      }
 }
 
 void PixelDrawMultiple(void *pvDisplayData, int32_t x, int32_t y, int32_t x0, int32_t lCount, int32_t BPP, const uint8_t *pucData,
@@ -202,123 +229,200 @@ void RectFill(void *pvDisplayData, const tRectangle *pRect, uint32_t ui32Value)
 //        LineDrawH(0, pRect->i16XMin, pRect->i16XMax, uY, ui32Value);
 //    }
 }
+void UnlockPin1(uint32_t gpioPortBase, uint8_t pin)
+{
+    HWREG(gpioPortBase + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+    HWREG(gpioPortBase + GPIO_O_CR) = pin;
+    HWREG(gpioPortBase + GPIO_O_LOCK) = 0;
+}
 
+PortFunctionInit(void)
+{
+    //
+    // Enable Peripheral Clocks
+    //
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+
+//    UnlockPin1(GPIO_PORTB_BASE, GPIO_PIN_7);
+    //
+    // Enable pin PB7 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+
+    //
+    // Enable pin PB6 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_6);
+
+    //
+    // Enable pin PB4 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_4);
+
+    //
+    // Enable pin PB2 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
+
+    //
+    // Enable pin PB5 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+
+    //
+    // Enable pin PB1 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_1);
+
+    //
+    // Enable pin PB3 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
+
+    //
+    // Enable pin PB0 for GPIOOutput
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);
+}
 void InitDisplay(void)
 {
-//    SysCtlPeripheralEnable(DISPLAY_RST_PERIPH);
-//    GPIOPinTypeGPIOOutput(DISPLAY_RST_PORT, DISPLAY_RST_PIN);
-//    SysCtlPeripheralEnable(DISPLAY_CS_PERIPH);
-//    GPIOPinTypeGPIOOutput(DISPLAY_CS_PORT, DISPLAY_CS_PIN);
-//    SysCtlPeripheralEnable(DISPLAY_D_C_PERIPH);
-//    GPIOPinTypeGPIOOutput(DISPLAY_D_C_PORT, DISPLAY_D_C_PIN);
+PortFunctionInit();
+    SysCtlPeripheralEnable(TFT_Command_Periph);
+    GPIOPinTypeGPIOOutput(TFT_Command_Port, TFT_RS_PIN|TFT_WR_PIN|TFT_CS_PIN|TFT_RST_PIN);
 //
 //    //start display initialization
-//    SPI_begin(3);
-//    SPI_setDataMode(SPI_MODE3);
-//    TFT_RST_ON;
-//    SysCtlDelay(DELAY_VALUE);
-//    TFT_RST_OFF;
-//    SysCtlDelay(DELAY_VALUE);
-//
-//    uint16_t i = 0;
-//    uint16_t dSize = sizeof(init_data) / 2;
-//    for (; i < dSize; i++)
-//    {
-//        if (init_data[i][1] == 0)
-//        {
-//            TFT_sendCMD(init_data[i][0]);
-//        }
-//        else
-//        {
-//            TFT_sendData8(init_data[i][0]);
-//        }
-//    }
-//    SysCtlDelay(DELAY_VALUE);
-//
-//    TFT_sendCMD(0x29);          //Display on
-//    TFT_sendCMD(0x2c);          //Memory Write
-    LCD_WR_REG_DATA(0x0000, 0x0001);
-    delayMilliseconds(1);  //Открыть кристалл
-    LCD_WR_REG_DATA(0x0003, 0xA8A4);
-    delayMilliseconds(1);   //0xA8A4
-    LCD_WR_REG_DATA(0x000C, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x000D, 0x080C);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x000E, 0x2B00);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x001E, 0x00B7);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0001, 0x2B3F);
-    delayMilliseconds(1);   //Выход управления привода 320 * 240 0x6B3F
-    LCD_WR_REG_DATA(0x0002, 0x0600);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0010, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0011, 0x6070);
-    delayMilliseconds(1);        //0x4030           //Определить формат данных 16 цветов
-    LCD_WR_REG_DATA(0x0005, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0006, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0016, 0xEF1C);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0017, 0x0003);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0007, 0x0233);
-    delayMilliseconds(1);        //0x0233
-    LCD_WR_REG_DATA(0x000B, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x000F, 0x0000);
-    delayMilliseconds(1);        //Сканирование начальный адрес
-    LCD_WR_REG_DATA(0x0041, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0042, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0048, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0049, 0x013F);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x004A, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x004B, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0044, 0xEF00);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0045, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0046, 0x013F);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0030, 0x0707);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0031, 0x0204);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0032, 0x0204);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0033, 0x0502);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0034, 0x0507);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0035, 0x0204);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0036, 0x0204);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0037, 0x0502);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x003A, 0x0302);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x003B, 0x0302);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0023, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0024, 0x0000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x0025, 0x8000);
-    delayMilliseconds(1);
-    LCD_WR_REG_DATA(0x004f, 0);        //ОК первый сайт 0
-    LCD_WR_REG_DATA(0x004e, 0);        //В первой колонке адрес 0
-    LCD_WR_REG(0x0022);
+//    TFT_RST_HIGH;
+//    SysCtlDelay(30000);
+//    TFT_RST_LOW;
+//    SysCtlDelay(30000);
+//    TFT_RST_HIGH;
+//    SysCtlDelay(30000);
+//    TFT_CS_LOW;
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x1);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x2);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x4);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x8);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x10);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x20);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x40);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x80);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0xff);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0xff);
+//SysCtlDelay(30000);
+//GPIOPinWrite(TFT_Data_Port, 0xff, 0x00);
+//SysCtlDelay(30000);
 
+//while(1);
+    TFT_Write_Command_Data(0x0000, 0x0001);
+//    delayMilliseconds(1);  //Открыть кристалл
+    TFT_Write_Command_Data(0x0003, 0xA8A4);
+//    delayMilliseconds(1);   //0xA8A4
+    TFT_Write_Command_Data(0x000C, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x000D, 0x080C);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x000E, 0x2B00);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x001E, 0x00B7);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0001, 0x2B3F);
+//    delayMilliseconds(1);   //Выход управления привода 320 * 240 0x6B3F
+    TFT_Write_Command_Data(0x0002, 0x0600);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0010, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0011, 0x6070);
+//    delayMilliseconds(1);        //0x4030           //Определить формат данных 16 цветов
+    TFT_Write_Command_Data(0x0005, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0006, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0016, 0xEF1C);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0017, 0x0003);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0007, 0x0233);
+//    delayMilliseconds(1);        //0x0233
+    TFT_Write_Command_Data(0x000B, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x000F, 0x0000);
+//    delayMilliseconds(1);        //Сканирование начальный адрес
+    TFT_Write_Command_Data(0x0041, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0042, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0048, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0049, 0x013F);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x004A, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x004B, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0044, 0xEF00);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0045, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0046, 0x013F);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0030, 0x0707);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0031, 0x0204);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0032, 0x0204);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0033, 0x0502);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0034, 0x0507);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0035, 0x0204);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0036, 0x0204);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0037, 0x0502);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x003A, 0x0302);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x003B, 0x0302);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0023, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0024, 0x0000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x0025, 0x8000);
+//    delayMilliseconds(1);
+    TFT_Write_Command_Data(0x004f, 0);        //ОК первый сайт 0
+    TFT_Write_Command_Data(0x004e, 0);        //В первой колонке адрес 0
+    TFT_Write_Command(0x0022);
+
+//    TFT_CS_LOW;
 }
 
 const tDisplay psDisplay =
