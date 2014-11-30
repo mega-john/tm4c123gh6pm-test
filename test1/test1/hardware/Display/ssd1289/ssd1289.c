@@ -17,11 +17,9 @@ char BitSwap(char x)
 void TFT_Write_Bus(char VH, char VL)   //Параллельно данных Write функция
 {
     GPIOPinWrite(TFT_Data_Port, 0xff, VH);
-//    TFT_Data = BitSwap(VH);
     TFT_WR_LOW;
     TFT_WR_HIGH;
     GPIOPinWrite(TFT_Data_Port, 0xff, VL);
-//    TFT_Data = BitSwap(VL);
     TFT_WR_LOW;
     TFT_WR_HIGH;
 }

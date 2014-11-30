@@ -26,7 +26,7 @@
 #define TFT_Command_Port        GPIO_PORTF_BASE
 #define TFT_Command_Periph      SYSCTL_PERIPH_GPIOF
 #define TFT_RS_PIN              GPIO_PIN_0//register select
-#define TFT_WR_PIN              GPIO_PIN_1//write
+#define TFT_WR_PIN              GPIO_PIN_2//write
 //#define TFT_RD_PIN              GPIO_PIN_6//read, not used-connect to gnd
 #define TFT_CS_PIN              GPIO_PIN_3//chip select
 #define TFT_RST_PIN             GPIO_PIN_4//reset
