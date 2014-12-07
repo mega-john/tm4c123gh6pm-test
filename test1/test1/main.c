@@ -179,7 +179,7 @@ int main(void)
     SetupSystemClock();
 //
 //    SetUpTimers();
-    FPULazyStackingEnable();
+//    FPULazyStackingEnable();
 
     InitializeDisplay();
 

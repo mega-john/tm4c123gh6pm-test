@@ -298,7 +298,7 @@ void RectFill(void *pvDisplayData, const tRectangle *pRect, uint32_t ui32Value)
 }
 
 
-void InitDisplay(void)
+void ILI9341Init(void)
 {
 	SysCtlPeripheralEnable(TFT_RST_PERIPH);
 	GPIOPinTypeGPIOOutput(TFT_RST_PORT, TFT_RST_PIN);

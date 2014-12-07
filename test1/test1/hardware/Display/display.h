@@ -10,6 +10,7 @@
 
 #include "../../global.h"
 
+
 static tCodePointMap g_psCodePointMap_language[] =
 {
         {CODEPAGE_WIN1251, CODEPAGE_UNICODE, GrMapWIN1251_Unicode}
