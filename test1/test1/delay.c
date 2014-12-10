@@ -107,7 +107,7 @@ void registerSysTickCb(void (*userFunc)(uint32_t))
 	}
 }
 
-void SysTickIntHandler(void)
+void SysTickHandler(void)
 {
 	uint8_t i;
 	for (i = 0; i < 8; i++)

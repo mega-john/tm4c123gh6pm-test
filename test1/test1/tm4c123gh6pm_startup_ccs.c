@@ -67,7 +67,10 @@ extern void Timer4IntHandlerA();
 extern void Timer4IntHandlerB();
 extern void Timer5IntHandlerA();
 extern void Timer5IntHandlerB();
-extern void SysTickIntHandler();
+extern void SysTickHandler();
+extern void UART2IntHandler(void);
+extern void uDMAIntHandler(void);
+extern void uDMAErrorHandler(void);
 
 //*****************************************************************************
 //
@@ -95,7 +98,7 @@ void (* const g_pfnVectors[])(void) =
 		IntDefaultHandler,// Debug monitor handler
 		0,// Reserved
 		IntDefaultHandler,// The PendSV handler
-		SysTickIntHandler,// The SysTick handler
+		SysTickHandler,// The SysTick handler
 		IntDefaultHandler,// GPIO Port A
 		IntDefaultHandler,// GPIO Port B
 		IntDefaultHandler,// GPIO Port C
@@ -129,7 +132,7 @@ void (* const g_pfnVectors[])(void) =
 		IntDefaultHandler,// GPIO Port F
 		IntDefaultHandler,// GPIO Port G
 		IntDefaultHandler,// GPIO Port H
-		IntDefaultHandler,// UART2 Rx and Tx
+		UART2IntHandler,// UART2 Rx and Tx
 		IntDefaultHandler,// SSI1 Rx and Tx
 		Timer3IntHandlerA,// Timer 3 subtimer A
 		Timer3IntHandlerB,// Timer 3 subtimer B
@@ -142,8 +145,8 @@ void (* const g_pfnVectors[])(void) =
 		IntDefaultHandler,// Hibernate
 		IntDefaultHandler,// USB0
 		IntDefaultHandler,// PWM Generator 3
-		IntDefaultHandler,// uDMA Software Transfer
-		IntDefaultHandler,// uDMA Error
+		uDMAIntHandler,// uDMA Software Transfer
+		uDMAErrorHandler,// uDMA Error
 		IntDefaultHandler,// ADC1 Sequence 0
 		IntDefaultHandler,// ADC1 Sequence 1
 		IntDefaultHandler,// ADC1 Sequence 2

@@ -57,6 +57,7 @@
 
 #include "hardware/interrupts/timer.h"
 #include "hardware/onewire/onewire.h"
+#include "hardware/onewire/1wire_uart.h"
 #include "hardware/onewire/ds18x20.h"
 #include "hardware/i2c/ds1703.h"
 #include "hardware/i2c/24x64.h"

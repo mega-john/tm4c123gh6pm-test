@@ -183,7 +183,7 @@ int main(void)
 
     InitializeDisplay();
 
-    while(1);
+//    while(1);
     InitializePerepheral();
 
     TestInternalEEPROM();
