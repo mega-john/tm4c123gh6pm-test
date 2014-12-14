@@ -23,6 +23,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/udma.h"
+#include "driverlib/uart.h"
 #include "utils/ustdlib.h"
 #include "utils/uartstdio.h"
 
@@ -37,7 +38,7 @@
 //#define OW_GIVE_TICK_RTOS
 
 // первый параметр функции OW_Send
-#define OW_SEND_RESET       1
+#define OW_SEND_RESET   1
 #define OW_NO_RESET     2
 
 // статус возврата функций

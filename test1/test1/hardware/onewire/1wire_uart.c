@@ -107,15 +107,8 @@ static uint32_t g_ui32Seconds = 0;
 // to a 1024 byte boundary.
 //
 //*****************************************************************************
-#if defined(ewarm)
-#pragma data_alignment=1024
-uint8_t ui8ControlTable[1024];
-#elif defined(ccs)
 #pragma DATA_ALIGN(ui8ControlTable, 1024)
 uint8_t ui8ControlTable[1024];
-#else
-uint8_t ui8ControlTable[1024] __attribute__ ((aligned(1024)));
-#endif
 
 //*****************************************************************************
 //
@@ -169,8 +162,7 @@ void uDMAIntHandler(void)
         //
         // Configure it for another transfer.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_SW, UDMA_MODE_AUTO, g_ui32SrcBuf, g_ui32DstBuf,
-        MEM_BUFFER_SIZE);
+        uDMAChannelTransferSet(UDMA_CHANNEL_SW, UDMA_MODE_AUTO, g_ui32SrcBuf, g_ui32DstBuf, MEM_BUFFER_SIZE);
 
         //
         // Initiate another transfer.
@@ -206,7 +198,7 @@ void UART2IntHandler(void)
     //
     // Read the interrupt status of the UART.
     //
-    ui32Status = UARTIntStatus(UART1_BASE, 1);
+    ui32Status = UARTIntStatus(UART2_BASE, 1);
 
     //
     // Clear any pending status, even though there should be none since no UART
@@ -215,14 +207,14 @@ void UART2IntHandler(void)
     // used for both the RX and TX, then neither of those interrupts should be
     // enabled.
     //
-    UARTIntClear(UART1_BASE, ui32Status);
+    UARTIntClear(UART2_BASE, ui32Status);
 
     //
     // Check the DMA control table to see if the ping-pong "A" transfer is
     // complete.  The "A" transfer uses receive buffer "A", and the primary
     // control structure.
     //
-    ui32Mode = uDMAChannelModeGet(UDMA_CHANNEL_UART1RX | UDMA_PRI_SELECT);
+    ui32Mode = uDMAChannelModeGet(UDMA_CHANNEL_UART2RX | UDMA_PRI_SELECT);
 
     //
     // If the primary control structure indicates stop, that means the "A"
@@ -247,7 +239,7 @@ void UART2IntHandler(void)
         // the main thread has to process the data in the buffer before it is
         // reused.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_UART1RX | UDMA_PRI_SELECT, UDMA_MODE_PINGPONG, (void *) (UART1_BASE + UART_O_DR), g_ui8RxBufA,
+        uDMAChannelTransferSet(UDMA_CHANNEL_UART2RX | UDMA_PRI_SELECT, UDMA_MODE_PINGPONG, (void *) (UART2_BASE + UART_O_DR), g_ui8RxBufA,
                 sizeof(g_ui8RxBufA));
     }
 
@@ -256,7 +248,7 @@ void UART2IntHandler(void)
     // complete.  The "B" transfer uses receive buffer "B", and the alternate
     // control structure.
     //
-    ui32Mode = uDMAChannelModeGet(UDMA_CHANNEL_UART1RX | UDMA_ALT_SELECT);
+    ui32Mode = uDMAChannelModeGet(UDMA_CHANNEL_UART2RX | UDMA_ALT_SELECT);
 
     //
     // If the alternate control structure indicates stop, that means the "B"
@@ -281,7 +273,7 @@ void UART2IntHandler(void)
         // the main thread has to process the data in the buffer before it is
         // reused.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_UART1RX | UDMA_ALT_SELECT, UDMA_MODE_PINGPONG, (void *) (UART1_BASE + UART_O_DR), g_ui8RxBufB,
+        uDMAChannelTransferSet(UDMA_CHANNEL_UART2RX | UDMA_ALT_SELECT, UDMA_MODE_PINGPONG, (void *) (UART2_BASE + UART_O_DR), g_ui8RxBufB,
                 sizeof(g_ui8RxBufB));
     }
 
@@ -289,18 +281,18 @@ void UART2IntHandler(void)
     // If the UART1 DMA TX channel is disabled, that means the TX DMA transfer
     // is done.
     //
-    if (!uDMAChannelIsEnabled(UDMA_CHANNEL_UART1TX))
+    if (!uDMAChannelIsEnabled(UDMA_CHANNEL_UART2TX))
     {
         //
         // Start another DMA transfer to UART1 TX.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_UART1TX | UDMA_PRI_SELECT, UDMA_MODE_BASIC, g_ui8TxBuf, (void *) (UART1_BASE + UART_O_DR),
+        uDMAChannelTransferSet(UDMA_CHANNEL_UART2TX | UDMA_PRI_SELECT, UDMA_MODE_BASIC, g_ui8TxBuf, (void *) (UART2_BASE + UART_O_DR),
                 sizeof(g_ui8TxBuf));
 
         //
         // The uDMA TX channel must be re-enabled.
         //
-        uDMAChannelEnable(UDMA_CHANNEL_UART1TX);
+        uDMAChannelEnable(UDMA_CHANNEL_UART2TX);
     }
 }
 
