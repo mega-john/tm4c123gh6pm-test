@@ -204,7 +204,7 @@ void UART2IntHandler(void)
     //
     // Read the interrupt status of the UART.
     //
-    ui32Status = UARTIntStatus(UARTx_BASE, 1);
+    ui32Status = UARTIntStatus(UART2_BASE, 1);
 
     //
     // Clear any pending status, even though there should be none since no UART
